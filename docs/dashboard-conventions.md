@@ -1,12 +1,39 @@
 # Dashboard conventions
 
-Rules for dashboard JSON committed to this repo (Grafana v13, classic schema).
+Rules for dashboard JSON committed to this repo (Grafana v13).
+
+## File format
+
+The primary format is the **resource wrapper** — what Git Sync itself reads and writes:
+
+```json
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": { "name": "<uid>" },
+  "spec": { ...dashboard... }
+}
+```
+
+Keep only `metadata.name` in `metadata` — never commit server-side fields (`resourceVersion`,
+`generation`, `annotations`, `labels`, `creationTimestamp`). `scripts/export.sh` produces this
+shape. Classic dashboard JSON (uid/panels at top level) is also accepted by Git Sync and by
+`scripts/validate.sh`; the sanitizing rules below apply to it.
+
+Each managed folder directory carries a `_folder.json` pinning its stable identity:
+
+```json
+{ "apiVersion": "folder.grafana.app/v1beta1", "kind": "Folder", "metadata": { "name": "<folder-uid>" }, "spec": { "title": "<display name>" } }
+```
+
+Without it, Grafana derives the folder uid from a hash of the directory path and renames lose
+permissions/links.
 
 ## Identity
 
-- `uid` is the stable identity — deploys upsert by `uid`. Pick a short, readable, permanent uid when creating a dashboard (e.g. `trading-pnl-overview`). Never change it after deployment, and never duplicate one across files.
-- Top-level `id` must be `null` (it's instance-local and meaningless across environments).
-- File name: `<uid>.json`, placed under `dashboards/<grafana-folder>/`.
+- The uid (`metadata.name` in resource files, `uid` in classic files) is the stable identity. Pick a short, readable, permanent uid when creating a dashboard (e.g. `trading-pnl-overview`). Never change it after deployment, and never duplicate one across files.
+- In classic files, top-level `id` must be `null` (it's instance-local and meaningless across environments).
+- File name: `<uid>.json`, placed under `dashboards/<grafana-folder>/`. Files at the top level of `dashboards/` are General/root dashboards (folderless sync target).
 
 ## Sanitizing exports
 
