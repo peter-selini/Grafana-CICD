@@ -1,0 +1,2250 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "rwa-basis-hedge-quality"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "RWA BasisQuoter source risk versus IBKR hedge positions, residual exposure, IB PnL, execution shortfall, latency, fills, and pipeline health.",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "links": [],
+    "liveNow": true,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "panels": [],
+        "title": "Live status and residual exposure",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "All values should be 1. Missing data is also unhealthy: the process is not writing.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "max": 1,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "bool"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 1
+        },
+        "id": 2,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "Hedger healthy",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"healthy\") FROM \"hedger_heartbeat\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "Hedger→IB connected",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"connected\") FROM \"hedger_heartbeat\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "RWA risk poller",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"up\") FROM \"rwa_poller_heartbeat\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IBGW poller",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"poller_up\") FROM \"ib_poller_heartbeat\" WHERE time \u003e now() - 2m AND \"host\" =~ /^tky-c-ibgw-01.*$/",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Pipeline health (last 2m)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Perfectly hedged is zero. No data means one side is absent/stale; inspect the position chart.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 1
+        },
+        "id": 3,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "Source $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"risk_qty\") AS \"source_qty\" FROM \"rwa_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"qty\") AS \"ib_qty\" FROM \"ib_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "__expr__"
+            },
+            "expression": "$A + $B",
+            "refId": "C",
+            "type": "math"
+          }
+        ],
+        "title": "Current net position (source + IB)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "(source qty + IB qty) × current IB midpoint. Requires fresh IB market data.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 1
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"risk_qty\") AS \"source_qty\" FROM \"rwa_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"qty\") AS \"ib_qty\" FROM \"ib_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"mid\") AS \"mid\" FROM \"ib_price\" WHERE time \u003e now() - 2m AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "P",
+            "resultFormat": "time_series"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "__expr__"
+            },
+            "expression": "($A + $B) * $P",
+            "refId": "C",
+            "type": "math"
+          }
+        ],
+        "title": "Current residual exposure",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "abs(IB quantity / source quantity). 100% is fully hedged; it ignores price basis.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 1,
+            "mappings": [],
+            "max": 120,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "orange",
+                  "value": 90
+                },
+                {
+                  "color": "green",
+                  "value": 97
+                },
+                {
+                  "color": "orange",
+                  "value": 103
+                },
+                {
+                  "color": "red",
+                  "value": 110
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 1
+        },
+        "id": 5,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"risk_qty\") AS \"source_qty\" FROM \"rwa_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"qty\") AS \"ib_qty\" FROM \"ib_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "__expr__"
+            },
+            "expression": "abs($B / $A) * 100",
+            "refId": "C",
+            "type": "math"
+          }
+        ],
+        "title": "Current hedge ratio",
+        "type": "stat"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 5
+        },
+        "id": 6,
+        "panels": [],
+        "title": "Position and residual-risk history",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "The two lines should be equal and opposite. Source uses the per-symbol perp_total aggregate.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 6
+        },
+        "id": 7,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "Source $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"risk_qty\") FROM \"rwa_position\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB hedge $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"qty\") FROM \"ib_position\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Source risk versus IB hedge quantity",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "(source + IB) × IB midpoint. Short gaps can appear when the independent pollers land in different buckets.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 6
+        },
+        "id": 8,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"risk_qty\") FROM \"rwa_position\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"qty\") FROM \"ib_position\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": true,
+            "query": "SELECT last(\"mid\") FROM \"ib_price\" WHERE $timeFilter AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "P",
+            "resultFormat": "time_series"
+          },
+          {
+            "datasource": {
+              "type": "__expr__",
+              "uid": "__expr__"
+            },
+            "expression": "($A + $B) * $P",
+            "refId": "C",
+            "type": "math"
+          }
+        ],
+        "title": "Residual exposure through time",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 14
+        },
+        "id": 9,
+        "panels": [],
+        "title": "PnL and cash flow",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "IBKR reqPnLSingle daily PnL. This is the reliable hedge-leg PnL measure.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 15
+        },
+        "id": 10,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"daily_pnl\") FROM \"ib_position_pnl\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB daily PnL",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Current IBKR unrealized PnL by selected symbol.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 15
+        },
+        "id": 11,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"unrealized_pnl\") FROM \"ib_position_pnl\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB unrealized PnL",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Current IBKR realized PnL by selected symbol. IB may re-base this across sessions.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 15
+        },
+        "id": 12,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"realized_pnl\") FROM \"ib_position_pnl\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB realized PnL",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Latest source position notional using the position poller's fill-derived mark. This is exposure, not earnings.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 15
+        },
+        "id": 13,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"notional\") FROM \"rwa_position\" WHERE time \u003e now() - 2m AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Source marked exposure (not PnL)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 3,
+          "w": 24,
+          "x": 0,
+          "y": 19
+        },
+        "id": 14,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "**IB PnL is authoritative from IBKR. Source/quoter PnL is not currently published to `rwa_strategies`.** `rwa_position.notional` is marked exposure, not PnL, and its fill-derived mark can be stale. A reliable combined earnings panel needs a dedicated source PnL measurement with common start-of-period inventory, marks, and fees.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "11.0.0",
+        "title": "PnL interpretation",
+        "transparent": true,
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "IBKR-computed daily PnL. Reconnect/session re-bases may appear as discontinuities.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 22
+        },
+        "id": 15,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"daily_pnl\") FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB daily PnL history",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "IBKR daily, realized, and unrealized PnL. Reconnects can re-base these series.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 22
+        },
+        "id": 16,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "Unrealized $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"unrealized_pnl\") FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "Realized $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT last(\"realized_pnl\") FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB PnL components",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 30
+        },
+        "id": 17,
+        "panels": [],
+        "title": "Hedge execution quality",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Total arrival-mid shortfall over the selected range. Positive is execution cost; negative is improvement.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 31
+        },
+        "id": 18,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT sum(\"shortfall_usd\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Implementation shortfall",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Unweighted mean across hedge executions. Positive is worse than decision midpoint.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "suffix: bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 31
+        },
+        "id": 19,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT mean(\"shortfall_bps\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Mean shortfall",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "95th percentile adverse implementation shortfall by symbol.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "suffix: bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 31
+        },
+        "id": 20,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT percentile(\"shortfall_bps\", 95) FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "P95 shortfall",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Median milliseconds from accepted hedge decision to each IB execution.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {},
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 30000
+                },
+                {
+                  "color": "red",
+                  "value": 120000
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 31
+        },
+        "id": 21,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT median(\"decision_to_fill_ms\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Median decision→fill",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Arrival-mid shortfall by symbol and execution algo. Positive values are adverse.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "suffix: bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 35
+        },
+        "id": 22,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol / $tag_algo",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT mean(\"shortfall_bps\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY time($__interval), \"symbol\", \"algo\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Implementation shortfall through time",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Median and P95 decision-to-fill latency. This is not source-trade-to-hedge latency.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 16,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 35
+        },
+        "id": 23,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "P50 $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT median(\"decision_to_fill_ms\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY time($__interval), \"symbol\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "P95 $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT percentile(\"decision_to_fill_ms\", 95) FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' GROUP BY time($__interval), \"symbol\" fill(null)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Decision-to-fill latency",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Raw fill-level arrival shortfall. Limited to 250 rows to keep the browser responsive.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "filterable": true,
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "shortfall_bps"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "suffix: bps"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "shortfall_usd"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "decision_to_fill_ms"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "ms"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 24,
+          "x": 0,
+          "y": 43
+        },
+        "id": 24,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Time"
+            }
+          ]
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT \"symbol\", \"side\", \"algo\", \"order_id\", \"perm_id\", \"fill_qty\", \"fill_price\", \"arrival_mid\", \"shortfall_bps\", \"shortfall_usd\", \"decision_to_fill_ms\" FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" = 'Fill' ORDER BY time DESC LIMIT 250",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Recent hedge executions",
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {
+                "Time": 0,
+                "algo": 3,
+                "arrival_mid": 8,
+                "decision_to_fill_ms": 11,
+                "fill_price": 7,
+                "fill_qty": 6,
+                "order_id": 4,
+                "perm_id": 5,
+                "shortfall_bps": 9,
+                "shortfall_usd": 10,
+                "side": 2,
+                "symbol": 1
+              },
+              "renameByName": {}
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 52
+        },
+        "id": 25,
+        "panels": [],
+        "title": "Trading activity and operational diagnostics",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Notional already includes the contract multiplier. Never divide it by raw quantity to infer price.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "bars",
+              "fillOpacity": 55,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 53
+        },
+        "id": 26,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "Source $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT sum(\"notional\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"leg_type\" = 'perp' GROUP BY time($__interval), \"symbol\" fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB $tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT sum(\"notional\") FROM \"ib_fill\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ GROUP BY time($__interval), \"symbol\" fill(0)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Fill notional by leg",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Order/fill/cancel/error counts. Rising cancels or validation errors indicate churn or execution problems.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "bars",
+              "fillOpacity": 55,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 53
+        },
+        "id": 27,
+        "interval": "5s",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "11.0.0",
+        "targets": [
+          {
+            "alias": "$tag_symbol / $tag_event",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "hide": false,
+            "query": "SELECT count(\"order_id\") FROM \"hedger_order_event\" WHERE $timeFilter AND \"env\" =~ /^${env:regex}$/ AND \"account\" =~ /^${account:regex}$/ AND \"symbol\" =~ /^${symbol:regex}$/ AND \"event\" =~ /Fill|Cancelled|ValidationError|PendingSubmit/ GROUP BY time($__interval), \"symbol\", \"event\" fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Hedger lifecycle events",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 4,
+          "w": 24,
+          "x": 0,
+          "y": 61
+        },
+        "id": 28,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "The shortfall panels benchmark each IB fill against the **IB midpoint when the hedge order was accepted**. They do not measure the complete path from the original RWA perp fill to the final IB fill. That end-to-end metric requires source-event attribution and an order/fill join that InfluxQL/Grafana cannot perform reliably at query time. Materialize an episode-level measurement before adding that metric here. The shortfall panels also require the analytics logger version that writes `arrival_mid`, `shortfall_usd`, `shortfall_bps`, and `decision_to_fill_ms`; otherwise they show no data.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "11.0.0",
+        "title": "What this dashboard does not prove",
+        "transparent": true,
+        "type": "text"
+      }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 42,
+    "tags": [
+      "rwa",
+      "ibkr",
+      "hedger",
+      "basis-pilot"
+    ],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": true,
+            "text": "pilot",
+            "value": "pilot"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "label": "Environment",
+          "multi": false,
+          "name": "env",
+          "options": [
+            {
+              "selected": true,
+              "text": "pilot",
+              "value": "pilot"
+            },
+            {
+              "selected": false,
+              "text": "paper",
+              "value": "paper"
+            },
+            {
+              "selected": false,
+              "text": "prod",
+              "value": "prod"
+            }
+          ],
+          "query": "pilot,paper,prod",
+          "skipUrlSync": false,
+          "type": "custom"
+        },
+        {
+          "allValue": ".*",
+          "current": {
+            "selected": true,
+            "text": "U25650461",
+            "value": "U25650461"
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "efm5nvo6ne874a"
+          },
+          "definition": "SHOW TAG VALUES FROM \"ib_position\" WITH KEY = \"account\"",
+          "hide": 0,
+          "includeAll": true,
+          "label": "IB account",
+          "multi": false,
+          "name": "account",
+          "options": [],
+          "query": "SHOW TAG VALUES FROM \"ib_position\" WITH KEY = \"account\"",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        },
+        {
+          "allValue": ".*",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "hide": 0,
+          "includeAll": true,
+          "label": "Symbols",
+          "multi": true,
+          "name": "symbol",
+          "options": [
+            {
+              "selected": false,
+              "text": "MRVL",
+              "value": "MRVL"
+            },
+            {
+              "selected": false,
+              "text": "NBIS",
+              "value": "NBIS"
+            },
+            {
+              "selected": false,
+              "text": "EBAY",
+              "value": "EBAY"
+            }
+          ],
+          "query": "MRVL,NBIS,EBAY",
+          "skipUrlSync": false,
+          "type": "custom"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m"
+      ]
+    },
+    "timezone": "utc",
+    "title": "RWA Basis Pilot — Hedge Quality, Risk \u0026 PnL",
+    "weekStart": ""
+  }
+}

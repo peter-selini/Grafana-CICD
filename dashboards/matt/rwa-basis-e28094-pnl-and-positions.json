@@ -1,0 +1,3129 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "rwa-basis-pnl-attrib"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Live RWA basis pilot: reset-immune perp PnL and funding attribution, per-name positions and entry prices, current basis, fills and data health. Fixed to the pilot env/account.",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "panels": [],
+        "title": "Money",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Perp leg (net, funding included) + IB hedge leg, both over the dashboard time range. This is the whole basis book. The two legs are queried from different InfluxDB instances and summed by the panel; the breakdown is to the right.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 5,
+          "x": 0,
+          "y": 1
+        },
+        "id": 2,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(net) AS all_in FROM (SELECT last(\"pnl\") - first(\"pnl\") AS net, last(\"gross_pnl\") - first(\"gross_pnl\") AS gross FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ GROUP BY \"base_currency\", \"strategy\", \"mimid_start_time\")",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS all_in FROM (SELECT last(\"unrealized_pnl\") - first(\"unrealized_pnl\") AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "All-in PnL (selected range)",
+        "transformations": [
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "all_in"
+                ]
+              }
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "all_in": "All-in"
+              }
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Both legs follow the time picker. Perp leg is the sum of per-session (last - first) net PnL from strategy_pnl_summary, so graph restarts cannot reset it, and it already includes funding. IB hedge leg is the change in unrealised PnL of the stock hedges over the range. These two add up to the all-in figure.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 7,
+          "x": 5,
+          "y": 1
+        },
+        "id": 3,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(net) AS perp_net, sum(gross) AS perp_gross FROM (SELECT last(\"pnl\") - first(\"pnl\") AS net, last(\"gross_pnl\") - first(\"gross_pnl\") AS gross FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ GROUP BY \"base_currency\", \"strategy\", \"mimid_start_time\")",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS ib_upnl FROM (SELECT last(\"unrealized_pnl\") - first(\"unrealized_pnl\") AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "PnL by leg",
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "funding_fees",
+              "binary": {
+                "left": "perp_net",
+                "operator": "-",
+                "right": "perp_gross"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "funding_fees": true,
+                "perp_gross": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "funding_fees": "of which funding + fees",
+                "ib_upnl": "IB hedge leg",
+                "perp_net": "Perp leg (incl. funding)"
+              }
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Net and gross perp notional using the position poller's latest entry/hedge mark.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 12,
+          "y": 1
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "alias": "Net",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"n\") FROM (SELECT last(\"notional\") AS \"n\" FROM \"rwa_position\" WHERE time \u003e now() - 10m AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "Gross",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"g\") FROM (SELECT abs(last(\"notional\")) AS \"g\" FROM \"rwa_position\" WHERE time \u003e now() - 10m AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Perp inventory",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Fees over the selected range. Positive values are costs; negative perp values are rebates.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 16,
+          "y": 1
+        },
+        "id": 5,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "alias": "Perp",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"fee\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp'",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"fee\") FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Execution fees",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Fill count over the selected range.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 4,
+          "x": 20,
+          "y": 1
+        },
+        "id": 6,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "alias": "Perp",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT count(\"last_qty\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp'",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT count(\"qty\") FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Fills",
+        "type": "stat"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 7
+        },
+        "id": 7,
+        "panels": [],
+        "title": "Capture book — dislocation harvesting",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Is this book making money? All-in should grind up. Restarts cannot leak in because increments are computed inside each graph session; a brand-new session can drop at most its first bucket.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 2,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "id": 8,
+        "interval": "15m",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "perp_bucket",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(\"d\") AS perp_bucket FROM (SELECT difference(last(\"pnl\")) AS \"d\" FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ GROUP BY time($__interval), \"strategy\", \"mimid_start_time\" fill(none)) GROUP BY time($__interval) fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "ib_bucket",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS ib_bucket FROM (SELECT difference(last(\"unrealized_pnl\")) AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY time($__interval), \"symbol\" fill(none)) GROUP BY time($__interval) fill(0)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Capture PnL — cumulative over selected range",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "Time",
+              "mode": "outer"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Perp leg (incl funding)",
+              "cumulative": {
+                "field": "perp_bucket",
+                "reducer": "sum"
+              },
+              "mode": "cumulativeFunctions"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "IB hedge leg",
+              "cumulative": {
+                "field": "ib_bucket",
+                "reducer": "sum"
+              },
+              "mode": "cumulativeFunctions"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "All-in",
+              "binary": {
+                "left": "Perp leg (incl funding)",
+                "operator": "+",
+                "right": "IB hedge leg"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "ff_bucket": true,
+                "ib_bucket": true,
+                "perp_bucket": true
+              },
+              "indexByName": {},
+              "renameByName": {}
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Same accounting as the headline, scoped to this book's names.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        },
+        "id": 9,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(net) AS perp_net, sum(gross) AS perp_gross FROM (SELECT last(\"pnl\") - first(\"pnl\") AS net, last(\"gross_pnl\") - first(\"gross_pnl\") AS gross FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ GROUP BY \"base_currency\", \"strategy\", \"mimid_start_time\")",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS ib_upnl FROM (SELECT last(\"unrealized_pnl\") - first(\"unrealized_pnl\") AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Capture — PnL over range",
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "funding_fees",
+              "binary": {
+                "left": "perp_net",
+                "operator": "-",
+                "right": "perp_gross"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "funding_fees": false,
+                "perp_gross": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "funding_fees": "of which funding + fees",
+                "ib_upnl": "IB hedge leg",
+                "perp_net": "Perp leg (incl. funding)"
+              }
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Traded notional per hour on each leg. The two should track each other; a persistent gap is unhedged flow. NB rwa_fill drops same-millisecond partial fills, so perp bars can under-report.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "fillOpacity": 60,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 0,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 12,
+          "y": 12
+        },
+        "id": 10,
+        "options": {
+          "legend": {
+            "calcs": [
+              "sum"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "Perp",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(1h) fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB stock",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY time(1h) fill(0)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Capture volume",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "POSITIVE adverse slip = the hedge bought above / sold below the perp fill: edge given back. Negative = the hedge improved on the perp price. Per bucket: VWAP = sum(notional)/sum(qty) per leg; direction is the net perp side. Footer sums Slip notional: divide by summed Volume for the vol-weighted average. Filter the dashboard to one symbol for exact per-name numbers - buckets where several names fill together mix their VWAPs. A hedge completing after the 2m boundary straddles two buckets and shows as two half-legs.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*VWAP"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Adverse slip ($)"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 4
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Slip notional ($)"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Hedge qty"
+              },
+              "properties": [
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Perp side"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "-1": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "SELL"
+                        },
+                        "1": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "BUY"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "Adverse.*"
+              },
+              "properties": [
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      },
+                      {
+                        "color": "red",
+                        "value": 0.0001
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 0,
+          "y": 17
+        },
+        "id": 11,
+        "options": {
+          "footer": {
+            "fields": [
+              "Slip notional ($)",
+              "Hedge qty"
+            ],
+            "reducer": [
+              "sum"
+            ],
+            "show": true
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Time"
+            }
+          ]
+        },
+        "targets": [
+          {
+            "alias": "hedge_notional",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") AS hedge_notional FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'hedge' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "hedge_qty",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"last_qty\") AS hedge_qty FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'hedge' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_notional",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") AS perp_notional FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_qty",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"last_qty\") AS perp_qty FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_signed",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"signed_qty\") AS perp_signed FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "E",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Capture hedge slippage (2m buckets)",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "Time",
+              "mode": "outer"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Hedge VWAP",
+              "binary": {
+                "left": "hedge_notional",
+                "operator": "/",
+                "right": "hedge_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Perp VWAP",
+              "binary": {
+                "left": "perp_notional",
+                "operator": "/",
+                "right": "perp_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "raw_slip",
+              "binary": {
+                "left": "Hedge VWAP",
+                "operator": "-",
+                "right": "Perp VWAP"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "abs_signed",
+              "mode": "unary",
+              "unary": {
+                "fieldName": "perp_signed",
+                "operator": "abs"
+              }
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "dir_sign",
+              "binary": {
+                "left": "perp_signed",
+                "operator": "/",
+                "right": "abs_signed"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Adverse slip ($)",
+              "binary": {
+                "left": "raw_slip",
+                "operator": "*",
+                "right": "dir_sign"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "adv_ratio",
+              "binary": {
+                "left": "Adverse slip ($)",
+                "operator": "/",
+                "right": "Perp VWAP"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Adverse slip (bps)",
+              "binary": {
+                "left": "adv_ratio",
+                "operator": "*",
+                "right": "10000"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Slip notional ($)",
+              "binary": {
+                "left": "Adverse slip ($)",
+                "operator": "*",
+                "right": "hedge_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "abs_signed": true,
+                "adv_ratio": true,
+                "hedge_notional": true,
+                "perp_notional": true,
+                "perp_qty": true,
+                "perp_signed": true,
+                "raw_slip": true
+              },
+              "indexByName": {
+                "Adverse slip ($)": 5,
+                "Adverse slip (bps)": 6,
+                "Hedge VWAP": 4,
+                "Perp VWAP": 3,
+                "Slip notional ($)": 7,
+                "Time": 0,
+                "dir_sign": 1,
+                "hedge_qty": 2
+              },
+              "renameByName": {
+                "dir_sign": "Perp side",
+                "hedge_qty": "Hedge qty"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Every recorded fill on both legs, newest first. A perp row with no IB row shortly after it is an unhedged fill. Caveat: rwa_fill drops partial fills sharing a millisecond timestamp (int_fill_id is a field, not a tag), so a sweep can appear smaller than it was - MSFT 4 Aug is the known example.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 3,
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Fill px"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Fee"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 12,
+          "y": 17
+        },
+        "id": 12,
+        "options": {
+          "footer": {
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Time"
+            }
+          ]
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT \"last_qty\" AS \"perp_qty\", \"price\" AS \"fill_px\", \"fee\" AS \"fee\" FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY \"symbol\", \"direction\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT \"qty\" AS \"ib_qty\", \"price\" AS \"fill_px\", \"fee\" AS \"fee\" FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMZN|MSFT|NVDA|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\", \"side\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Capture fill ledger",
+        "transformations": [
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {
+                "Time": 0,
+                "direction": 2,
+                "fee": 7,
+                "fill_px": 6,
+                "ib_qty": 5,
+                "perp_qty": 3,
+                "side": 4,
+                "symbol": 1
+              },
+              "renameByName": {
+                "direction": "Perp side",
+                "fee": "Fee",
+                "fill_px": "Fill px",
+                "ib_qty": "IB qty",
+                "perp_qty": "Perp qty",
+                "side": "IB side",
+                "symbol": "Symbol"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 27
+        },
+        "id": 13,
+        "panels": [],
+        "title": "Carry book — funding",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Is this book making money? All-in should grind up. Restarts cannot leak in because increments are computed inside each graph session; a brand-new session can drop at most its first bucket. The funding line is the commission-bucket proxy (net - gross); on 5 Aug it measured ~40x the venue's actual funding on spot checks, so treat it as directional only until the userFunding poller replaces it.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 2,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 28
+        },
+        "id": 14,
+        "interval": "15m",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "perp_bucket",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(\"d\") AS perp_bucket FROM (SELECT difference(last(\"pnl\")) AS \"d\" FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ GROUP BY time($__interval), \"strategy\", \"mimid_start_time\" fill(none)) GROUP BY time($__interval) fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "ib_bucket",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS ib_bucket FROM (SELECT difference(last(\"unrealized_pnl\")) AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY time($__interval), \"symbol\" fill(none)) GROUP BY time($__interval) fill(0)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "ff_bucket",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(\"dn\") - sum(\"dg\") AS ff_bucket FROM (SELECT difference(last(\"pnl\")) AS \"dn\", difference(last(\"gross_pnl\")) AS \"dg\" FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ GROUP BY time($__interval), \"strategy\", \"mimid_start_time\" fill(none)) GROUP BY time($__interval) fill(0)",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Carry PnL — cumulative over selected range",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "Time",
+              "mode": "outer"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Perp leg (incl funding)",
+              "cumulative": {
+                "field": "perp_bucket",
+                "reducer": "sum"
+              },
+              "mode": "cumulativeFunctions"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "IB hedge leg",
+              "cumulative": {
+                "field": "ib_bucket",
+                "reducer": "sum"
+              },
+              "mode": "cumulativeFunctions"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Funding + fees (proxy)",
+              "cumulative": {
+                "field": "ff_bucket",
+                "reducer": "sum"
+              },
+              "mode": "cumulativeFunctions"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "All-in",
+              "binary": {
+                "left": "Perp leg (incl funding)",
+                "operator": "+",
+                "right": "IB hedge leg"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "ff_bucket": true,
+                "ib_bucket": true,
+                "perp_bucket": true
+              },
+              "indexByName": {},
+              "renameByName": {}
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "Same accounting as the headline, scoped to this book's names.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 12,
+          "x": 12,
+          "y": 28
+        },
+        "id": 15,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "sum"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(net) AS perp_net, sum(gross) AS perp_gross FROM (SELECT last(\"pnl\") - first(\"pnl\") AS net, last(\"gross_pnl\") - first(\"gross_pnl\") AS gross FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ GROUP BY \"base_currency\", \"strategy\", \"mimid_start_time\")",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"d\") AS ib_upnl FROM (SELECT last(\"unrealized_pnl\") - first(\"unrealized_pnl\") AS \"d\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ GROUP BY \"symbol\")",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Carry — PnL over range",
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "funding_fees",
+              "binary": {
+                "left": "perp_net",
+                "operator": "-",
+                "right": "perp_gross"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "funding_fees": false,
+                "perp_gross": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "funding_fees": "of which funding + fees",
+                "ib_upnl": "IB hedge leg",
+                "perp_net": "Perp leg (incl. funding)"
+              }
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Traded notional per hour on each leg. The two should track each other; a persistent gap is unhedged flow. NB rwa_fill drops same-millisecond partial fills, so perp bars can under-report.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "fillOpacity": 60,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 0,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        },
+        "id": 16,
+        "options": {
+          "legend": {
+            "calcs": [
+              "sum"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "Perp",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(1h) fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB stock",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY time(1h) fill(0)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Carry volume",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "POSITIVE adverse slip = the hedge bought above / sold below the perp fill: edge given back. Negative = the hedge improved on the perp price. Per bucket: VWAP = sum(notional)/sum(qty) per leg; direction is the net perp side. Footer sums Slip notional: divide by summed Volume for the vol-weighted average. Filter the dashboard to one symbol for exact per-name numbers - buckets where several names fill together mix their VWAPs. A hedge completing after the 2m boundary straddles two buckets and shows as two half-legs.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*VWAP"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Adverse slip ($)"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 4
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Slip notional ($)"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Hedge qty"
+              },
+              "properties": [
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Perp side"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "-1": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "SELL"
+                        },
+                        "1": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "BUY"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "Adverse.*"
+              },
+              "properties": [
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-text"
+                  }
+                },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green"
+                      },
+                      {
+                        "color": "red",
+                        "value": 0.0001
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 0,
+          "y": 37
+        },
+        "id": 17,
+        "options": {
+          "footer": {
+            "fields": [
+              "Slip notional ($)",
+              "Hedge qty"
+            ],
+            "reducer": [
+              "sum"
+            ],
+            "show": true
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Time"
+            }
+          ]
+        },
+        "targets": [
+          {
+            "alias": "hedge_notional",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") AS hedge_notional FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'hedge' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "hedge_qty",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"last_qty\") AS hedge_qty FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'hedge' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_notional",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") AS perp_notional FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_qty",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"last_qty\") AS perp_qty FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "table"
+          },
+          {
+            "alias": "perp_signed",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"signed_qty\") AS perp_signed FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(2m) fill(none)",
+            "rawQuery": true,
+            "refId": "E",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Carry hedge slippage (2m buckets)",
+        "transformations": [
+          {
+            "id": "joinByField",
+            "options": {
+              "byField": "Time",
+              "mode": "outer"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Hedge VWAP",
+              "binary": {
+                "left": "hedge_notional",
+                "operator": "/",
+                "right": "hedge_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Perp VWAP",
+              "binary": {
+                "left": "perp_notional",
+                "operator": "/",
+                "right": "perp_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "raw_slip",
+              "binary": {
+                "left": "Hedge VWAP",
+                "operator": "-",
+                "right": "Perp VWAP"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "abs_signed",
+              "mode": "unary",
+              "unary": {
+                "fieldName": "perp_signed",
+                "operator": "abs"
+              }
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "dir_sign",
+              "binary": {
+                "left": "perp_signed",
+                "operator": "/",
+                "right": "abs_signed"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Adverse slip ($)",
+              "binary": {
+                "left": "raw_slip",
+                "operator": "*",
+                "right": "dir_sign"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "adv_ratio",
+              "binary": {
+                "left": "Adverse slip ($)",
+                "operator": "/",
+                "right": "Perp VWAP"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Adverse slip (bps)",
+              "binary": {
+                "left": "adv_ratio",
+                "operator": "*",
+                "right": "10000"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Slip notional ($)",
+              "binary": {
+                "left": "Adverse slip ($)",
+                "operator": "*",
+                "right": "hedge_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "abs_signed": true,
+                "adv_ratio": true,
+                "hedge_notional": true,
+                "perp_notional": true,
+                "perp_qty": true,
+                "perp_signed": true,
+                "raw_slip": true
+              },
+              "indexByName": {
+                "Adverse slip ($)": 5,
+                "Adverse slip (bps)": 6,
+                "Hedge VWAP": 4,
+                "Perp VWAP": 3,
+                "Slip notional ($)": 7,
+                "Time": 0,
+                "dir_sign": 1,
+                "hedge_qty": 2
+              },
+              "renameByName": {
+                "dir_sign": "Perp side",
+                "hedge_qty": "Hedge qty"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Every recorded fill on both legs, newest first. A perp row with no IB row shortly after it is an unhedged fill. Caveat: rwa_fill drops partial fills sharing a millisecond timestamp (int_fill_id is a field, not a tag), so a sweep can appear smaller than it was - MSFT 4 Aug is the known example.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 3,
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Fill px"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Fee"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 12,
+          "y": 37
+        },
+        "id": 18,
+        "options": {
+          "footer": {
+            "show": false
+          },
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Time"
+            }
+          ]
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT \"last_qty\" AS \"perp_qty\", \"price\" AS \"fill_px\", \"fee\" AS \"fee\" FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY \"symbol\", \"direction\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT \"qty\" AS \"ib_qty\", \"price\" AS \"fill_px\", \"fee\" AS \"fee\" FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AMAT|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSTR|MU|NBIS|SNDK)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\", \"side\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Carry fill ledger",
+        "transformations": [
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {
+                "Time": 0,
+                "direction": 2,
+                "fee": 7,
+                "fill_px": 6,
+                "ib_qty": 5,
+                "perp_qty": 3,
+                "side": 4,
+                "symbol": 1
+              },
+              "renameByName": {
+                "direction": "Perp side",
+                "fee": "Fee",
+                "fill_px": "Fill px",
+                "ib_qty": "IB qty",
+                "perp_qty": "Perp qty",
+                "side": "IB side",
+                "symbol": "Symbol"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 47
+        },
+        "id": 19,
+        "panels": [],
+        "title": "Positions and entry",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Perp entry is the quantity-weighted VWAP for the side of the current position (sell VWAP for a short, buy VWAP for a long); opposite-side fills are treated as closes. Entry edge is pre-fee; IB average cost includes IB commission. Every column here comes from the rwa_strategies datasource, which is keyed by symbol. Perp PnL is in its own panel to the right because its datasource is keyed by placement instead.",
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*qty|Qty mismatch"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "none"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*avg entry|.*mark"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": "Entry edge \\(pre-fee\\)"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "bps"
+                },
+                {
+                  "id": "decimals",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byRegexp",
+                "options": ".*PnL"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "decimals",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 16,
+          "x": 0,
+          "y": 48
+        },
+        "id": 20,
+        "options": {
+          "footer": {
+            "fields": [
+              "IB PnL",
+              "Execution fee PnL"
+            ],
+            "reducer": [
+              "sum"
+            ],
+            "show": true
+          },
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"risk_qty\") AS \"perp_qty\" FROM \"rwa_position\" WHERE time \u003e now() - 10m AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp_total' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") / sum(\"last_qty\") AS \"perp_sell_vwap\", sum(\"last_qty\") AS \"perp_sell_qty\" FROM \"rwa_fill\" WHERE time \u003e now() - 30d AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' AND \"direction\" = 'SELL' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"notional\") / sum(\"last_qty\") AS \"perp_buy_vwap\", sum(\"last_qty\") AS \"perp_buy_qty\" FROM \"rwa_fill\" WHERE time \u003e now() - 30d AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' AND \"direction\" = 'BUY' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"fee\") AS \"perp_fee\" FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"qty\") AS \"ib_qty\", last(\"avg_cost\") AS \"ib_avg_entry\" FROM \"ib_position\" WHERE time \u003e now() - 10m AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "E",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"market_value\") AS \"ib_market_value\", last(\"market_price\") AS \"stock_mark\" FROM \"ib_position_pnl\" WHERE time \u003e now() - 10m AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "F",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"unrealized_pnl\") - first(\"unrealized_pnl\") AS \"ib_total_pnl\" FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "G",
+            "resultFormat": "table"
+          },
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT sum(\"fee\") AS \"ib_fee\" FROM \"ib_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY \"symbol\"",
+            "rawQuery": true,
+            "refId": "K",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Current book by name",
+        "transformations": [
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "groupBy",
+            "options": {
+              "fields": {
+                "ib_avg_entry": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "ib_fee": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "ib_market_value": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "ib_qty": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "ib_total_pnl": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_buy_qty": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_buy_vwap": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_fee": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_qty": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_sell_qty": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "perp_sell_vwap": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "stock_mark": {
+                  "aggregations": [
+                    "lastNotNull"
+                  ],
+                  "operation": "aggregate"
+                },
+                "symbol": {
+                  "aggregations": [],
+                  "operation": "groupby"
+                }
+              }
+            }
+          },
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": "^(.*) \\((lastNotNull|sum)\\)$",
+              "renamePattern": "$1"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "hedge_mismatch",
+              "binary": {
+                "left": "perp_qty",
+                "operator": "+",
+                "right": "ib_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "abs_perp_qty",
+              "mode": "unary",
+              "unary": {
+                "fieldName": "perp_qty",
+                "operator": "abs"
+              }
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "short_weight_numerator",
+              "binary": {
+                "left": "abs_perp_qty",
+                "operator": "-",
+                "right": "perp_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "long_weight_numerator",
+              "binary": {
+                "left": "abs_perp_qty",
+                "operator": "+",
+                "right": "perp_qty"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "weight_denominator",
+              "binary": {
+                "left": "abs_perp_qty",
+                "operator": "*",
+                "right": "2"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "short_weight",
+              "binary": {
+                "left": "short_weight_numerator",
+                "operator": "/",
+                "right": "weight_denominator"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "long_weight",
+              "binary": {
+                "left": "long_weight_numerator",
+                "operator": "/",
+                "right": "weight_denominator"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "short_entry_component",
+              "binary": {
+                "left": "short_weight",
+                "operator": "*",
+                "right": "perp_sell_vwap"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "long_entry_component",
+              "binary": {
+                "left": "long_weight",
+                "operator": "*",
+                "right": "perp_buy_vwap"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "current_perp_entry",
+              "binary": {
+                "left": "short_entry_component",
+                "operator": "+",
+                "right": "long_entry_component"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "perp_fee_pnl",
+              "binary": {
+                "left": "perp_fee",
+                "operator": "*",
+                "right": "-1"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "ib_fee_pnl",
+              "binary": {
+                "left": "ib_fee",
+                "operator": "*",
+                "right": "-1"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "Execution fee PnL",
+              "binary": {
+                "left": "perp_fee_pnl",
+                "operator": "+",
+                "right": "ib_fee_pnl"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "entry_price_diff",
+              "binary": {
+                "left": "ib_avg_entry",
+                "operator": "-",
+                "right": "current_perp_entry"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "locked_entry_before_fee",
+              "binary": {
+                "left": "perp_qty",
+                "operator": "*",
+                "right": "entry_price_diff"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "entry_notional",
+              "binary": {
+                "left": "abs_perp_qty",
+                "operator": "*",
+                "right": "ib_avg_entry"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "entry_edge_fraction",
+              "binary": {
+                "left": "locked_entry_before_fee",
+                "operator": "/",
+                "right": "entry_notional"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "entry_edge_bp",
+              "binary": {
+                "left": "entry_edge_fraction",
+                "operator": "*",
+                "right": "10000"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "symbol",
+                  "perp_qty",
+                  "current_perp_entry",
+                  "ib_qty",
+                  "ib_avg_entry",
+                  "hedge_mismatch",
+                  "entry_edge_bp",
+                  "stock_mark",
+                  "ib_total_pnl",
+                  "Execution fee PnL"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "Execution fee PnL": 9,
+                "current_perp_entry": 2,
+                "entry_edge_bp": 6,
+                "hedge_mismatch": 5,
+                "ib_avg_entry": 4,
+                "ib_qty": 3,
+                "ib_total_pnl": 8,
+                "perp_qty": 1,
+                "stock_mark": 7,
+                "symbol": 0
+              },
+              "renameByName": {
+                "current_perp_entry": "Perp avg entry",
+                "entry_edge_bp": "Entry edge (pre-fee)",
+                "hedge_mismatch": "Qty mismatch",
+                "ib_avg_entry": "IB avg entry",
+                "ib_qty": "IB qty",
+                "ib_total_pnl": "IB PnL",
+                "perp_qty": "Perp qty",
+                "stock_mark": "Stock mark",
+                "symbol": "Symbol"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "bflqgplxl5b0gd"
+        },
+        "description": "Sum over graph sessions of (last - first) net PnL per name within the selected range, so restarts cannot reset it. Funding + fees is net minus gross: funding received less exchange fees.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 2,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 8,
+          "x": 16,
+          "y": 48
+        },
+        "id": 21,
+        "options": {
+          "footer": {
+            "fields": [
+              "Perp PnL incl funding",
+              "Funding + fees"
+            ],
+            "reducer": [
+              "sum"
+            ],
+            "show": true
+          },
+          "showHeader": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT sum(net) AS perp_net, sum(gross) AS perp_gross FROM (SELECT last(\"pnl\") - first(\"pnl\") AS net, last(\"gross_pnl\") - first(\"gross_pnl\") AS gross FROM \"strategy_pnl_summary\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"base_currency\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ GROUP BY \"base_currency\", \"strategy\", \"mimid_start_time\") GROUP BY \"base_currency\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "table"
+          }
+        ],
+        "title": "Perp PnL by name (incl. funding)",
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "alias": "funding_fees",
+              "binary": {
+                "left": "perp_net",
+                "operator": "-",
+                "right": "perp_gross"
+              },
+              "mode": "binary"
+            }
+          },
+          {
+            "id": "filterFieldsByName",
+            "options": {
+              "include": {
+                "names": [
+                  "base_currency",
+                  "perp_net",
+                  "funding_fees"
+                ]
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "base_currency": 0,
+                "funding_fees": 2,
+                "perp_net": 1
+              },
+              "renameByName": {
+                "base_currency": "Symbol",
+                "funding_fees": "Funding + fees",
+                "perp_net": "Perp PnL incl funding"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 60
+        },
+        "id": 22,
+        "panels": [],
+        "title": "PnL and basis diagnostics",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "bdx4oxj0828lce"
+        },
+        "description": "StrategySignal diagnostic only. It includes funding and venue fees but resets with the graph. The headline and table instead sum strategy_pnl_summary by mimid_start_time, so no manual restart offsets are needed.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 2,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 0,
+          "y": 61
+        },
+        "id": 23,
+        "interval": "5m",
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_strategy",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bdx4oxj0828lce"
+            },
+            "query": "SELECT last(\"pnl\") FROM \"StrategySignal\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"strategy\" =~ /(${symbol:regex})USD/ GROUP BY time(5m), \"strategy\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Perp PnL by name — raw graph sessions",
+        "transformations": [
+          {
+            "id": "renameByRegex",
+            "options": {
+              "regex": ".*HLXYZ_([A-Z0-9]+)USD.*",
+              "renamePattern": "$1"
+            }
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "IB unrealized PnL from commission-adjusted average cost.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 2,
+            "unit": "currencyUSD"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 8,
+          "y": 61
+        },
+        "id": 24,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"unrealized_pnl\") FROM \"ib_position_pnl\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ GROUP BY time($__interval), \"symbol\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IB uPnL by name",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "bdx4oxj0828lce"
+        },
+        "description": "Sellable = perp bid / stock ask; buyable = perp ask / stock bid. Use RTH only.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 1,
+            "unit": "bps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 16,
+          "y": 61
+        },
+        "id": 25,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_strategy sellable",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bdx4oxj0828lce"
+            },
+            "query": "SELECT (mean(\"bid\") / mean(\"DebugSignal2\") - 1) * 10000 FROM \"StrategySignal\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"strategy\" =~ /(${symbol:regex})USD/ GROUP BY time(5m), \"strategy\" fill(none)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "$tag_strategy buyable",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bdx4oxj0828lce"
+            },
+            "query": "SELECT (mean(\"ask\") / mean(\"DebugSignal1\") - 1) * 10000 FROM \"StrategySignal\" WHERE $timeFilter AND \"strategy\" =~ /RwaBasisQuoter/ AND \"strategy\" =~ /(${symbol:regex})USD/ GROUP BY time(5m), \"strategy\" fill(none)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Executable basis",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 70
+        },
+        "id": 26,
+        "panels": [],
+        "title": "Trading and data health",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "efm5nvo6ne874a"
+        },
+        "description": "Which books are converting quotes into inventory.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "fillOpacity": 30,
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "never",
+              "spanNulls": true
+            },
+            "decimals": 0,
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 71
+        },
+        "id": 27,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_symbol",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT count(\"last_qty\") FROM \"rwa_fill\" WHERE $timeFilter AND \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/ AND \"symbol\" =~ /^(${symbol:regex})$/ AND \"leg_type\" = 'perp' GROUP BY time(1h), \"symbol\" fill(0)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Perp fills per hour",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "-- Mixed --"
+        },
+        "description": "All published sources must be live before trusting the table.",
+        "fieldConfig": {
+          "defaults": {
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 71
+        },
+        "id": 28,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "targets": [
+          {
+            "alias": "RWA poller",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"up\") FROM \"rwa_poller_heartbeat\" WHERE time \u003e now() - 2m AND \"env\" = 'pilot' AND \"account\" = 'U25650461'",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "IB poller",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "efm5nvo6ne874a"
+            },
+            "query": "SELECT last(\"poller_up\") FROM \"ib_poller_heartbeat\" WHERE time \u003e now() - 2m",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "Mimid points",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bdx4oxj0828lce"
+            },
+            "query": "SELECT count(\"pnl\") FROM \"StrategySignal\" WHERE time \u003e now() - 2m AND \"strategy\" =~ /RwaBasisQuoter/ AND \"strategy\" =~ /(${symbol:regex})USD/",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "PnL summary",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "bflqgplxl5b0gd"
+            },
+            "query": "SELECT count(\"pnl\") FROM \"strategy_pnl_summary\" WHERE time \u003e now() - 2m AND \"strategy\" =~ /RwaBasisQuoter/ AND \"strategy\" =~ /(${symbol:regex})USD/",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Pipeline health",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 71
+        },
+        "id": 29,
+        "options": {
+          "content": [
+            "**All-in** = reset-immune net perp PnL + IB leg PnL. Each leg is aggregated to a single row by its own InfluxDB, then the two rows are stacked and added by the panel. Per-name attribution is split across two tables for the same reason it cannot be one table: the perp source is keyed by placement and the IB source by symbol, so there is no join key to combine them row-wise.\n\n**Perp PnL incl funding** = per graph session, `last(pnl) - first(pnl)` from `strategy_pnl_summary`, summed over sessions. Sessions start at zero, so restarts cannot reset the total and no offset table is needed.\n\n**Funding + fees** = `perp net - perp gross`, which is Mimid's commission bucket. Funding payouts and exchange fees are both booked there and published data does not separate them, so this is funding received net of perp execution fees, not funding alone.\n\n**IB PnL** = the change in IB's own unrealised PnL across the selected range. Needing no market-value baseline is what makes it window-safe, but it does exclude PnL realised by closing a hedge inside the range; `realized_pnl` is constant across the book today, so nothing is currently missing.\n\n**Time range** drives PnL, fills and fees. Entry VWAP and average cost describe the position open right now, so they ignore the picker.\n\n**Book rows** answer 'are we making money and why': the cumulative graph starts at zero at the left edge of the range (so old testing PnL is excluded by picking a window), the slippage table shows edge kept vs given back per hedge, and the fill ledger shows every recorded print. Two data caveats: rwa_fill drops same-millisecond partial fills, and the Carry funding line is a proxy that spot-checked ~40x actual venue funding - trust it for direction only until the userFunding poller lands."
+          ],
+          "mode": "markdown"
+        },
+        "title": "Accounting",
+        "type": "text"
+      }
+    ],
+    "refresh": "5m",
+    "schemaVersion": 42,
+    "tags": [
+      "rwa",
+      "basis",
+      "pnl",
+      "carry"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": "AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "efm5nvo6ne874a"
+          },
+          "definition": "SHOW TAG VALUES FROM \"rwa_position\" WITH KEY = \"symbol\" WHERE \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Symbols",
+          "multi": true,
+          "name": "symbol",
+          "options": [],
+          "query": "SHOW TAG VALUES FROM \"rwa_position\" WITH KEY = \"symbol\" WHERE \"env\" = 'pilot' AND \"account\" = 'U25650461' AND \"symbol\" =~ /^(AAPL|AMAT|AMZN|BABA|EBAY|EWY|GOOGL|HOOD|INTC|META|MRVL|MSFT|MSTR|MU|NBIS|NVDA|SNDK|TSLA)$/",
+          "refresh": 2,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "30s",
+        "1m",
+        "5m",
+        "15m"
+      ]
+    },
+    "timezone": "America/New_York",
+    "title": "RWA Basis — PnL \u0026 Positions",
+    "weekStart": ""
+  }
+}
