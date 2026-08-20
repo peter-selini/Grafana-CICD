@@ -1,0 +1,33 @@
+name: auto-merge
+
+# Enable auto-merge on PRs that only touch dashboards/ (Grafana UI saves via
+# Git Sync's branch workflow). The merge happens once required checks pass —
+# make "validate" a required status check on main, or merges are immediate.
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Enable auto-merge for dashboard-only PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUM: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          mapfile -t files < <(gh api "repos/$REPO/pulls/$PR_NUM/files" --paginate --jq '.[].filename')
+          [ "${#files[@]}" -gt 0 ] || { echo "no files in PR — skipping"; exit 0; }
+          for f in "${files[@]}"; do
+            case "$f" in
+              dashboards/*) ;;
+              *) echo "touches '$f' (outside dashboards/) — needs human merge"; exit 0 ;;
+            esac
+          done
+          gh pr merge --auto --squash --delete-branch "$PR_URL"
+          echo "auto-merge enabled for #$PR_NUM"

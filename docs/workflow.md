@@ -18,7 +18,11 @@ directories are top-level Grafana folders, files at the path root are General/ro
 
 - **Edit in git**: branch → PR → `validate` workflow green → merge → Grafana picks it up within a minute.
 - **Edit in the Grafana UI**: managed dashboards use the *branch workflow* — the UI save creates
-  a branch/PR in this repo instead of writing to the database. Merge it like any other PR.
+  a branch/PR in this repo instead of writing to the database. PRs touching **only
+  `dashboards/`** are auto-merged (squash, branch deleted) once `validate` passes
+  (`.github/workflows/auto-merge.yml`; requires "Allow auto-merge" in repo settings and
+  `validate` as a required status check on `main`). PRs touching anything else need a
+  human merge.
 - One-time takeover of pre-existing dashboards: see [gitsync-migration.md](gitsync-migration.md).
 
 ## Pulling a dashboard into the repo (export)
