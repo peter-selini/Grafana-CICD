@@ -17,12 +17,14 @@ Dashboards are **deployed by Grafana Git Sync**, not pushed by CI: Grafana polls
 directories are top-level Grafana folders, files at the path root are General/root dashboards).
 
 - **Edit in git**: branch → PR → `validate` workflow green → merge → Grafana picks it up within a minute.
-- **Edit in the Grafana UI**: managed dashboards use the *branch workflow* — the UI save creates
-  a branch/PR in this repo instead of writing to the database. PRs touching **only
-  `dashboards/`** are auto-merged (squash, branch deleted) once `validate` passes
-  (`.github/workflows/auto-merge.yml`; requires "Allow auto-merge" in repo settings and
-  `validate` as a required status check on `main`). PRs touching anything else need a
-  human merge.
+- **Edit in the Grafana UI**: managed dashboards use the *branch workflow* — the UI save
+  pushes a branch to this repo instead of writing to the database. From there it's
+  hands-off: `auto-pr.yml` opens the PR for bot-pushed branches, and PRs touching **only
+  `dashboards/`** get auto-merge enabled (squash, branch deleted), landing once the
+  `validate` check passes. The "Open pull request in GitHub" link Grafana shows can be
+  ignored. Requires: "Allow auto-merge" in repo settings, `validate` as a required status
+  check on `main`. PRs touching anything outside `dashboards/` need a human merge
+  (human-opened dashboard-only PRs are auto-merged too, via `auto-merge.yml`).
 - One-time takeover of pre-existing dashboards: see [gitsync-migration.md](gitsync-migration.md).
 
 ## Pulling a dashboard into the repo (export)

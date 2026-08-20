@@ -1,0 +1,43 @@
+name: auto-pr
+
+# Grafana's Git Sync branch workflow pushes a branch but never opens the PR.
+# For branches pushed by the Grafana GitHub App (any [bot] actor), open the
+# PR automatically and enable auto-merge when it only touches dashboards/.
+# Human-pushed branches are left alone.
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  autopr:
+    if: endsWith(github.actor, '[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Open PR and enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -z "$pr" ]; then
+            title=$(gh api "repos/$REPO/commits/$SHA" --jq '.commit.message' | head -1)
+            gh pr create --repo "$REPO" --base main --head "$BRANCH" \
+              --title "${title:-Grafana dashboard update ($BRANCH)}" \
+              --body "Automated PR for Grafana Git Sync branch \`$BRANCH\`."
+            pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          fi
+          [ -n "$pr" ] || { echo "no PR — nothing to do"; exit 0; }
+          mapfile -t files < <(gh api "repos/$REPO/pulls/$pr/files" --paginate --jq '.[].filename')
+          for f in "${files[@]}"; do
+            case "$f" in
+              dashboards/*) ;;
+              *) echo "touches '$f' (outside dashboards/) — PR #$pr left for human review"; exit 0 ;;
+            esac
+          done
+          gh pr merge --auto --squash --delete-branch --repo "$REPO" "$pr"
+          echo "auto-merge enabled for PR #$pr"
