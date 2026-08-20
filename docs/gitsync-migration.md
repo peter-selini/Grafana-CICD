@@ -18,6 +18,14 @@
 >   reprocess an already-seen commit).
 > - Git Sync's own exports name files by **title slug**, not uid; `validate.sh` treats
 >   filename≠uid as advisory for resource files.
+> - **Export apiVersion-mismatch bug (13.1.0):** migrate export wrote 144 files labeled
+>   `apiVersion: v0alpha1` but with v2-shaped spec (`elements`); the next full pull parsed
+>   them as classic, found no `panels`, and **emptied those dashboards**. Repaired by
+>   replacing each affected file with a clean v2 API export (consistent apiVersion+spec) and
+>   re-pulling; verified with a recursive panel-count audit of all 332 dashboards against
+>   pre-migration backups (330 exact; 2 benign diffs: newer owner edits, and v2 correctly
+>   dropping persisted row-repeat clones). Moral: after any Grafana-authored export, check
+>   file `apiVersion` matches the spec shape before a full pull.
 
 One-time migration of every dashboard on `selini-grafana-v13.selini.tech:3000` to Git Sync
 management from this repo (branch `main`, path `dashboards/`, sync target `folderless`).
