@@ -1,0 +1,2868 @@
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "vesmc5d"
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "builtIn": true,
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "query": {
+            "datasource": {
+              "name": "grafana"
+            },
+            "group": "grafana",
+            "kind": "DataQuery",
+            "spec": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "version": "v0"
+          }
+        }
+      }
+    ],
+    "cursorSync": "Crosshair",
+    "description": "",
+    "editable": true,
+    "elements": {
+      "panel-16": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "__expr__"
+                      },
+                      "group": "__expr__",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "expression": "$B1 * $C1",
+                        "type": "math"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A1"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": true,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$tag_strategy Position",
+                        "dsType": "influxdb",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "strategy"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "StrategySignal",
+                        "orderByTime": "ASC",
+                        "policy": "default_signals_retention",
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "positionAsFloat"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "mean"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "strategy",
+                            "operator": "=~",
+                            "value": "/^$Strategy$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B1"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": true,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$tag_strategy Price",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "strategy::tag"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "null"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "StrategySignal",
+                        "orderByTime": "ASC",
+                        "policy": "default_signals_retention",
+                        "query": "SELECT last(\"bid\") FROM \"default\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND $timeFilter GROUP BY time($interval), \"strategy\" fill(none)",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "bid"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "mean"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "strategy",
+                            "operator": "=~",
+                            "value": "/^$Strategy$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "C1"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 16,
+          "links": [],
+          "title": "Position",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "axisWidth": 60,
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "stepAfter",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "currencyUSD"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "/A/"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisPlacement",
+                        "value": "right"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 400
+                },
+                "timezone": [
+                  "utc"
+                ],
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.0.2"
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$tag_strategy PnL",
+                        "dsType": "influxdb",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "strategy"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "StrategySignal",
+                        "orderByTime": "ASC",
+                        "policy": "default_signals_retention",
+                        "query": "SELECT mean(\"pnl\") FROM \"retain_30_days\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND $timeFilter GROUP BY time($interval), \"strategy\" fill(none)",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "pnl"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [],
+                              "type": "mean"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "strategy",
+                            "operator": "=~",
+                            "value": "/^$Strategy$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 2,
+          "links": [],
+          "title": "PnL",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "axisWidth": 60,
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "stepAfter",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "currencyUSD"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "/PnL/"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisPlacement",
+                        "value": "right"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 400
+                },
+                "timezone": [
+                  "utc"
+                ],
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.0.2"
+          }
+        }
+      },
+      "panel-34": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bflqgplxl5b0gd"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT SUM(segment_pnl) AS segment_pnl FROM (SELECT last(\"pnl\") - first(\"pnl\") AS segment_pnl FROM \"strategy_pnl_summary\" WHERE (\"strategy\"::tag =~ /^$Strategy$/) AND $timeFilter GROUP BY \"strategy\"::tag, \"mimid_start_time\"::tag) GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT first(\"positionAsFloat\") AS qty_open FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND $timeFilter GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "C"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT first(\"bid\") AS px_open FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND \"bid\" \u003e 0 AND $timeFilter GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "D"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"bid\") AS px_close FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND \"bid\" \u003e 0 AND $timeFilter GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "E"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "influxdb-16"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT difference(last(\"fundingUsd\")) AS funding_event FROM \"StrategyFees\" WHERE (\"strategy\"::tag =~ /^$Strategy$/ AND \"strategy\"::tag =~ /^(ARCUS|BINANCEDM|BITGETDM|BYBITDM|CBITL)/) AND time \u003e= ${__from}ms AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(none)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "FH1"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "influxdb-16"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT difference(last(\"fundingUsd\")) AS funding_event FROM \"StrategyFees\" WHERE (\"strategy\"::tag =~ /^$Strategy$/ AND \"strategy\"::tag =~ /^HLXYZ/) AND time \u003e= ${__from}ms AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(none)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "FH2"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "influxdb-16"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT difference(last(\"fundingUsd\")) AS funding_event FROM \"StrategyFees\" WHERE (\"strategy\"::tag =~ /^$Strategy$/ AND \"strategy\"::tag !~ /^(ARCUS|BINANCEDM|BITGETDM|BYBITDM|CBITL|HLXYZ)/) AND time \u003e= ${__from}ms AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(none)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "FH3"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^CBITL/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH1"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^BITGETDM/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH2"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^(ARCUS|BINANCEDM|BYBITDM)/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH3"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^HLXYZ/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH4"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^LIGHTER_[A-M]/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH5"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" =~ /^LIGHTER_[N-Z]/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH6"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT last(\"positionAsFloat\") AS qty_at_event FROM \"default_signals_retention\".\"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/ AND \"strategy\" !~ /^(ARCUS|BINANCEDM|BITGETDM|BYBITDM|CBITL|HLXYZ|LIGHTER)/) AND time \u003e= ${__from}ms - 30m AND time \u003c= ${__to}ms GROUP BY time(30m), \"strategy\" fill(previous)",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "PH7"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "merge",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {}
+                  }
+                },
+                {
+                  "group": "filterByValue",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "filters": [
+                        {
+                          "config": {
+                            "id": "between",
+                            "options": {
+                              "from": -1,
+                              "to": 1
+                            }
+                          },
+                          "fieldName": "qty_at_event"
+                        }
+                      ],
+                      "match": "any",
+                      "type": "exclude"
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "event_rate",
+                      "binary": {
+                        "left": "funding_event",
+                        "operator": "/",
+                        "right": "qty_at_event"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "groupBy",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "fields": {
+                        "event_rate": {
+                          "aggregations": [
+                            "sum"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "funding_event": {
+                          "aggregations": [
+                            "sum"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "px_close": {
+                          "aggregations": [
+                            "lastNotNull"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "px_open": {
+                          "aggregations": [
+                            "lastNotNull"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "qty_open": {
+                          "aggregations": [
+                            "lastNotNull"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "segment_pnl": {
+                          "aggregations": [
+                            "sum"
+                          ],
+                          "operation": "aggregate"
+                        },
+                        "strategy": {
+                          "aggregations": [],
+                          "operation": "groupby"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "segment_pnl \\(sum\\)",
+                      "renamePattern": "total_pnl"
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "event_rate \\(sum\\)",
+                      "renamePattern": "rate_sum"
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "funding_event \\(sum\\)",
+                      "renamePattern": "funding_paid_raw"
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "qty_open \\(lastNotNull\\)",
+                      "renamePattern": "qty_open"
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "px_open \\(lastNotNull\\)",
+                      "renamePattern": "px_open"
+                    }
+                  }
+                },
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "px_close \\(lastNotNull\\)",
+                      "renamePattern": "px_close"
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "px_delta",
+                      "binary": {
+                        "left": "px_close",
+                        "operator": "-",
+                        "right": "px_open"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "positional_pnl",
+                      "binary": {
+                        "left": "qty_open",
+                        "operator": "*",
+                        "right": "px_delta"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "trading_pnl",
+                      "binary": {
+                        "left": "total_pnl",
+                        "operator": "-",
+                        "right": "positional_pnl"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "funding_dayP_raw",
+                      "binary": {
+                        "left": "rate_sum",
+                        "operator": "*",
+                        "right": "qty_open"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "funding_total",
+                      "binary": {
+                        "left": "funding_paid_raw",
+                        "operator": "*",
+                        "right": "-1"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "funding_dayP",
+                      "binary": {
+                        "left": "funding_dayP_raw",
+                        "operator": "*",
+                        "right": "-1"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "funding_dayT",
+                      "binary": {
+                        "left": "funding_total",
+                        "operator": "-",
+                        "right": "funding_dayP"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "Time": true,
+                        "funding_dayP_raw": true,
+                        "funding_paid_raw": true,
+                        "px_delta": true,
+                        "rate_sum": true
+                      },
+                      "indexByName": {
+                        "funding_dayP": 8,
+                        "funding_dayT": 9,
+                        "funding_total": 7,
+                        "positional_pnl": 5,
+                        "px_close": 3,
+                        "px_open": 2,
+                        "qty_open": 1,
+                        "strategy": 0,
+                        "total_pnl": 4,
+                        "trading_pnl": 6
+                      },
+                      "renameByName": {}
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "One row per strategy. Trading PnL = Total PnL − Positional PnL, where Positional PnL = qty_at(start) × (mid_at(end) − mid_at(start)). Total PnL is computed per (strategy, mimid_start_time) session and summed, making it immune to mid-session resets. Mid uses bid as proxy. FUNDING (PnL-impact sign: negative = funding PAID, positive = received; consistent with the PnL columns). fundingUsd (StrategyFees) is a per-session cumulative COST counter (positive = paid on the exchange side), so it is negated here. FH1-3 = difference(last(fundingUsd)) per 30m bucket = per-event funding increments (3-way strategy-prefix split to stay under InfluxDB max-select-point). PH1-3 = last(positionAsFloat) per 30m bucket fill(previous) = position near that event. Merge pairs rows on Time+strategy; events with |qty_at_event| \u003c= 1 are excluded (near-zero positions produce garbage rates; their tiny funding lands in dayT). event_rate = funding_event / qty_at_event; rate_sum = sum per strategy. funding_total = -SUM(funding_event) over the SAME events (not edge slivers). funding_dayP = -(rate_sum × qty_open) = funding of the opening position at each event's rate; funding_dayT = funding_total − funding_dayP = funding from position changes. dayP + dayT == total exactly. CAVEAT: NOT reset-immune — fundingUsd resets to ~0 on strategy restart; a reset inside the window biases funding_total, and difference() drops the first bucket, so prefer short windows (\u003c= ~6h). Footer = totals across selected strategies.",
+          "id": 34,
+          "links": [],
+          "title": "Selini Strategies — Trading PnL Decomposition (Reset-Immune)",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "trading_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "positional_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "total_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "px_open"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "px_close"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "qty_open"
+                    },
+                    "properties": [
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "strategy"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 322
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "funding_total"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "funding_dayP"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "funding_dayT"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red",
+                              "value": 0
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byNames",
+                      "options": {
+                        "mode": "include",
+                        "names": [
+                          "total_pnl",
+                          "positional_pnl",
+                          "trading_pnl",
+                          "funding_total",
+                          "funding_dayP",
+                          "funding_dayT"
+                        ]
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.footer.reducers",
+                        "value": [
+                          "sum"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "funding_total"
+                  }
+                ]
+              }
+            },
+            "version": "13.0.2"
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-34"
+              },
+              "height": 12,
+              "width": 24,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-2"
+              },
+              "height": 8,
+              "width": 24,
+              "x": 0,
+              "y": 12
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-16"
+              },
+              "height": 7,
+              "width": 24,
+              "x": 0,
+              "y": 20
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "fiscalYearStartMonth": 0,
+      "from": "now-7d",
+      "hideTimepicker": false,
+      "timezone": "utc",
+      "to": "now"
+    },
+    "title": "DayT full view reset-immune- Funding 3 experiment",
+    "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allowCustomValue": false,
+          "current": {
+            "text": [
+              "ARCUS_AAPLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AAPLUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_AMDUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AMDUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AMDUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_AMZNUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AMZNUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_BABAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_BEUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_COINUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_CRCLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_CRWVUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_GOOGLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_INTCUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_METAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_METAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_METAUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_MSFTUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_MSFTUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_MUUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_MUUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_NVDAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_NVDAUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_ORCLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_PLTRUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_QQQUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_QQQUSD-PERP_RwaIdxQuoter_mid",
+              "ARCUS_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "ARCUS_SLVUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SNDKUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SPCXUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SPYUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_SPYUSD-PERP_RwaIdxQuoter_mid",
+              "ARCUS_TSLAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_TSLAUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_USARUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_USARUSD-PERP_RwaEqtQuoter_wide",
+              "ARCUS_USOUSD-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_AAPLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_AMZNUSDT-PERP_AMZN_PortfolioQuoter_tight",
+              "BINANCEDM_AMZNUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_BTCUSDT-PERP_RwaStatBetaHedger",
+              "BINANCEDM_BZUSDT-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "BINANCEDM_BZUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_BZUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_CLUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_CLUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_CLUSDT-PERP_WTI_PortfolioQuoter_tight",
+              "BINANCEDM_COINUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_CRCLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_GOOGLUSDT-PERP_GOOGL_PortfolioQuoter_tight",
+              "BINANCEDM_GOOGLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_HOODUSDT-PERP_HOOD_PortfolioQuoter_tight",
+              "BINANCEDM_HOODUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_INTCUSDT-PERP_INTC_PortfolioQuoter_tight",
+              "BINANCEDM_INTCUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_METAUSDT-PERP_META_PortfolioQuoter_tight",
+              "BINANCEDM_METAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_MSTRUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_MUUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_NVDAUSDT-PERP_NVDA_PortfolioQuoter_tight",
+              "BINANCEDM_NVDAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_QQQUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_SNDKUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_SPCXUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_SPCXUSDT-PERP_SPCX_PortfolioQuoter_tight",
+              "BINANCEDM_SPYUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_TSLAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_TSLAUSDT-PERP_TSLA_PortfolioQuoter_tight",
+              "BINANCEDM_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_XAGUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "BINANCEDM_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "BINANCEDM_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_XAUUSDT-PERP_RwaEmaQuoter_tick",
+              "BITGETDM_AAOIUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AAPLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_AMATUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AMDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AMZNUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_ARMUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_ASMLUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AVGOUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BABAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BZUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_CLUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_COHRUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_COINUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_COPUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_COSTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_CRCLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_EWHUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWJUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_FLYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_FUTUUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GMEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GOOGLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_HOODUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_INDAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_INTCUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_IONQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_JDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_KWEBUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_LITEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_LLYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_MCDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_METAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_MRVLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MSFTUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MSTRUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MUUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NBISUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NFLXUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NVDAUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_ORCLUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_OXYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_PLTRUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_QQQUSDT-PERP_RwaIdxQuoter_tight",
+              "BITGETDM_RDDTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_RKLBUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SNDKUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SOXSUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SPCXUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SPYUSDT-PERP_RwaIdxQuoter_tight",
+              "BITGETDM_SQQQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_STXSTOCKUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_TQQQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_TSLAUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_TSMUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_UNHUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_WMTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_XAGUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_XAUUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_XOMUSDT-PERP_RwaEqtQuoter_mid",
+              "BYBITDM_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "BYBITDM_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "BYBITDM_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "BYBITDM_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "CBITL_AAPLUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AAPLUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_AMDUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AMDUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_AMZNUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AMZNUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_ARMUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_ARMUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_BEUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_BEUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_CBRSUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_CBRSUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_GOLDUSDC-PERP_RwaCmdQuoter_tick",
+              "CBITL_GOLDUSDC-PERP_RwaCmdQuoter_tight",
+              "CBITL_GOOGLUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_GOOGLUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_INTCUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_INTCUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_METAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_METAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_MSFTUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_MSFTUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_MUUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_MUUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_NBISUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_NBISUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_NVDAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_NVDAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_QQQUSDC-PERP_RwaIdxQuoter_tick",
+              "CBITL_QQQUSDC-PERP_RwaIdxQuoter_tight",
+              "CBITL_SILVERUSDC-PERP_RwaCmdQuoter_tick",
+              "CBITL_SILVERUSDC-PERP_RwaCmdQuoter_tight",
+              "CBITL_SNDKUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_SNDKUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_SPYUSDC-PERP_RwaIdxQuoter_tick",
+              "CBITL_SPYUSDC-PERP_RwaIdxQuoter_tight",
+              "CBITL_TSLAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_TSLAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_TSMUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_TSMUSDC-PERP_RwaEqtQuoter_tight",
+              "Dev_RWA_IbkrHedge_COIN_devtest",
+              "Dev_RWA_IbkrHedge_SPCX_devtest",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AAPLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_AMATUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMATUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AMDUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMDUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_AMZNUSD-PERP_AMZN_PortfolioQuoter_tight",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMZNUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_ASMLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ASMLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_BABAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BABAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_BEUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BEUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BRENTOILUSD-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "HLXYZ_BRENTOILUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_BXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CBRSUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_CLUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CLUSD-PERP_RwaStatBetaHedger",
+              "HLXYZ_CLUSD-PERP_WTI_PortfolioQuoter_tight",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_COINUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_COINUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_COINUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_COINUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_COSTUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_COSTUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRCLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRWVUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_DKNGUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_DKNGUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_DRAMUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_EBAYUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EBAYUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWJUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWJUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_EWYUSD-PERP_EWY_PortfolioQuoter_tight",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_EWYUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWYUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_GMEUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GMEUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_GOLDUSD-PERP_GOLD_PortfolioQuoter_tight",
+              "HLXYZ_GOLDUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GOLDUSD-PERP_RwaStatBetaHedger",
+              "HLXYZ_GOOGLUSD-PERP_GOOGL_PortfolioQuoter_tight",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_GOOGLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_HIMSUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_HIMSUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_HOODUSD-PERP_HOOD_PortfolioQuoter_tight",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_HOODUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_HOODUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_IBMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_IBMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_INTCUSD-PERP_INTC_PortfolioQuoter_tight",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_INTCUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_INTCUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_METAUSD-PERP_META_PortfolioQuoter_tight",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_METAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_METAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_METAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_METAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MRVLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MSFTUSD-PERP_MSFT_PortfolioQuoter_tight",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MSFTUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MSTRUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MUUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MUUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MUUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MUUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_NBISUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NBISUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NFLXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NFLXUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_NFLXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NFLXUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_NOKUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NOKUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NOWUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NOWUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NVDAUSD-PERP_NVDA_PortfolioQuoter_tight",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NVDAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_ORCLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_PLTRUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_QCOMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_QCOMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_RIVNUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_RKLBUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SHAZUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SHAZUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SILVERUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SILVERUSD-PERP_SILVER_PortfolioQuoter_tight",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeQuoter_tick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SNDKUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SP500USD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SP500USD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SP500USD-PERP_RwaIdxQuoter_mid",
+              "HLXYZ_SP500USD-PERP_RwaStatBetaHedger",
+              "HLXYZ_SP500USD-PERP_SP500_PortfolioQuoter_tight",
+              "HLXYZ_SP500USD-PERP_USA500_PortfolioQuoter_tight",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SPCXUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_SPCXUSD-PERP_SPCX_PortfolioQuoter_tight",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_TSLAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_TSLAUSD-PERP_TSLA_PortfolioQuoter_tight",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_TSMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_TSMUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_USARUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_USARUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_USARUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_USARUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_USARUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_WDCUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_WDCUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaIdxQuoter_mid",
+              "HLXYZ_ZMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ZMUSD-PERP_RwaEqtQuoter_mid",
+              "LIGHTER_AAPLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_AAPLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_AMZNUSD-PERP_AMZN_PortfolioQuoter_tight",
+              "LIGHTER_AMZNUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_AMZNUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BOTUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BRENTOILUSD-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "LIGHTER_BRENTOILUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_BRENTOILUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_BRENTOILUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BTCUSD-PERP_RwaGenTest_VolumeGen",
+              "LIGHTER_COINUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_COINUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_COINUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_CRCLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_CRCLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_CRCLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_DELLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_DELLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_DELLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_EWYUSD-PERP_EWY_PortfolioQuoter_tight",
+              "LIGHTER_EWYUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_EWYUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_EWYUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_GOOGLUSD-PERP_GOOGL_PortfolioQuoter_tight",
+              "LIGHTER_GOOGLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_GOOGLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_HOODUSD-PERP_HOOD_PortfolioQuoter_tight",
+              "LIGHTER_HOODUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_HOODUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_HOODUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_IBMUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_IBMUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_IBMUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_INTCUSD-PERP_INTC_PortfolioQuoter_tight",
+              "LIGHTER_INTCUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_INTCUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_INTCUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_METAUSD-PERP_META_PortfolioQuoter_tight",
+              "LIGHTER_METAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_METAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_METAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_MSFTUSD-PERP_MSFT_PortfolioQuoter_tight",
+              "LIGHTER_MSFTUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_MSFTUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_MUUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_MUUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_MUUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_NVDAUSD-PERP_NVDA_PortfolioQuoter_tight",
+              "LIGHTER_NVDAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_NVDAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_ORCLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_PLTRUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_PLTRUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_PLTRUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_QQQUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_QQQUSD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_SAMSUNGUSDUSD-PERP_RwaFixedDepthQuoter_tight",
+              "LIGHTER_SKHYNIXUSDUSD-PERP_RwaFixedDepthQuoter_tight",
+              "LIGHTER_SNDKUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_SNDKUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_SNDKUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_SPCXUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_SPCXUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_SPCXUSD-PERP_SPCX_PortfolioQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_SPYUSD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_SPYUSD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_SP500_PortfolioQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_USA500_PortfolioQuoter_tight",
+              "LIGHTER_STRCUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_STRCUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_TSLAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_TSLAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_TSLAUSD-PERP_TSLA_PortfolioQuoter_tight",
+              "LIGHTER_US100USD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_US100USD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_US100USD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_US500USD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_US500USD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_US500USD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_US500USD-PERP_SP500_PortfolioQuoter_tight",
+              "LIGHTER_US500USD-PERP_USA500_PortfolioQuoter_tight",
+              "LIGHTER_WTIUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_WTIUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_WTIUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_WTIUSD-PERP_WTI_PortfolioQuoter_tight",
+              "LIGHTER_XAGUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_XAGUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_XAGUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_XAGUSD-PERP_SILVER_PortfolioQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_GOLD_PortfolioQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_XAUUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_RwaGenTest_LighterDmm",
+              "NADO_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AMDUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AVGOUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_DELLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_INTCUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_METAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MRVLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MUUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_PENGUSD-PERP_RwaEqtQuoter_mid",
+              "NADO_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "NADO_SNDKUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_SPCXUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_SPYUSD-PERP_RwaIdxQuoter_tight",
+              "NADO_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_XAGUSD-PERP_RwaCmdQuoter_mid",
+              "OKEX_CLUSDT-PERP_RwaCmdQuoter_mid",
+              "OKEX_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "OKEX_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "OKEX_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "OKEX_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaGenTest_PmpDmmR1",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_mid",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tick",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tick_stack",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tight",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_mid",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tick",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tick_stack",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tight",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_mid",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tick",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tick_stack",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tight",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_mid",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tick",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tick_stack",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tight",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaGenTest_RwaTestOL"
+            ],
+            "value": [
+              "ARCUS_AAPLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AAPLUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_AMDUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AMDUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AMDUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_AMZNUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_AMZNUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_BABAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_BEUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_COINUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_CRCLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_CRWVUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_GOOGLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_INTCUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_METAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_METAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_METAUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_MSFTUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_MSFTUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_MUUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_MUUSD-PERP_RwaGenTest_ArcusDmmA1",
+              "ARCUS_NVDAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_NVDAUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_ORCLUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_PLTRUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_QQQUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_QQQUSD-PERP_RwaIdxQuoter_mid",
+              "ARCUS_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "ARCUS_SLVUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SNDKUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SPCXUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_SPYUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_SPYUSD-PERP_RwaIdxQuoter_mid",
+              "ARCUS_TSLAUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "ARCUS_TSLAUSD-PERP_RwaGenTest_ArcusDmmA0",
+              "ARCUS_USARUSD-PERP_RwaEqtQuoter_mid",
+              "ARCUS_USARUSD-PERP_RwaEqtQuoter_wide",
+              "ARCUS_USOUSD-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_AAPLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_AMZNUSDT-PERP_AMZN_PortfolioQuoter_tight",
+              "BINANCEDM_AMZNUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_BTCUSDT-PERP_RwaStatBetaHedger",
+              "BINANCEDM_BZUSDT-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "BINANCEDM_BZUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_BZUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_CLUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_CLUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_CLUSDT-PERP_WTI_PortfolioQuoter_tight",
+              "BINANCEDM_COINUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_CRCLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_GOOGLUSDT-PERP_GOOGL_PortfolioQuoter_tight",
+              "BINANCEDM_GOOGLUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_HOODUSDT-PERP_HOOD_PortfolioQuoter_tight",
+              "BINANCEDM_HOODUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_INTCUSDT-PERP_INTC_PortfolioQuoter_tight",
+              "BINANCEDM_INTCUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_METAUSDT-PERP_META_PortfolioQuoter_tight",
+              "BINANCEDM_METAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_MSTRUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_MUUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_NVDAUSDT-PERP_NVDA_PortfolioQuoter_tight",
+              "BINANCEDM_NVDAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_QQQUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_SNDKUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_SPCXUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_SPCXUSDT-PERP_SPCX_PortfolioQuoter_tight",
+              "BINANCEDM_SPYUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_TSLAUSDT-PERP_RwaEqtQuoter_mid",
+              "BINANCEDM_TSLAUSDT-PERP_TSLA_PortfolioQuoter_tight",
+              "BINANCEDM_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_XAGUSDT-PERP_RwaEmaQuoter_tick",
+              "BINANCEDM_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "BINANCEDM_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "BINANCEDM_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "BINANCEDM_XAUUSDT-PERP_RwaEmaQuoter_tick",
+              "BITGETDM_AAOIUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AAPLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_AMATUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AMDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AMZNUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_ARMUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_ASMLUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_AVGOUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BABAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_BZUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_CLUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_COHRUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_COINUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_COPUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_COSTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_CRCLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_EWHUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWJUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_EWYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_FLYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_FUTUUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GMEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_GOOGLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_HOODUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_INDAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_INTCUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_IONQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_JDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_KWEBUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_LITEUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_LLYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_MCDUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_METAUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_MRVLUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MSFTUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MSTRUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_MUUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NBISUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NFLXUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_NVDAUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_ORCLUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_OXYUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_PLTRUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_QQQUSDT-PERP_RwaIdxQuoter_tight",
+              "BITGETDM_RDDTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_RKLBUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SNDKUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SOXSUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SPCXUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_SPYUSDT-PERP_RwaIdxQuoter_tight",
+              "BITGETDM_SQQQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_STXSTOCKUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_TQQQUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_TSLAUSDT-PERP_RwaEqtQuoter_tight",
+              "BITGETDM_TSMUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_UNHUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_WMTUSDT-PERP_RwaEqtQuoter_mid",
+              "BITGETDM_XAGUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_XAUUSDT-PERP_RwaCmdQuoter_tight",
+              "BITGETDM_XOMUSDT-PERP_RwaEqtQuoter_mid",
+              "BYBITDM_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "BYBITDM_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "BYBITDM_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "BYBITDM_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "CBITL_AAPLUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AAPLUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_AMDUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AMDUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_AMZNUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_AMZNUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_ARMUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_ARMUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_BEUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_BEUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_CBRSUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_CBRSUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_GOLDUSDC-PERP_RwaCmdQuoter_tick",
+              "CBITL_GOLDUSDC-PERP_RwaCmdQuoter_tight",
+              "CBITL_GOOGLUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_GOOGLUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_INTCUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_INTCUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_METAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_METAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_MSFTUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_MSFTUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_MUUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_MUUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_NBISUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_NBISUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_NVDAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_NVDAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_QQQUSDC-PERP_RwaIdxQuoter_tick",
+              "CBITL_QQQUSDC-PERP_RwaIdxQuoter_tight",
+              "CBITL_SILVERUSDC-PERP_RwaCmdQuoter_tick",
+              "CBITL_SILVERUSDC-PERP_RwaCmdQuoter_tight",
+              "CBITL_SNDKUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_SNDKUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_SPYUSDC-PERP_RwaIdxQuoter_tick",
+              "CBITL_SPYUSDC-PERP_RwaIdxQuoter_tight",
+              "CBITL_TSLAUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_TSLAUSDC-PERP_RwaEqtQuoter_tight",
+              "CBITL_TSMUSDC-PERP_RwaEqtQuoter_tick",
+              "CBITL_TSMUSDC-PERP_RwaEqtQuoter_tight",
+              "Dev_RWA_IbkrHedge_COIN_devtest",
+              "Dev_RWA_IbkrHedge_SPCX_devtest",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AAPLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AAPLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_AMATUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMATUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AMDUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AMDUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMDUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_AMZNUSD-PERP_AMZN_PortfolioQuoter_tight",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_AMZNUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_AMZNUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_ASMLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ASMLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_BABAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_BABAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BABAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_BEUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BEUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_BRENTOILUSD-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "HLXYZ_BRENTOILUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BRENTOILUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_BXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_BXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CBRSUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CBRSUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_CLUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CLUSD-PERP_RwaStatBetaHedger",
+              "HLXYZ_CLUSD-PERP_WTI_PortfolioQuoter_tight",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_COINUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_COINUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_COINUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_COINUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_COINUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_COSTUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_COSTUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CRCLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRCLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_CRWVUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_CRWVUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_DKNGUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_DKNGUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_DRAMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_DRAMUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_EBAYUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EBAYUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWJUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_EWJUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWJUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_EWYUSD-PERP_EWY_PortfolioQuoter_tight",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_EWYUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_EWYUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_EWYUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_GMEUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GMEUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_GOLDUSD-PERP_GOLD_PortfolioQuoter_tight",
+              "HLXYZ_GOLDUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_GOLDUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GOLDUSD-PERP_RwaStatBetaHedger",
+              "HLXYZ_GOOGLUSD-PERP_GOOGL_PortfolioQuoter_tight",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_GOOGLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_GOOGLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_HIMSUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_HIMSUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_HOODUSD-PERP_HOOD_PortfolioQuoter_tight",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_HOODUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_HOODUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_HOODUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_IBMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_IBMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_IBMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_INTCUSD-PERP_INTC_PortfolioQuoter_tight",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_INTCUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_INTCUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_INTCUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_METAUSD-PERP_META_PortfolioQuoter_tight",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_METAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_METAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_METAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_METAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_METAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MRVLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MRVLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MSFTUSD-PERP_MSFT_PortfolioQuoter_tight",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MSFTUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MSFTUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MSTRUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MSTRUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_MUUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_MUUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_MUUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_MUUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_MUUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_NBISUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NBISUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NFLXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NFLXUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_NFLXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NFLXUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_NOKUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NOKUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NOWUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NOWUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NVDAUSD-PERP_NVDA_PortfolioQuoter_tight",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_NVDAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_NVDAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_ORCLUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_ORCLUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_PLTRUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_PLTRUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_QCOMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_QCOMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_RIVNUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_RIVNUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_RKLBUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_RKLBUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SHAZUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SHAZUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SILVERUSD-PERP_RwaCmdQuoter_mid",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SILVERUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SILVERUSD-PERP_SILVER_PortfolioQuoter_tight",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeQuoter_tick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SKHXUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SKHYUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SNDKUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SNDKUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SP500USD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SP500USD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SP500USD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SP500USD-PERP_RwaIdxQuoter_mid",
+              "HLXYZ_SP500USD-PERP_RwaStatBetaHedger",
+              "HLXYZ_SP500USD-PERP_SP500_PortfolioQuoter_tight",
+              "HLXYZ_SP500USD-PERP_USA500_PortfolioQuoter_tight",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_SPCXUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_SPCXUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_SPCXUSD-PERP_SPCX_PortfolioQuoter_tight",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_TSLAUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_TSLAUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_TSLAUSD-PERP_TSLA_PortfolioQuoter_tight",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_TSMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_TSMUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_TSMUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_USARUSD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_USARUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_USARUSD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_USARUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_USARUSD-PERP_RwaStatBetaQuoter_fourfactor",
+              "HLXYZ_WDCUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_WDCUSD-PERP_RwaEqtQuoter_mid",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeQuoter_nativeTick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeTaker_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaNativeTaker_tight",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaEmaTaker_tick",
+              "HLXYZ_XYZ100USD-PERP_RwaIdxQuoter_mid",
+              "HLXYZ_ZMUSD-PERP_RwaEmaQuoter_tick",
+              "HLXYZ_ZMUSD-PERP_RwaEqtQuoter_mid",
+              "LIGHTER_AAPLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_AAPLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_AMZNUSD-PERP_AMZN_PortfolioQuoter_tight",
+              "LIGHTER_AMZNUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_AMZNUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BOTUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BRENTOILUSD-PERP_BRENTOIL_PortfolioQuoter_tight",
+              "LIGHTER_BRENTOILUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_BRENTOILUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_BRENTOILUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_BTCUSD-PERP_RwaGenTest_VolumeGen",
+              "LIGHTER_COINUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_COINUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_COINUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_CRCLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_CRCLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_CRCLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_DELLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_DELLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_DELLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_EWYUSD-PERP_EWY_PortfolioQuoter_tight",
+              "LIGHTER_EWYUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_EWYUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_EWYUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_GOOGLUSD-PERP_GOOGL_PortfolioQuoter_tight",
+              "LIGHTER_GOOGLUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_GOOGLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_HOODUSD-PERP_HOOD_PortfolioQuoter_tight",
+              "LIGHTER_HOODUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_HOODUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_HOODUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_IBMUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_IBMUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_IBMUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_INTCUSD-PERP_INTC_PortfolioQuoter_tight",
+              "LIGHTER_INTCUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_INTCUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_INTCUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_METAUSD-PERP_META_PortfolioQuoter_tight",
+              "LIGHTER_METAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_METAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_METAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_MSFTUSD-PERP_MSFT_PortfolioQuoter_tight",
+              "LIGHTER_MSFTUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_MSFTUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_MUUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_MUUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_MUUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_NVDAUSD-PERP_NVDA_PortfolioQuoter_tight",
+              "LIGHTER_NVDAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_NVDAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_ORCLUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_PLTRUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_PLTRUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_PLTRUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_QQQUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_QQQUSD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_SAMSUNGUSDUSD-PERP_RwaFixedDepthQuoter_tight",
+              "LIGHTER_SKHYNIXUSDUSD-PERP_RwaFixedDepthQuoter_tight",
+              "LIGHTER_SNDKUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_SNDKUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_SNDKUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_SPCXUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_SPCXUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_SPCXUSD-PERP_SPCX_PortfolioQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_SPYUSD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_SPYUSD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_SP500_PortfolioQuoter_tight",
+              "LIGHTER_SPYUSD-PERP_USA500_PortfolioQuoter_tight",
+              "LIGHTER_STRCUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_STRCUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_TSLAUSD-PERP_RwaEqtQuoter_mid_rfq",
+              "LIGHTER_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "LIGHTER_TSLAUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_TSLAUSD-PERP_TSLA_PortfolioQuoter_tight",
+              "LIGHTER_US100USD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_US100USD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_US100USD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_US500USD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_US500USD-PERP_RwaIdxQuoter_mid_rfq",
+              "LIGHTER_US500USD-PERP_RwaIdxQuoter_tight",
+              "LIGHTER_US500USD-PERP_SP500_PortfolioQuoter_tight",
+              "LIGHTER_US500USD-PERP_USA500_PortfolioQuoter_tight",
+              "LIGHTER_WTIUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_WTIUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_WTIUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_WTIUSD-PERP_WTI_PortfolioQuoter_tight",
+              "LIGHTER_XAGUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_XAGUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_XAGUSD-PERP_RwaGenTest_LighterDmm",
+              "LIGHTER_XAGUSD-PERP_SILVER_PortfolioQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_GOLD_PortfolioQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_RwaCmdQuoter_mid_rfq",
+              "LIGHTER_XAUUSD-PERP_RwaCmdQuoter_tight",
+              "LIGHTER_XAUUSD-PERP_RwaGenTest_LighterDmm",
+              "NADO_AAPLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AMDUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AMZNUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_AVGOUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_DELLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_GOOGLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_INTCUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_METAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MRVLUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MSFTUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_MUUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_NVDAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_PENGUSD-PERP_RwaEqtQuoter_mid",
+              "NADO_QQQUSD-PERP_RwaIdxQuoter_tight",
+              "NADO_SNDKUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_SPCXUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_SPYUSD-PERP_RwaIdxQuoter_tight",
+              "NADO_TSLAUSD-PERP_RwaEqtQuoter_tight",
+              "NADO_XAGUSD-PERP_RwaCmdQuoter_mid",
+              "OKEX_CLUSDT-PERP_RwaCmdQuoter_mid",
+              "OKEX_XAGUSDT-PERP_RwaCmdQuoter_mid",
+              "OKEX_XAGUSDT-PERP_SILVER_PortfolioQuoter_tight",
+              "OKEX_XAUUSDT-PERP_GOLD_PortfolioQuoter_tight",
+              "OKEX_XAUUSDT-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_GOLDUSDC-PERP_RwaGenTest_PmpDmmR1",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_mid",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tick",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tick_stack",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaEqtQuoter_tight",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_MUUSDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_mid",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tick",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tick_stack",
+              "POLYMARKETPERPS_NAS100USDC-PERP_RwaIdxQuoter_tight",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_SILVERUSDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaGenTest_RwaTestOL",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_mid",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tick",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tick_stack",
+              "POLYMARKETPERPS_SP500USDC-PERP_RwaIdxQuoter_tight",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_mid",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tick",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tick_stack",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaEqtQuoter_tight",
+              "POLYMARKETPERPS_SPCXUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_mid",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tick",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tick_stack",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaCmdQuoter_tight",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaGenTest_PmpDmmOpen",
+              "POLYMARKETPERPS_WTIUSDC-PERP_RwaGenTest_RwaTestOL"
+            ]
+          },
+          "definition": "SHOW TAG VALUES FROM \"StrategySignal\" WITH KEY = \"strategy\" WHERE time \u003e now() - 5m AND \"strategy\" =~ /([Rr][Ww][Aa]|[Ff][Ii][Xx][Ee][Dd][Dd][Ee][Pp][Tt][Hh]|PortfolioQuoter)/  AND \"strategy\" !~ /${ArbFilter}/",
+          "hide": "dontHide",
+          "includeAll": false,
+          "multi": true,
+          "name": "Strategy",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "efm5nvo6ne874a"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "query": "SHOW TAG VALUES FROM \"StrategySignal\" WITH KEY = \"strategy\" WHERE time \u003e now() - 5m AND \"strategy\" =~ /([Rr][Ww][Aa]|[Ff][Ii][Xx][Ee][Dd][Dd][Ee][Pp][Tt][Hh]|PortfolioQuoter)/  AND \"strategy\" !~ /${ArbFilter}/",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            },
+            "version": "v0"
+          },
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "regexApplyTo": "value",
+          "skipUrlSync": false,
+          "sort": "alphabeticalAsc"
+        }
+      },
+      {
+        "kind": "CustomVariable",
+        "spec": {
+          "allowCustomValue": false,
+          "current": {
+            "text": "Exclude ARB",
+            "value": "ARB"
+          },
+          "hide": "dontHide",
+          "includeAll": false,
+          "label": "ARB strategies",
+          "multi": false,
+          "name": "ArbFilter",
+          "options": [],
+          "query": "Include ARB : ^$, Exclude ARB : ARB",
+          "skipUrlSync": false,
+          "valuesFormat": "csv"
+        }
+      }
+    ]
+  }
+}

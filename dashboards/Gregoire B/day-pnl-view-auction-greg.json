@@ -1,0 +1,611 @@
+{
+  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "daypnlauctiongreg"
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "builtIn": true,
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "legacyOptions": {
+            "type": "dashboard"
+          },
+          "name": "Annotations \u0026 Alerts",
+          "query": {
+            "datasource": {
+              "name": "grafana"
+            },
+            "group": "datasource",
+            "kind": "DataQuery",
+            "spec": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "version": "v0"
+          }
+        }
+      }
+    ],
+    "cursorSync": "Crosshair",
+    "editable": true,
+    "elements": {
+      "panel-1": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bflqgplxl5b0gd"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT MEAN(\"daily_total\") AS \"avg_total_pnl\" FROM (  SELECT SUM(\"session_pnl\") AS \"daily_total\" FROM (    SELECT LAST(\"pnl\") - FIRST(\"pnl\") AS \"session_pnl\"    FROM \"strategy_pnl_summary\"    WHERE (\"strategy\"::tag =~ /^$Strategy$/) AND ((time \u003e= '2026-04-12T13:20:00Z' AND time \u003c '2026-04-12T13:40:00Z') OR (time \u003e= '2026-04-13T13:20:00Z' AND time \u003c '2026-04-13T13:40:00Z') OR (time \u003e= '2026-04-14T13:20:00Z' AND time \u003c '2026-04-14T13:40:00Z') OR (time \u003e= '2026-04-15T13:20:00Z' AND time \u003c '2026-04-15T13:40:00Z') OR (time \u003e= '2026-04-16T13:20:00Z' AND time \u003c '2026-04-16T13:40:00Z') OR (time \u003e= '2026-04-17T13:20:00Z' AND time \u003c '2026-04-17T13:40:00Z') OR (time \u003e= '2026-04-18T13:20:00Z' AND time \u003c '2026-04-18T13:40:00Z') OR (time \u003e= '2026-04-19T13:20:00Z' AND time \u003c '2026-04-19T13:40:00Z') OR (time \u003e= '2026-04-20T13:20:00Z' AND time \u003c '2026-04-20T13:40:00Z') OR (time \u003e= '2026-04-21T13:20:00Z' AND time \u003c '2026-04-21T13:40:00Z') OR (time \u003e= '2026-04-22T13:20:00Z' AND time \u003c '2026-04-22T13:40:00Z') OR (time \u003e= '2026-04-23T13:20:00Z' AND time \u003c '2026-04-23T13:40:00Z') OR (time \u003e= '2026-04-24T13:20:00Z' AND time \u003c '2026-04-24T13:40:00Z') OR (time \u003e= '2026-04-25T13:20:00Z' AND time \u003c '2026-04-25T13:40:00Z') OR (time \u003e= '2026-04-26T13:20:00Z' AND time \u003c '2026-04-26T13:40:00Z') OR (time \u003e= '2026-04-27T13:20:00Z' AND time \u003c '2026-04-27T13:40:00Z') OR (time \u003e= '2026-04-28T13:20:00Z' AND time \u003c '2026-04-28T13:40:00Z') OR (time \u003e= '2026-04-29T13:20:00Z' AND time \u003c '2026-04-29T13:40:00Z') OR (time \u003e= '2026-04-30T13:20:00Z' AND time \u003c '2026-04-30T13:40:00Z') OR (time \u003e= '2026-05-01T13:20:00Z' AND time \u003c '2026-05-01T13:40:00Z') OR (time \u003e= '2026-05-02T13:20:00Z' AND time \u003c '2026-05-02T13:40:00Z') OR (time \u003e= '2026-05-03T13:20:00Z' AND time \u003c '2026-05-03T13:40:00Z') OR (time \u003e= '2026-05-04T13:20:00Z' AND time \u003c '2026-05-04T13:40:00Z') OR (time \u003e= '2026-05-05T13:20:00Z' AND time \u003c '2026-05-05T13:40:00Z') OR (time \u003e= '2026-05-06T13:20:00Z' AND time \u003c '2026-05-06T13:40:00Z') OR (time \u003e= '2026-05-07T13:20:00Z' AND time \u003c '2026-05-07T13:40:00Z') OR (time \u003e= '2026-05-08T13:20:00Z' AND time \u003c '2026-05-08T13:40:00Z') OR (time \u003e= '2026-05-09T13:20:00Z' AND time \u003c '2026-05-09T13:40:00Z') OR (time \u003e= '2026-05-10T13:20:00Z' AND time \u003c '2026-05-10T13:40:00Z') OR (time \u003e= '2026-05-11T13:20:00Z' AND time \u003c '2026-05-11T13:40:00Z'))    GROUP BY \"strategy\"::tag, \"mimid_start_time\"::tag, time(1d) fill(none)  ) GROUP BY \"strategy\"::tag, time(1d) fill(none)) GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT MEAN(\"daily_qty\") AS \"avg_qty_open\" FROM (  SELECT FIRST(\"positionAsFloat\") AS \"daily_qty\"  FROM \"default_signals_retention\".\"StrategySignal\"  WHERE (\"strategy\" =~ /^$Strategy$/) AND ((time \u003e= '2026-04-12T13:20:00Z' AND time \u003c '2026-04-12T13:40:00Z') OR (time \u003e= '2026-04-13T13:20:00Z' AND time \u003c '2026-04-13T13:40:00Z') OR (time \u003e= '2026-04-14T13:20:00Z' AND time \u003c '2026-04-14T13:40:00Z') OR (time \u003e= '2026-04-15T13:20:00Z' AND time \u003c '2026-04-15T13:40:00Z') OR (time \u003e= '2026-04-16T13:20:00Z' AND time \u003c '2026-04-16T13:40:00Z') OR (time \u003e= '2026-04-17T13:20:00Z' AND time \u003c '2026-04-17T13:40:00Z') OR (time \u003e= '2026-04-18T13:20:00Z' AND time \u003c '2026-04-18T13:40:00Z') OR (time \u003e= '2026-04-19T13:20:00Z' AND time \u003c '2026-04-19T13:40:00Z') OR (time \u003e= '2026-04-20T13:20:00Z' AND time \u003c '2026-04-20T13:40:00Z') OR (time \u003e= '2026-04-21T13:20:00Z' AND time \u003c '2026-04-21T13:40:00Z') OR (time \u003e= '2026-04-22T13:20:00Z' AND time \u003c '2026-04-22T13:40:00Z') OR (time \u003e= '2026-04-23T13:20:00Z' AND time \u003c '2026-04-23T13:40:00Z') OR (time \u003e= '2026-04-24T13:20:00Z' AND time \u003c '2026-04-24T13:40:00Z') OR (time \u003e= '2026-04-25T13:20:00Z' AND time \u003c '2026-04-25T13:40:00Z') OR (time \u003e= '2026-04-26T13:20:00Z' AND time \u003c '2026-04-26T13:40:00Z') OR (time \u003e= '2026-04-27T13:20:00Z' AND time \u003c '2026-04-27T13:40:00Z') OR (time \u003e= '2026-04-28T13:20:00Z' AND time \u003c '2026-04-28T13:40:00Z') OR (time \u003e= '2026-04-29T13:20:00Z' AND time \u003c '2026-04-29T13:40:00Z') OR (time \u003e= '2026-04-30T13:20:00Z' AND time \u003c '2026-04-30T13:40:00Z') OR (time \u003e= '2026-05-01T13:20:00Z' AND time \u003c '2026-05-01T13:40:00Z') OR (time \u003e= '2026-05-02T13:20:00Z' AND time \u003c '2026-05-02T13:40:00Z') OR (time \u003e= '2026-05-03T13:20:00Z' AND time \u003c '2026-05-03T13:40:00Z') OR (time \u003e= '2026-05-04T13:20:00Z' AND time \u003c '2026-05-04T13:40:00Z') OR (time \u003e= '2026-05-05T13:20:00Z' AND time \u003c '2026-05-05T13:40:00Z') OR (time \u003e= '2026-05-06T13:20:00Z' AND time \u003c '2026-05-06T13:40:00Z') OR (time \u003e= '2026-05-07T13:20:00Z' AND time \u003c '2026-05-07T13:40:00Z') OR (time \u003e= '2026-05-08T13:20:00Z' AND time \u003c '2026-05-08T13:40:00Z') OR (time \u003e= '2026-05-09T13:20:00Z' AND time \u003c '2026-05-09T13:40:00Z') OR (time \u003e= '2026-05-10T13:20:00Z' AND time \u003c '2026-05-10T13:40:00Z') OR (time \u003e= '2026-05-11T13:20:00Z' AND time \u003c '2026-05-11T13:40:00Z'))  GROUP BY \"strategy\", time(1d) fill(none)) GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT MEAN(\"daily_px_open\") AS \"avg_px_open\" FROM (  SELECT FIRST(\"bid\") AS \"daily_px_open\"  FROM \"default_signals_retention\".\"StrategySignal\"  WHERE (\"strategy\" =~ /^$Strategy$/) AND \"bid\" \u003e 0 AND ((time \u003e= '2026-04-12T13:20:00Z' AND time \u003c '2026-04-12T13:40:00Z') OR (time \u003e= '2026-04-13T13:20:00Z' AND time \u003c '2026-04-13T13:40:00Z') OR (time \u003e= '2026-04-14T13:20:00Z' AND time \u003c '2026-04-14T13:40:00Z') OR (time \u003e= '2026-04-15T13:20:00Z' AND time \u003c '2026-04-15T13:40:00Z') OR (time \u003e= '2026-04-16T13:20:00Z' AND time \u003c '2026-04-16T13:40:00Z') OR (time \u003e= '2026-04-17T13:20:00Z' AND time \u003c '2026-04-17T13:40:00Z') OR (time \u003e= '2026-04-18T13:20:00Z' AND time \u003c '2026-04-18T13:40:00Z') OR (time \u003e= '2026-04-19T13:20:00Z' AND time \u003c '2026-04-19T13:40:00Z') OR (time \u003e= '2026-04-20T13:20:00Z' AND time \u003c '2026-04-20T13:40:00Z') OR (time \u003e= '2026-04-21T13:20:00Z' AND time \u003c '2026-04-21T13:40:00Z') OR (time \u003e= '2026-04-22T13:20:00Z' AND time \u003c '2026-04-22T13:40:00Z') OR (time \u003e= '2026-04-23T13:20:00Z' AND time \u003c '2026-04-23T13:40:00Z') OR (time \u003e= '2026-04-24T13:20:00Z' AND time \u003c '2026-04-24T13:40:00Z') OR (time \u003e= '2026-04-25T13:20:00Z' AND time \u003c '2026-04-25T13:40:00Z') OR (time \u003e= '2026-04-26T13:20:00Z' AND time \u003c '2026-04-26T13:40:00Z') OR (time \u003e= '2026-04-27T13:20:00Z' AND time \u003c '2026-04-27T13:40:00Z') OR (time \u003e= '2026-04-28T13:20:00Z' AND time \u003c '2026-04-28T13:40:00Z') OR (time \u003e= '2026-04-29T13:20:00Z' AND time \u003c '2026-04-29T13:40:00Z') OR (time \u003e= '2026-04-30T13:20:00Z' AND time \u003c '2026-04-30T13:40:00Z') OR (time \u003e= '2026-05-01T13:20:00Z' AND time \u003c '2026-05-01T13:40:00Z') OR (time \u003e= '2026-05-02T13:20:00Z' AND time \u003c '2026-05-02T13:40:00Z') OR (time \u003e= '2026-05-03T13:20:00Z' AND time \u003c '2026-05-03T13:40:00Z') OR (time \u003e= '2026-05-04T13:20:00Z' AND time \u003c '2026-05-04T13:40:00Z') OR (time \u003e= '2026-05-05T13:20:00Z' AND time \u003c '2026-05-05T13:40:00Z') OR (time \u003e= '2026-05-06T13:20:00Z' AND time \u003c '2026-05-06T13:40:00Z') OR (time \u003e= '2026-05-07T13:20:00Z' AND time \u003c '2026-05-07T13:40:00Z') OR (time \u003e= '2026-05-08T13:20:00Z' AND time \u003c '2026-05-08T13:40:00Z') OR (time \u003e= '2026-05-09T13:20:00Z' AND time \u003c '2026-05-09T13:40:00Z') OR (time \u003e= '2026-05-10T13:20:00Z' AND time \u003c '2026-05-10T13:40:00Z') OR (time \u003e= '2026-05-11T13:20:00Z' AND time \u003c '2026-05-11T13:40:00Z'))  GROUP BY \"strategy\", time(1d) fill(none)) GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "C"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bdx4oxj0828lce"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT MEAN(\"daily_px_close\") AS \"avg_px_close\" FROM (  SELECT LAST(\"bid\") AS \"daily_px_close\"  FROM \"default_signals_retention\".\"StrategySignal\"  WHERE (\"strategy\" =~ /^$Strategy$/) AND \"bid\" \u003e 0 AND ((time \u003e= '2026-04-12T13:20:00Z' AND time \u003c '2026-04-12T13:40:00Z') OR (time \u003e= '2026-04-13T13:20:00Z' AND time \u003c '2026-04-13T13:40:00Z') OR (time \u003e= '2026-04-14T13:20:00Z' AND time \u003c '2026-04-14T13:40:00Z') OR (time \u003e= '2026-04-15T13:20:00Z' AND time \u003c '2026-04-15T13:40:00Z') OR (time \u003e= '2026-04-16T13:20:00Z' AND time \u003c '2026-04-16T13:40:00Z') OR (time \u003e= '2026-04-17T13:20:00Z' AND time \u003c '2026-04-17T13:40:00Z') OR (time \u003e= '2026-04-18T13:20:00Z' AND time \u003c '2026-04-18T13:40:00Z') OR (time \u003e= '2026-04-19T13:20:00Z' AND time \u003c '2026-04-19T13:40:00Z') OR (time \u003e= '2026-04-20T13:20:00Z' AND time \u003c '2026-04-20T13:40:00Z') OR (time \u003e= '2026-04-21T13:20:00Z' AND time \u003c '2026-04-21T13:40:00Z') OR (time \u003e= '2026-04-22T13:20:00Z' AND time \u003c '2026-04-22T13:40:00Z') OR (time \u003e= '2026-04-23T13:20:00Z' AND time \u003c '2026-04-23T13:40:00Z') OR (time \u003e= '2026-04-24T13:20:00Z' AND time \u003c '2026-04-24T13:40:00Z') OR (time \u003e= '2026-04-25T13:20:00Z' AND time \u003c '2026-04-25T13:40:00Z') OR (time \u003e= '2026-04-26T13:20:00Z' AND time \u003c '2026-04-26T13:40:00Z') OR (time \u003e= '2026-04-27T13:20:00Z' AND time \u003c '2026-04-27T13:40:00Z') OR (time \u003e= '2026-04-28T13:20:00Z' AND time \u003c '2026-04-28T13:40:00Z') OR (time \u003e= '2026-04-29T13:20:00Z' AND time \u003c '2026-04-29T13:40:00Z') OR (time \u003e= '2026-04-30T13:20:00Z' AND time \u003c '2026-04-30T13:40:00Z') OR (time \u003e= '2026-05-01T13:20:00Z' AND time \u003c '2026-05-01T13:40:00Z') OR (time \u003e= '2026-05-02T13:20:00Z' AND time \u003c '2026-05-02T13:40:00Z') OR (time \u003e= '2026-05-03T13:20:00Z' AND time \u003c '2026-05-03T13:40:00Z') OR (time \u003e= '2026-05-04T13:20:00Z' AND time \u003c '2026-05-04T13:40:00Z') OR (time \u003e= '2026-05-05T13:20:00Z' AND time \u003c '2026-05-05T13:40:00Z') OR (time \u003e= '2026-05-06T13:20:00Z' AND time \u003c '2026-05-06T13:40:00Z') OR (time \u003e= '2026-05-07T13:20:00Z' AND time \u003c '2026-05-07T13:40:00Z') OR (time \u003e= '2026-05-08T13:20:00Z' AND time \u003c '2026-05-08T13:40:00Z') OR (time \u003e= '2026-05-09T13:20:00Z' AND time \u003c '2026-05-09T13:40:00Z') OR (time \u003e= '2026-05-10T13:20:00Z' AND time \u003c '2026-05-10T13:40:00Z') OR (time \u003e= '2026-05-11T13:20:00Z' AND time \u003c '2026-05-11T13:40:00Z'))  GROUP BY \"strategy\", time(1d) fill(none)) GROUP BY \"strategy\"",
+                        "rawQuery": true,
+                        "resultFormat": "table"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "D"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "joinByField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "byField": "strategy",
+                      "mode": "outer"
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "avg_px_delta",
+                      "binary": {
+                        "left": "avg_px_close",
+                        "operator": "-",
+                        "right": "avg_px_open"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "avg_positional_pnl",
+                      "binary": {
+                        "left": "avg_qty_open",
+                        "operator": "*",
+                        "right": "avg_px_delta"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "calculateField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "alias": "trading_pnl",
+                      "binary": {
+                        "left": "avg_total_pnl",
+                        "operator": "-",
+                        "right": "avg_positional_pnl"
+                      },
+                      "mode": "binary",
+                      "replaceFields": false
+                    }
+                  }
+                },
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {
+                        "avg_px_delta": true
+                      },
+                      "indexByName": {
+                        "avg_positional_pnl": 5,
+                        "avg_px_close": 3,
+                        "avg_px_open": 2,
+                        "avg_qty_open": 1,
+                        "avg_total_pnl": 4,
+                        "strategy": 0,
+                        "trading_pnl": 6
+                      },
+                      "renameByName": {}
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 1,
+          "links": [],
+          "title": "Avg Trading PnL per strategy — 13:20–13:40 UTC auction window (last 30d)",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "trading_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "red"
+                            },
+                            {
+                              "color": "green",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "avg_total_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "avg_positional_pnl"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "currencyUSD"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "avg_qty_open"
+                    },
+                    "properties": [
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "avg_px_open"
+                    },
+                    "properties": [
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "avg_px_close"
+                    },
+                    "properties": [
+                      {
+                        "id": "decimals",
+                        "value": 4
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": true
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": false,
+                    "displayName": "trading_pnl"
+                  }
+                ]
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      },
+      "panel-100": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 100,
+          "links": [],
+          "title": "Read me",
+          "vizConfig": {
+            "group": "text",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+              },
+              "options": {
+                "content": "### Day PnL view — auction window 13:20–13:40 UTC, avg over last 30 days\n\n**Window range baked into queries:** 2026-04-12 → 2026-05-11 (inclusive, UTC)\n\nFor each strategy, every panel:\n1. Filters to the daily 13:20–13:40 UTC window\n2. Computes per-day values (reset-immune: per session `last(pnl) − first(pnl)`, summed in the day)\n3. Means across the 30 days\n\n**Refresh:** these are hardcoded date windows. Re-run `regen_day_pnl.py` and re-import this dashboard whenever you want the window to roll forward.\n\n**Note on trading_pnl math:** trading_pnl here is computed as `avg(total_pnl) − avg(qty_open) × (avg(px_close) − avg(px_open))`, matching your original dashboard's transformation. This differs slightly from `mean(daily trading_pnl)` when qty/px co-vary across days. If you want strict per-day decomposition, ask for v2.",
+                "mode": "markdown"
+              }
+            },
+            "version": ""
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "bflqgplxl5b0gd"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "query": "SELECT SUM(\"session_pnl\") AS \"daily_pnl\" FROM (  SELECT LAST(\"pnl\") - FIRST(\"pnl\") AS \"session_pnl\"  FROM \"strategy_pnl_summary\"  WHERE (\"strategy\"::tag =~ /^$Strategy$/) AND ((time \u003e= '2026-04-12T13:20:00Z' AND time \u003c '2026-04-12T13:40:00Z') OR (time \u003e= '2026-04-13T13:20:00Z' AND time \u003c '2026-04-13T13:40:00Z') OR (time \u003e= '2026-04-14T13:20:00Z' AND time \u003c '2026-04-14T13:40:00Z') OR (time \u003e= '2026-04-15T13:20:00Z' AND time \u003c '2026-04-15T13:40:00Z') OR (time \u003e= '2026-04-16T13:20:00Z' AND time \u003c '2026-04-16T13:40:00Z') OR (time \u003e= '2026-04-17T13:20:00Z' AND time \u003c '2026-04-17T13:40:00Z') OR (time \u003e= '2026-04-18T13:20:00Z' AND time \u003c '2026-04-18T13:40:00Z') OR (time \u003e= '2026-04-19T13:20:00Z' AND time \u003c '2026-04-19T13:40:00Z') OR (time \u003e= '2026-04-20T13:20:00Z' AND time \u003c '2026-04-20T13:40:00Z') OR (time \u003e= '2026-04-21T13:20:00Z' AND time \u003c '2026-04-21T13:40:00Z') OR (time \u003e= '2026-04-22T13:20:00Z' AND time \u003c '2026-04-22T13:40:00Z') OR (time \u003e= '2026-04-23T13:20:00Z' AND time \u003c '2026-04-23T13:40:00Z') OR (time \u003e= '2026-04-24T13:20:00Z' AND time \u003c '2026-04-24T13:40:00Z') OR (time \u003e= '2026-04-25T13:20:00Z' AND time \u003c '2026-04-25T13:40:00Z') OR (time \u003e= '2026-04-26T13:20:00Z' AND time \u003c '2026-04-26T13:40:00Z') OR (time \u003e= '2026-04-27T13:20:00Z' AND time \u003c '2026-04-27T13:40:00Z') OR (time \u003e= '2026-04-28T13:20:00Z' AND time \u003c '2026-04-28T13:40:00Z') OR (time \u003e= '2026-04-29T13:20:00Z' AND time \u003c '2026-04-29T13:40:00Z') OR (time \u003e= '2026-04-30T13:20:00Z' AND time \u003c '2026-04-30T13:40:00Z') OR (time \u003e= '2026-05-01T13:20:00Z' AND time \u003c '2026-05-01T13:40:00Z') OR (time \u003e= '2026-05-02T13:20:00Z' AND time \u003c '2026-05-02T13:40:00Z') OR (time \u003e= '2026-05-03T13:20:00Z' AND time \u003c '2026-05-03T13:40:00Z') OR (time \u003e= '2026-05-04T13:20:00Z' AND time \u003c '2026-05-04T13:40:00Z') OR (time \u003e= '2026-05-05T13:20:00Z' AND time \u003c '2026-05-05T13:40:00Z') OR (time \u003e= '2026-05-06T13:20:00Z' AND time \u003c '2026-05-06T13:40:00Z') OR (time \u003e= '2026-05-07T13:20:00Z' AND time \u003c '2026-05-07T13:40:00Z') OR (time \u003e= '2026-05-08T13:20:00Z' AND time \u003c '2026-05-08T13:40:00Z') OR (time \u003e= '2026-05-09T13:20:00Z' AND time \u003c '2026-05-09T13:40:00Z') OR (time \u003e= '2026-05-10T13:20:00Z' AND time \u003c '2026-05-10T13:40:00Z') OR (time \u003e= '2026-05-11T13:20:00Z' AND time \u003c '2026-05-11T13:40:00Z'))  GROUP BY \"strategy\"::tag, \"mimid_start_time\"::tag, time(1d) fill(none)) GROUP BY \"strategy\"::tag, time(1d) fill(none)",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 2,
+          "links": [],
+          "title": "Daily window PnL per strategy (each bar = that day's 13:20–13:40 UTC window)",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "drawStyle": "bars",
+                    "fillOpacity": 60,
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "showPoints": "auto",
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    }
+                  },
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      }
+                    ]
+                  },
+                  "unit": "currencyUSD"
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "mean",
+                    "lastNotNull"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              }
+            },
+            "version": ""
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-100"
+              },
+              "height": 6,
+              "width": 24,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-1"
+              },
+              "height": 14,
+              "width": 24,
+              "x": 0,
+              "y": 6
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-2"
+              },
+              "height": 12,
+              "width": 24,
+              "x": 0,
+              "y": 20
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [
+      "pnl",
+      "auction",
+      "greg"
+    ],
+    "timeSettings": {
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "fiscalYearStartMonth": 0,
+      "from": "2026-04-12T13:20:00.000Z",
+      "hideTimepicker": false,
+      "timezone": "utc",
+      "to": "2026-05-11T13:40:00.000Z"
+    },
+    "title": "day pnl view auction greg",
+    "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "definition": "SHOW TAG VALUES WITH KEY = \"strategy\" WHERE \"strategy\" =~ /(?i)rwa/",
+          "hide": "dontHide",
+          "includeAll": true,
+          "label": "Strategy",
+          "multi": true,
+          "name": "Strategy",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "bdx4oxj0828lce"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"strategy\" WHERE \"strategy\" =~ /(?i)rwa/"
+            },
+            "version": "v0"
+          },
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "alphabeticalAsc"
+        }
+      }
+    ]
+  }
+}

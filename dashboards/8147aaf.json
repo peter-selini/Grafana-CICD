@@ -1,0 +1,1299 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "srxgrmz"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "liveNow": true,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 115,
+        "panels": [],
+        "title": "Graphs",
+        "type": "row"
+      },
+      {
+        "gridPos": {
+          "h": 11,
+          "w": 20,
+          "x": 0,
+          "y": 1
+        },
+        "id": 100,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "### 📖 IRQ Observability \u0026 Category Reference Primer\n\n| Category | Devices \u0026 Subsystems Included | Purpose \u0026 Notes |\n| :--- | :--- | :--- |\n| **Network** | `eth*`, `ena*`, `vfio*` | High-throughput NIC Rx/Tx queue interrupts. Primary source of network traffic latency. |\n| **Storage** | `nvme*`, `sd*`, `ahci*` | NVMe controller and disk I/O queues. |\n| **Accelerator** | `qat*` (Intel QAT), `idxd*` (Intel DSA), `fpga*` | Hardware offload engines for crypto, compression, and direct memory streaming. |\n| **System** | `timer`, `rtc`, `acpi`, `IOMMU`, `dmar`, `pciehp`, `PME`, `IO-APIC`, `ttyS*`, `smbus` | Platform clocks, VT-d DMA remapping, power management, and PCIe bus maintenance. |\n| **Other** | Unmapped hardware interrupts | Uncategorized kernel interrupts. |\n\n---\n\n* **Reporting Modes (`$report_type`)**: \n  * `active_1s`: Real-time 1-second active telemetry (`rate \u003e 0`) for DevOps microburst detection.\n  * `full_1m`: 1-minute complete compliance snapshot (includes idle `0`-rate IRQs) for trading team isolation verification.\n* **Metric Headers**: `rate` represents **IRQs/second**; `cumulative_count` represents total accumulated interrupts **since server boot**.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [],
+        "title": "Dashboard Primer \u0026 Subsystem Reference Guide",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "ffggnomkpgge8f"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "#ad46ff",
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 4,
+          "x": 20,
+          "y": 1
+        },
+        "id": 101,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE timestamp \u003e dateadd('m', -2, now())\n  AND report_type = '$report_type';",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          },
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "hide": true,
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp AS time,\n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE $__timeFilter(timestamp)\n  AND report_type = '$report_type'\nSAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "B",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "Reporting Hosts",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "description": "Macro system load. Tells you WHEN macro spikes happen across the server",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 12
+        },
+        "id": 1,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "wrap",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": true,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "format": "time_series",
+            "rawSql": "SELECT timestamp AS time, hostname, sum(rate) AS \"IRQ Rate/s\" FROM system_irq_telemetry WHERE $__timeFilter(timestamp) AND hostname IN ($hostname) AND report_type = '$report_type' SAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "A"
+          }
+        ],
+        "title": "Fleet Total IRQ Rate (IRQs/sec)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "description": "Subsystem isolation. Proves WHAT TYPE of traffic caused the spike",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 22
+        },
+        "id": 2,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": true,
+            "overflow": "wrap",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Max",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": true,
+            "mode": "single",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp AS time,\n  concat(hostname, ' | ', category) AS metric,\n  sum(rate) AS \"Rate/s\"\nFROM (\n  SELECT \n    timestamp,\n    hostname,\n    rate,\n    CASE \n      WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network'\n      WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage'\n      WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator'\n      WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System'\n      ELSE 'Other'\n    END AS category\n  FROM system_irq_telemetry\n  WHERE $__timeFilter(timestamp)\n    AND hostname IN ($hostname)\n    AND report_type = '$report_type'\n)\nWHERE ('$irq_type' = 'All' OR category = '$irq_type')\nSAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "IRQ Rate by Category (Network / Storage / System / Accelerator)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "description": "Time-series queue breakdown. Shows how individual device channels fluctuate over time.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic",
+              "seriesBy": "last"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisGridShow": false,
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 27,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "showValues": false,
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 40
+                },
+                {
+                  "color": "red",
+                  "value": 60
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 32
+        },
+        "id": 114,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "min",
+              "max"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "wrap",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": true,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "editorMode": "code",
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp AS time,\n  metric,\n  sum(rate) AS \"Rate/s\"\nFROM (\n  SELECT \n    timestamp,\n    hostname,\n    rate,\n    concat('IRQ ', cast(irq_id as string), ' (', device_name, ')') AS metric,\n    CASE \n      WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network'\n      WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage'\n      WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator'\n      WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System'\n      ELSE 'Other'\n    END AS category\n  FROM system_irq_telemetry\n  WHERE $__timeFilter(timestamp)\n    AND hostname IN ($hostname)\n    AND report_type = '$report_type'\n)\nWHERE ('$irq_type' = 'All' OR category = '$irq_type')\nSAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "Per-Device IRQ Microburst Detail (IRQs/sec)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "description": "Cumulative load ranking \u0026 mapping.\nThis bar gauge aggregates total volume to highlight skew and imbalance.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-BlYlRd"
+            },
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 35,
+          "w": 24,
+          "x": 0,
+          "y": 44
+        },
+        "id": 4,
+        "options": {
+          "displayMode": "lcd",
+          "legend": {
+            "calcs": [],
+            "displayMode": "table",
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": false
+          },
+          "maxVizHeight": 300,
+          "minVizHeight": 58,
+          "minVizWidth": 8,
+          "namePlacement": "top",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": true
+          },
+          "showUnfilled": true,
+          "sizing": "manual",
+          "valueMode": "color"
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  concat(hostname, ' | IRQ ', cast(irq_id as string), ' | ', device_name) AS metric,\n  sum(rate) AS \"Total Interrupts\"\nFROM system_irq_telemetry\nWHERE $__timeFilter(timestamp)\n  AND hostname IN ($hostname)\n  AND report_type = 'active_1s'\n  AND (\n    '$irq_type' = 'All' OR \n    CASE \n      WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network'\n      WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage'\n      WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator'\n      WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System'\n      ELSE 'Other'\n    END = '$irq_type'\n  )\nGROUP BY hostname, irq_id, device_name\nORDER BY \"Total Interrupts\" DESC\nLIMIT 25;",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "Top Active Devices (IRQ ID -\u003e Device Name Mapping)",
+        "transparent": true,
+        "type": "bargauge"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 79
+        },
+        "id": 116,
+        "panels": [],
+        "title": "Table rate/sec \u003e 0",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "center",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "filterable": true,
+              "footer": {
+                "reducers": []
+              },
+              "inspect": false,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "hostname",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 156
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "timestamp",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 221
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "irq_id",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 105
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "category",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 191
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "device_name",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 567
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 33,
+          "w": 24,
+          "x": 0,
+          "y": 80
+        },
+        "id": 106,
+        "options": {
+          "cellHeight": "sm",
+          "enablePagination": false,
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "cumulative_count (since boot)"
+            }
+          ]
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp,\n  hostname,\n  irq_id,\n  CASE \n    WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network'\n    WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage'\n    WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator'\n    WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System'\n    ELSE 'Other'\n  END AS category,\n  device_name,\n  configured_affinity,\n  active_cpus,\n  rate AS \"rate (/sec)\",\n  cumulative_count AS \"cumulative_count (since boot)\"\nFROM system_irq_telemetry\nWHERE $__timeFilter(timestamp)\n  AND hostname IN ($hostname)\n  AND report_type = '$report_type'\n  AND rate \u003e 0\n  AND (\n    '$irq_type' = 'All' OR \n    CASE \n      WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network'\n      WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage'\n      WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator'\n      WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System'\n      ELSE 'Other'\n    END = '$irq_type'\n  )\nLATEST ON timestamp PARTITION BY hostname, irq_id\nORDER BY \"rate (/sec)\" DESC;",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "1-Minute IRQ Affinity  rate/sec \u003e 0",
+        "type": "table"
+      },
+      {
+        "gridPos": {
+          "h": 11,
+          "w": 20,
+          "x": 0,
+          "y": 113
+        },
+        "id": 108,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "### 📖 IRQ Observability \u0026 Category Reference Primer\n\n| Category | Devices \u0026 Subsystems Included | Purpose \u0026 Notes |\n| :--- | :--- | :--- |\n| **Network** | `eth*`, `ena*`, `vfio*` | High-throughput NIC Rx/Tx queue interrupts. Primary source of network traffic latency. |\n| **Storage** | `nvme*`, `sd*`, `ahci*` | NVMe controller and disk I/O queues. |\n| **Accelerator** | `qat*` (Intel QAT), `idxd*` (Intel DSA), `fpga*` | Hardware offload engines for crypto, compression, and direct memory streaming. |\n| **System** | `timer`, `rtc`, `acpi`, `IOMMU`, `dmar`, `pciehp`, `PME`, `IO-APIC`, `ttyS*`, `smbus` | Platform clocks, VT-d DMA remapping, power management, and PCIe bus maintenance. |\n| **Other** | Unmapped hardware interrupts | Uncategorized kernel interrupts. |\n\n---\n\n* **Reporting Modes (`$report_type`)**: \n  * `active_1s`: Real-time 1-second active telemetry (`rate \u003e 0`) for DevOps microburst detection.\n  * `full_1m`: 1-minute complete compliance snapshot (includes idle `0`-rate IRQs) for trading team isolation verification.\n* **Metric Headers**: `rate` represents **IRQs/second**; `cumulative_count` represents total accumulated interrupts **since server boot**.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [],
+        "title": "Dashboard Primer \u0026 Subsystem Reference Guide",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "ffggnomkpgge8f"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "#ad46ff",
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 4,
+          "x": 20,
+          "y": 113
+        },
+        "id": 109,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE timestamp \u003e dateadd('m', -2, now())\n  AND report_type = '$report_type';",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          },
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "hide": true,
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp AS time,\n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE $__timeFilter(timestamp)\n  AND report_type = '$report_type'\nSAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "B",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "Reporting Hosts",
+        "type": "stat"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 124
+        },
+        "id": 117,
+        "panels": [],
+        "title": "Complete Table",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "postgres",
+          "uid": "crypto-questdb-06_postgres"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "center",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "filterable": true,
+              "footer": {
+                "reducers": []
+              },
+              "inspect": false,
+              "wrapHeaderText": true,
+              "wrapText": true
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "hostname",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 156
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "timestamp",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 221
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "irq_id",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 105
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "category",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 191
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "device_name",
+                "scope": "series"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 567
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 33,
+          "w": 24,
+          "x": 0,
+          "y": 125
+        },
+        "id": 111,
+        "options": {
+          "cellHeight": "sm",
+          "enablePagination": false,
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "cumulative_count (since boot)"
+            }
+          ]
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "postgres",
+              "uid": "crypto-questdb-06_postgres"
+            },
+            "format": "table",
+            "rawSql": "SELECT timestamp, hostname, irq_id, CASE WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network' WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage' WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator' WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System' ELSE 'Other' END AS category, device_name, configured_affinity, active_cpus, rate AS \"rate (/sec)\", cumulative_count AS \"cumulative_count (since boot)\" FROM system_irq_telemetry WHERE $__timeFilter(timestamp) AND hostname IN ($hostname) AND report_type = '$report_type' AND ('$irq_type' = 'All' OR CASE WHEN device_name LIKE '%eth%' OR device_name LIKE '%ena%' OR device_name LIKE '%vfio%' THEN 'Network' WHEN device_name LIKE '%nvme%' OR device_name LIKE '%sd%' OR device_name LIKE '%ahci%' THEN 'Storage' WHEN device_name LIKE '%qat%' OR device_name LIKE '%idxd%' OR device_name LIKE '%fpga%' OR device_name LIKE '%accel%' THEN 'Accelerator' WHEN device_name LIKE '%timer%' OR device_name LIKE '%rtc%' OR device_name LIKE '%acpi%' OR device_name LIKE '%IOMMU%' OR device_name LIKE '%dmar%' OR device_name LIKE '%pciehp%' OR device_name LIKE '%PME%' OR device_name LIKE '%IO-APIC%' OR device_name LIKE '%tty%' OR device_name LIKE '%smbus%' THEN 'System' ELSE 'Other' END = '$irq_type') ORDER BY timestamp DESC, irq_id ASC LIMIT 200;",
+            "refId": "A"
+          }
+        ],
+        "title": "1-Minute IRQ Affinity \u0026 Core Compliance Audit Table",
+        "type": "table"
+      },
+      {
+        "gridPos": {
+          "h": 11,
+          "w": 20,
+          "x": 0,
+          "y": 158
+        },
+        "id": 112,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "### 📖 IRQ Observability \u0026 Category Reference Primer\n\n| Category | Devices \u0026 Subsystems Included | Purpose \u0026 Notes |\n| :--- | :--- | :--- |\n| **Network** | `eth*`, `ena*`, `vfio*` | High-throughput NIC Rx/Tx queue interrupts. Primary source of network traffic latency. |\n| **Storage** | `nvme*`, `sd*`, `ahci*` | NVMe controller and disk I/O queues. |\n| **Accelerator** | `qat*` (Intel QAT), `idxd*` (Intel DSA), `fpga*` | Hardware offload engines for crypto, compression, and direct memory streaming. |\n| **System** | `timer`, `rtc`, `acpi`, `IOMMU`, `dmar`, `pciehp`, `PME`, `IO-APIC`, `ttyS*`, `smbus` | Platform clocks, VT-d DMA remapping, power management, and PCIe bus maintenance. |\n| **Other** | Unmapped hardware interrupts | Uncategorized kernel interrupts. |\n\n---\n\n* **Reporting Modes (`$report_type`)**: \n  * `active_1s`: Real-time 1-second active telemetry (`rate \u003e 0`) for DevOps microburst detection.\n  * `full_1m`: 1-minute complete compliance snapshot (includes idle `0`-rate IRQs) for trading team isolation verification.\n* **Metric Headers**: `rate` represents **IRQs/second**; `cumulative_count` represents total accumulated interrupts **since server boot**.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [],
+        "title": "Dashboard Primer \u0026 Subsystem Reference Guide",
+        "type": "text"
+      },
+      {
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "ffggnomkpgge8f"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "fixedColor": "#ad46ff",
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 11,
+          "w": 4,
+          "x": 20,
+          "y": 158
+        },
+        "id": 113,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT \n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE timestamp \u003e dateadd('m', -2, now())\n  AND report_type = '$report_type';",
+            "refId": "A",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          },
+          {
+            "dataset": "main",
+            "datasource": {
+              "type": "grafana-postgresql-datasource",
+              "uid": "ffggnomkpgge8f"
+            },
+            "editorMode": "code",
+            "format": "table",
+            "hide": true,
+            "rawQuery": true,
+            "rawSql": "SELECT \n  timestamp AS time,\n  count(DISTINCT hostname) AS \"Reporting Hosts\"\nFROM system_irq_telemetry\nWHERE $__timeFilter(timestamp)\n  AND report_type = '$report_type'\nSAMPLE BY $__interval ALIGN TO CALENDAR;",
+            "refId": "B",
+            "sql": {
+              "columns": [
+                {
+                  "parameters": [],
+                  "type": "function"
+                }
+              ],
+              "groupBy": [
+                {
+                  "property": {
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "limit": 50
+            }
+          }
+        ],
+        "title": "Reporting Hosts",
+        "type": "stat"
+      }
+    ],
+    "preload": false,
+    "refresh": "1m",
+    "schemaVersion": 42,
+    "tags": [
+      "irq",
+      "low-latency",
+      "questdb",
+      "sln"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "TA-TKY-A-198"
+            ],
+            "value": [
+              "TA-TKY-A-198"
+            ]
+          },
+          "datasource": {
+            "type": "postgres",
+            "uid": "crypto-questdb-06_postgres"
+          },
+          "hide": 0,
+          "includeAll": true,
+          "multi": true,
+          "name": "hostname",
+          "options": [],
+          "query": "SELECT DISTINCT hostname FROM system_irq_telemetry ORDER BY 1;",
+          "refresh": 0,
+          "regex": "",
+          "regexApplyTo": "value",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "allowCustomValue": true,
+          "current": {
+            "text": "active_1s",
+            "value": "active_1s"
+          },
+          "datasource": {
+            "type": "postgres",
+            "uid": "crypto-questdb-06_postgres"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "report_type",
+          "options": [],
+          "query": "SELECT DISTINCT report_type FROM system_irq_telemetry ORDER BY 1;",
+          "refresh": 0,
+          "regex": "",
+          "regexApplyTo": "value",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "allowCustomValue": true,
+          "current": {
+            "text": "All",
+            "value": "All"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "irq_type",
+          "options": [],
+          "query": "All, Network, Storage, System, Accelerator, Other",
+          "skipUrlSync": false,
+          "type": "custom",
+          "valuesFormat": "csv"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ]
+    },
+    "timezone": "browser",
+    "title": "(old) To be removed on 27th Aug - IRQ Telemetry \u0026 Isolation Observability -v3"
+  }
+}

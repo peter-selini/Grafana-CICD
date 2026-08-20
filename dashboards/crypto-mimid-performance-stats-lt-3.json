@@ -1,0 +1,1229 @@
+{
+  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "a8dded2c-4832-4f86-bcdf-e7bd3e3acacc"
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "builtIn": true,
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "legacyOptions": {
+            "type": "dashboard"
+          },
+          "name": "Annotations \u0026 Alerts",
+          "query": {
+            "datasource": {
+              "name": "grafana"
+            },
+            "group": "datasource",
+            "kind": "DataQuery",
+            "spec": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "version": "v0"
+          }
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-10": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$col $tag_host pctile(95)",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "host::tag"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "MDBookUpdateLatency",
+                        "orderByTime": "ASC",
+                        "policy": "default_mimid_retention",
+                        "query": "SELECT max(\"average\") FROM \"autogen\".\"MDBookUpdateLatency\" WHERE (\"host\"::tag = 'TA-TKY-A-13')",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "max"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Max"
+                              ],
+                              "type": "alias"
+                            }
+                          ],
+                          [
+                            {
+                              "params": [
+                                "average"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Avg"
+                              ],
+                              "type": "alias"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "host::tag",
+                            "operator": "=~",
+                            "value": "/^$host$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "timeShift": "24h"
+              },
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 10,
+          "links": [],
+          "title": "Tao Book Update Latency",
+          "vizConfig": {
+            "group": "histogram",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "fillOpacity": 23,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "ns"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "MA_50 TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "super-light-orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-17 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-18 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "red",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "bucketOffset": 0,
+                "bucketSize": 1000,
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean",
+                    "stdDev"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                }
+              }
+            },
+            "version": ""
+          }
+        }
+      },
+      "panel-11": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$col $tag_host pctile(95)",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "host::tag"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "MDBookUpdateLatency",
+                        "orderByTime": "ASC",
+                        "policy": "default_mimid_retention",
+                        "query": "SELECT max(\"average\") FROM \"autogen\".\"MDBookUpdateLatency\" WHERE (\"host\"::tag = 'TA-TKY-A-13')",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "max"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Max"
+                              ],
+                              "type": "alias"
+                            }
+                          ],
+                          [
+                            {
+                              "params": [
+                                "average"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Avg"
+                              ],
+                              "type": "alias"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "host::tag",
+                            "operator": "=~",
+                            "value": "/^$host$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 11,
+          "links": [],
+          "title": "Tao Book Update Latency",
+          "vizConfig": {
+            "group": "histogram",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "fillOpacity": 23,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "ns"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "MA_50 TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "super-light-orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-17 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-18 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "red",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "bucketOffset": 0,
+                "bucketSize": 1000,
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean",
+                    "stdDev"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                }
+              }
+            },
+            "version": ""
+          }
+        }
+      },
+      "panel-12": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$col $tag_host pctile(95)",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "host::tag"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "StgyDelayFromCardReceive",
+                        "orderByTime": "ASC",
+                        "policy": "default_mimid_retention",
+                        "query": "SELECT max(\"average\") FROM \"autogen\".\"MDBookUpdateLatency\" WHERE (\"host\"::tag = 'TA-TKY-A-13')",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "max"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Max"
+                              ],
+                              "type": "alias"
+                            }
+                          ],
+                          [
+                            {
+                              "params": [
+                                "average"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Avg"
+                              ],
+                              "type": "alias"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "host::tag",
+                            "operator": "=~",
+                            "value": "/^$host$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 12,
+          "links": [],
+          "title": "Full Tao Latency",
+          "vizConfig": {
+            "group": "histogram",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "fillOpacity": 23,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "ns"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "MA_50 TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "super-light-orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-17 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-18 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "red",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "bucketOffset": 0,
+                "bucketSize": 1000,
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean",
+                    "stdDev"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                }
+              }
+            },
+            "version": ""
+          }
+        }
+      },
+      "panel-13": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+                      },
+                      "group": "influxdb",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "alias": "$col $tag_host pctile(95)",
+                        "groupBy": [
+                          {
+                            "params": [
+                              "$__interval"
+                            ],
+                            "type": "time"
+                          },
+                          {
+                            "params": [
+                              "host::tag"
+                            ],
+                            "type": "tag"
+                          },
+                          {
+                            "params": [
+                              "none"
+                            ],
+                            "type": "fill"
+                          }
+                        ],
+                        "measurement": "StgyDelayFromCardReceive",
+                        "orderByTime": "ASC",
+                        "policy": "default_mimid_retention",
+                        "query": "SELECT max(\"average\") FROM \"autogen\".\"MDBookUpdateLatency\" WHERE (\"host\"::tag = 'TA-TKY-A-13')",
+                        "rawQuery": false,
+                        "resultFormat": "time_series",
+                        "select": [
+                          [
+                            {
+                              "params": [
+                                "max"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Max"
+                              ],
+                              "type": "alias"
+                            }
+                          ],
+                          [
+                            {
+                              "params": [
+                                "average"
+                              ],
+                              "type": "field"
+                            },
+                            {
+                              "params": [
+                                95
+                              ],
+                              "type": "percentile"
+                            },
+                            {
+                              "params": [
+                                "Avg"
+                              ],
+                              "type": "alias"
+                            }
+                          ]
+                        ],
+                        "tags": [
+                          {
+                            "key": "host::tag",
+                            "operator": "=~",
+                            "value": "/^$host$/"
+                          }
+                        ]
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "timeShift": "24h"
+              },
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 13,
+          "links": [],
+          "title": "Full Tao Latency",
+          "vizConfig": {
+            "group": "histogram",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "fillOpacity": 23,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "ns"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "MA_50 TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "super-light-orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-16 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-17 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Avg TA-SGP-C-18 pctile(95)"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "red",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "bucketOffset": 0,
+                "bucketSize": 1000,
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean",
+                    "stdDev"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                }
+              }
+            },
+            "version": ""
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-11"
+              },
+              "height": 15,
+              "width": 12,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-12"
+              },
+              "height": 15,
+              "width": 12,
+              "x": 12,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-10"
+              },
+              "height": 15,
+              "width": 12,
+              "x": 0,
+              "y": 15
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-13"
+              },
+              "height": 15,
+              "width": 12,
+              "x": 12,
+              "y": 15
+            }
+          }
+        ]
+      }
+    },
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": false,
+        "title": "",
+        "tooltip": "",
+        "type": "link",
+        "url": ""
+      }
+    ],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "fiscalYearStartMonth": 0,
+      "from": "now-12h",
+      "hideTimepicker": false,
+      "timezone": "utc",
+      "to": "now"
+    },
+    "title": "Crypto Mimid Performance Stats LT 3",
+    "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allValue": "*",
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "TA-SGP-C-17"
+            ],
+            "value": [
+              "TA-SGP-C-17"
+            ]
+          },
+          "definition": "",
+          "hide": "dontHide",
+          "includeAll": true,
+          "multi": true,
+          "name": "host",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES  WITH KEY = host"
+            },
+            "version": "v0"
+          },
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "alphabeticalAsc"
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allValue": "*",
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "definition": "",
+          "hide": "dontHide",
+          "includeAll": true,
+          "multi": true,
+          "name": "mkt_data_channel",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES from PerChannelPacketCount WITH KEY = channel"
+            },
+            "version": "v0"
+          },
+          "refresh": "onTimeRangeChanged",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "disabled"
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allValue": "*",
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "definition": "",
+          "hide": "dontHide",
+          "includeAll": true,
+          "multi": true,
+          "name": "MDStatChannel",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES from PerMDChannel WITH KEY = channel"
+            },
+            "version": "v0"
+          },
+          "refresh": "onTimeRangeChanged",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "disabled"
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allValue": "*",
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "definition": "",
+          "hide": "dontHide",
+          "includeAll": true,
+          "multi": true,
+          "name": "strat",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES  WITH KEY = strat"
+            },
+            "version": "v0"
+          },
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "alphabeticalAsc"
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "allValue": "*",
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "definition": "",
+          "hide": "dontHide",
+          "includeAll": true,
+          "multi": true,
+          "name": "alias",
+          "options": [],
+          "query": {
+            "datasource": {
+              "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
+            },
+            "group": "influxdb",
+            "kind": "DataQuery",
+            "spec": {
+              "__legacyStringValue": "SHOW TAG VALUES WITH KEY = alias"
+            },
+            "version": "v0"
+          },
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": "alphabeticalAsc"
+        }
+      }
+    ]
+  }
+}

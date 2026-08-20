@@ -1,0 +1,1341 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "amd-pmu-ops-v4"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "links": [],
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "panels": [],
+        "title": "At-a-glance health — is anything wrong?",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Total memory bandwidth in use across both sockets. Green \u003c10 GB/s: normal HFT working set. Orange 10-30 GB/s: elevated — investigate what changed. Red \u003e30 GB/s: heavy memory streaming, latency will suffer. Missing data = uProf capture failed or systemd timer stopped.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 10
+                },
+                {
+                  "color": "red",
+                  "value": 30
+                }
+              ]
+            },
+            "unit": "decGBs"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 1
+        },
+        "id": 100,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "10.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"value\") FROM \"amd_uncore\" WHERE (\"host\" =~ /^$host$/ AND \"scope\" = 'system' AND \"metric\" = 'Total_Mem_Bw_GB_s') AND $timeFilter GROUP BY time(5m) fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "System memory BW (GB/s)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Highest L3 cache miss rate seen on any of the 24 CCXs. Green \u003c100K/sec: cache is warm, working set fits. Orange 100K-1M/sec: one CCX under memory pressure — often a network-ingest core, may be normal. Red \u003e1M/sec: severe cache pressure, drill into the per-CCX panel and use `pmu-core-explain \u003ccore\u003e` to identify the workload.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 100000
+                },
+                {
+                  "color": "red",
+                  "value": 1000000
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 1
+        },
+        "id": 101,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "10.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT max(\"rate\") FROM (  SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"rate\"   FROM \"amd_l3\" WHERE (\"host\" =~ /^$host$/   AND \"event\" = 'l3_lookup_state.l3_miss')   AND $timeFilter GROUP BY time(30s), \"ccx\" fill(null)) WHERE $timeFilter GROUP BY time(5m) fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Peak L3 miss rate (across all CCXs)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Highest retired-instruction rate seen on any trading core.\n\nGreen ≥ 100M/sec: at least one core running work — normal.\nOrange 1M-100M/sec: light activity, may be housekeeping only.\nRed \u003c 1M/sec: nothing is running — check if strategies died.\n\nNote: on pre-live hosts (no trading strategies yet), this will show orange/red — that's expected. On production hosts, red for \u003e5 minutes is worth investigating with `pmu-core-explain`.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "orange",
+                  "value": 1000000
+                },
+                {
+                  "color": "green",
+                  "value": 100000000
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 1
+        },
+        "id": 102,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "10.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT max(\"rate\") FROM (  SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"rate\"   FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/   AND \"event\" = 'ex_ret_instr' AND \"role\" = 'trading')   AND $timeFilter GROUP BY time(30s), \"core\" fill(null)) WHERE $timeFilter GROUP BY time(5m) fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Peak instr/sec (busiest trading core)",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Data crossing between the two CPU sockets via xGMI. Green \u003c2 GB/s: good NUMA locality, workload staying on its socket. Orange 2-10 GB/s: some cross-socket references — investigate strategy placement. Red \u003e10 GB/s: heavy cross-socket traffic — trading threads may be scheduled off-socket from their memory, latency suffers.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 2,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "decGBs"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 1
+        },
+        "id": 103,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "10.0.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"value\") FROM \"amd_uncore\" WHERE (\"host\" =~ /^$host$/ AND \"scope\" = 'system' AND \"metric\" = 'xGMI_Outbound_Data_Bytes_GB_s') AND $timeFilter GROUP BY time(5m) fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Cross-socket traffic (xGMI GB/s)",
+        "type": "stat"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 7
+        },
+        "id": 2,
+        "panels": [],
+        "title": "Trading core efficiency — is the workload running?",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Rate of instructions completing on each trading core (cores with role=trading, excludes housekeeping cores 0,92-95,188-191).\n\nNormal: 1-3 billion instr/sec per active core.\nQuiet cores near 0 are fine — trading is bursty.\nIf ALL cores stay near 0 for \u003e5 minutes, the workload may have died — run `sudo pmu-core-explain \u003ccore\u003e` to identify what's on each core.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "orange",
+                  "value": 100000000
+                },
+                {
+                  "color": "green",
+                  "value": 1000000000
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        },
+        "id": 200,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"instr/sec\" FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'ex_ret_instr' AND \"role\" = 'trading') AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Instructions retired per second — per trading core",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 3,
+        "panels": [],
+        "title": "Cache and memory pressure — where's the latency coming from?",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Each CCX has an L3 slice shared by 8 cores. High miss rate = memory-bound workload, working set doesn't fit in L3.\n\nNormal: \u003c100K/sec on quiet CCXs, up to 20-30M/sec on CCXs hosting network-ingest threads (packet data can't be cached).\n\nTo investigate a specific CCX, run `pmu-core-explain \u003ccpu\u003e` on any core in that CCX (cores 0-7 = ccx=0, 8-15 = ccx=1, etc.).",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 100000
+                },
+                {
+                  "color": "red",
+                  "value": 1000000
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 19
+        },
+        "id": 300,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "ccx $tag_ccx",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"misses/sec\" FROM \"amd_l3\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'l3_lookup_state.l3_miss') AND $timeFilter GROUP BY time($__interval), \"ccx\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L3 cache misses per CCX (misses/sec)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Total memory bandwidth per CPU socket (from AMDuProfPcm).\n\nNormal: \u003c5 GB/s per socket for HFT workloads (small working sets).\nIf bandwidth is very asymmetric between package-0 and package-1, trading strategies may be pinned to one socket only — verify with `numactl --hardware`.\n\nSudden step-changes are the anomaly signal, not the absolute level.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 5
+                },
+                {
+                  "color": "red",
+                  "value": 20
+                }
+              ]
+            },
+            "unit": "decGBs"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 19
+        },
+        "id": 301,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_scope",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"value\") FROM \"amd_uncore\" WHERE (\"host\" =~ /^$host$/ AND \"metric\" = 'Total_Mem_Bw_GB_s') AND $timeFilter GROUP BY time($__interval), \"scope\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Memory bandwidth by socket (GB/s)",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 27
+        },
+        "id": 4,
+        "panels": [],
+        "title": "Front-end and pipeline health — micro-arch efficiency",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "L1 instruction cache misses. Elevated values suggest large code footprint or cold code paths — the CPU is fetching instructions from L2/L3/RAM which stalls execution.\n\nNormal: \u003c10K/sec on hot loops, higher on rarely-executed paths.\nAnomaly: sudden 10x jump on a previously-quiet core → code path changed.\n\nMitigation: reduce hot-path code size, enable huge pages for text segment.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 28
+        },
+        "id": 400,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"i-cache misses/sec\" FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'ic_tag_hit_miss.instruction_cache_miss' AND \"role\" = 'trading') AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L1 I-cache misses — per trading core (misses/sec)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "L1 data TLB misses. Every miss causes a page-table walk (~50 cycles). High rates suggest working set spans more virtual pages than the TLB covers.\n\nNormal: \u003c100K/sec.\nElevated: sustained \u003e1M/sec across many cores → data locality problem.\n\nMitigation: enable transparent huge pages (`madvise` or `always`), or use `MAP_HUGETLB` for large allocations.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 28
+        },
+        "id": 401,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"dTLB misses/sec\" FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'ls_l1_d_tlb_miss.all' AND \"role\" = 'trading') AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L1 dTLB misses — per trading core (misses/sec)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Mispredicted branches retired. Each mispredict costs 15-20 cycles (pipeline flush + refetch). High rates indicate data-dependent control flow that the branch predictor can't learn.\n\nNormal: 100K-10M/sec, correlates with branch density in code.\nAnomaly: sudden increase on previously-clean core → new code path with unpredictable branching (often data-dependent conditionals on user input).\n\nMitigation: profile-guided optimization, __builtin_expect hints, or convert to branchless code (SIMD select).",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 28
+        },
+        "id": 402,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) AS \"misp/sec\" FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'ex_ret_brn_misp' AND \"role\" = 'trading') AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Branch mispredictions — per trading core (misp/sec)",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 36
+        },
+        "id": 5,
+        "panels": [],
+        "title": "NUMA and Data Fabric — cross-socket / cross-CCD traffic",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "Traffic flowing across the two CPU sockets over AMD's xGMI (Infinity Fabric) links.\n\nxGMI Outbound: data leaving this socket for the other.\nLocal Inbound Read: reads served from this socket's memory.\nRemote Inbound Read: reads coming from the other socket's memory (BAD locality).\n\nGood NUMA behavior: Local Inbound \u003e\u003e Remote Inbound, xGMI low.\nBad behavior: Remote Inbound spiking → threads reading memory pinned to the other socket.\n\nFix: check `numactl --show` for the trading process, verify memory allocation is on the same NUMA node as the CPU.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            },
+            "unit": "decGBs"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "xGMI_Outbound_Data_Bytes_GB_s"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "xGMI outbound (cross-socket write)"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Local_Inbound_Read_Data_Bytes_GB_s"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Local socket reads"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Remote_Inbound_Read_Data_Bytes_GB_s"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "Remote socket reads (bad NUMA)"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 37
+        },
+        "id": 500,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_metric",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"value\") FROM \"amd_uncore\" WHERE (\"host\" =~ /^$host$/ AND \"scope\" = 'system' AND (\"metric\" = 'xGMI_Outbound_Data_Bytes_GB_s' OR \"metric\" = 'Local_Inbound_Read_Data_Bytes_GB_s' OR \"metric\" = 'Remote_Inbound_Read_Data_Bytes_GB_s')) AND $timeFilter GROUP BY time($__interval), \"metric\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Cross-socket traffic — xGMI outbound + inbound reads (GB/s)",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 45
+        },
+        "id": 6,
+        "panels": [],
+        "title": "Diagnostic reference — commands to run when investigating",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "",
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 46
+        },
+        "id": 600,
+        "options": {
+          "code": {
+            "language": "plaintext",
+            "showLineNumbers": false,
+            "showMiniMap": false
+          },
+          "content": "## When something looks wrong, run these on the host\n\n**Identify what's on a core:**\n```\nsudo pmu-core-explain \u003ccore\u003e              # 30s snapshot + classification\nsudo pmu-core-explain \u003ccore\u003e --duration 60 --deep    # longer window + wchan\n```\n\n**Check current NUMA placement of a process:**\n```\nnumactl --show                            # current process NUMA policy\nsudo cat /proc/\u003cpid\u003e/numa_maps            # per-mapping NUMA info\nsudo taskset -pc \u003cpid\u003e                    # what cores is it pinned to?\n```\n\n**Manual PMU capture (deeper than the 5-min timer):**\n```\nsudo AMD_HK_CORES=97 /usr/local/sbin/amd-perf-capture group_core_A\nsudo /opt/AMDuProf_5.3-521/bin/AMDuProfPcm -m memory -a -d 30 -o /tmp/mem.csv\n```\n\n**Check that the pipeline is alive:**\n```\nsystemctl status amd-perf-shipper.timer   # should show 'active'\nsudo tail /var/log/amd-perf/cycle.log     # recent cycles\n```\n\n**Escalation:** if a metric is red-thresholded for \u003e15 minutes AND you can't identify a legitimate cause, page on-call HW/perf engineer with the panel URL and the output of `pmu-core-explain` on any affected core.",
+          "mode": "markdown"
+        },
+        "pluginVersion": "10.0.0",
+        "title": "Runbook — investigation commands",
+        "type": "text"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 56
+        },
+        "id": 7,
+        "panels": [],
+        "title": "Computed ratios — IPC and L3 hit ratio (higher = better)",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "True IPC = retired instructions ÷ cycles, computed per-core at capture time (30s window).\n\nGreen ≥ 1.5: healthy hot loop, efficient pipeline utilization.\nOrange 0.5-1.5: mixed activity — some stalls, but productive.\nRed \u003c 0.5: severely stalled OR idle (kernel spin loop is ~0.2 IPC).\n\nNote: idle cores with `idle=poll` naturally show IPC ≈ 0.2. That's the kernel busy-waiting, not a problem.\nAMD Zen 5 theoretical peak: ~4-6 IPC on friendly loops. HFT hot loops typically 1.5-3.0 IPC.\n\nSource: `event=ipc` in `amd_core`, emitted by the shipper. No Grafana Expression math involved.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "max": 4,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "green",
+                  "value": 1.5
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 57
+        },
+        "id": 700,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"ratio\") FROM \"amd_core\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'ipc' AND \"role\" = 'trading') AND $timeFilter GROUP BY time($__interval), \"core\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Instructions per cycle (IPC) — per trading core",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "amd_pmu"
+        },
+        "description": "L3 hit ratio = L3 hits ÷ (L3 hits + L3 misses) per CCX. Computed at capture time (30s window).\n\nGreen ≥ 90%: warm working set, cache doing its job.\nOrange 50-90%: mixed access pattern.\nRed \u003c 50%: mostly misses — CCX is streaming data or working set exceeds 32 MiB L3 slice.\n\nOnly active CCXs report a ratio (zero-traffic CCXs are omitted by the shipper).\nZen 5c: 8 cores per CCX (32 MiB L3). Cores 0-7 = ccx=0, 8-15 = ccx=1, etc.\n\nSource: `event=l3_hit_ratio` in `amd_l3`, emitted by the shipper.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "axisPlacement": "auto",
+              "drawStyle": "line",
+              "fillOpacity": 15,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 4,
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 2,
+            "mappings": [],
+            "max": 1,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red"
+                },
+                {
+                  "color": "orange",
+                  "value": 0.5
+                },
+                {
+                  "color": "green",
+                  "value": 0.9
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 67
+        },
+        "id": 701,
+        "options": {
+          "legend": {
+            "calcs": [
+              "last",
+              "mean",
+              "max"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "targets": [
+          {
+            "alias": "ccx $tag_ccx",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "amd_pmu"
+            },
+            "query": "SELECT mean(\"ratio\") FROM \"amd_l3\" WHERE (\"host\" =~ /^$host$/ AND \"event\" = 'l3_hit_ratio') AND $timeFilter GROUP BY time($__interval), \"ccx\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L3 cache hit ratio — per CCX (higher = better)",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "5m",
+    "schemaVersion": 42,
+    "tags": [
+      "pmu",
+      "hardware-counters",
+      "amd",
+      "ops"
+    ],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": false,
+            "text": "TA-TKY-A-132",
+            "value": "TA-TKY-A-132"
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "amd_pmu"
+          },
+          "definition": "SHOW TAG VALUES FROM \"amd_core\" WITH KEY = \"host\"",
+          "hide": 0,
+          "includeAll": false,
+          "label": "host",
+          "multi": false,
+          "name": "host",
+          "options": [],
+          "query": "SHOW TAG VALUES FROM \"amd_core\" WITH KEY = \"host\"",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "AMD_PMU — Ops v4",
+    "weekStart": ""
+  }
+}
