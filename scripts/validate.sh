@@ -16,8 +16,8 @@ BANNED='graph|singlestat|table-old|flot'
 
 declare -A seen_uids
 
-files=$(find dashboards -name '*.json' | sort)
-for f in $files; do
+mapfile -t files < <(find dashboards -name '*.json' | sort)
+for f in "${files[@]}"; do
   if ! jq empty "$f" 2>/dev/null; then
     err "$f: invalid JSON"
     continue
@@ -34,7 +34,8 @@ for f in $files; do
         [ -n "$(jq -r '.spec.title // empty' "$f")" ] || err "$f: folder missing spec.title"
         ;;
       Dashboard)
-        [ "$base" = "$name" ] || err "$f: filename should match metadata.name '$name'"
+        # Git Sync's own exports are named by title slug, not uid — advisory only.
+        [ "$base" = "$name" ] || echo "note: $f: filename differs from metadata.name '$name'"
         uid=$name
         ;;
       *) err "$f: unexpected kind '$kind'" ;;
@@ -73,4 +74,4 @@ if [ "$fail" -ne 0 ]; then
   echo "validation FAILED" >&2
   exit 1
 fi
-echo "validation OK ($(echo "$files" | wc -l) files)"
+echo "validation OK (${#files[@]} files)"
