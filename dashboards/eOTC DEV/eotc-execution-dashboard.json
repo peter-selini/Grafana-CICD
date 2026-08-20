@@ -1,0 +1,815 @@
+{
+  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "fff3h1ktytq80e"
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "builtIn": true,
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "legacyOptions": {
+            "type": "dashboard"
+          },
+          "name": "Annotations \u0026 Alerts",
+          "query": {
+            "datasource": {
+              "name": "-- Grafana --"
+            },
+            "group": "grafana",
+            "kind": "DataQuery",
+            "spec": {},
+            "version": "v0"
+          }
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-1": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "fff3fptiptxj4b"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH x AS (\n  SELECT\n    COUNT(*) AS num_orders,\n    SUM((ord_status = '2')::int) AS filled,\n    SUM((ord_status = '4')::int) AS cancelled,\n    SUM((ord_status = '8')::int) AS rejected\n  FROM orders.orders\n  WHERE $__timeFilter(inserted_at)\n)\nSELECT\n  num_orders, filled, cancelled, rejected,\n  CASE\n    WHEN (filled + cancelled + rejected) = 0 THEN 0\n    ELSE 100.0 * filled / (filled + cancelled + rejected)\n  END AS fill_rate_pct\nFROM x;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        },
+                        "table": "schemaversions"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {},
+                      "renameByName": {
+                        "cancelled": "Cancelled Orders",
+                        "fill_rate_pct": "Fill Rate Percentage",
+                        "filled": "Filled Orders",
+                        "num_orders": "Number of Orders",
+                        "rejected": "Rejected Orders"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 1,
+          "links": [],
+          "title": "Summary",
+          "vizConfig": {
+            "group": "gauge",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "fieldMinMax": false,
+                  "thresholds": {
+                    "mode": "percentage",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "orange",
+                        "value": 70
+                      },
+                      {
+                        "color": "red",
+                        "value": 85
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "/.*/",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "fff3fptiptxj4b"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT\n  selini_base_token  AS base_token,\n  selini_quote_token AS quote_token,\n\n  -- Total volume\n  SUM(cum_qty * avg_px) AS total_volume,\n\n  -- Buy volume\n  SUM(\n    CASE \n      WHEN side = 1 THEN cum_qty * avg_px\n      ELSE 0\n    END\n  ) AS buy_volume,\n\n  -- Sell volume\n  SUM(\n    CASE\n      WHEN side = 2 THEN cum_qty * avg_px\n      ELSE 0\n    END\n  ) AS sell_volume\n\nFROM orders.orders\nWHERE $__timeFilter(inserted_at)\n  AND cum_qty \u003e 0\n\nGROUP BY\n  selini_base_token,\n  selini_quote_token\n\nORDER BY total_volume DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {},
+                      "renameByName": {
+                        "base_token": "Base Token",
+                        "buy_volume": "Buy Volume",
+                        "quote_token": "Quote Token",
+                        "sell_volume": "Sell Volume",
+                        "total_volume": "Total Volume"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 2,
+          "links": [],
+          "title": "Market Statistics",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "align": "center",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "enablePagination": true,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      },
+      "panel-3": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "fff3fptiptxj4b"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT\n  -- Order Type\n  CASE ord_type\n    WHEN 1 THEN 'Market'\n    WHEN 2 THEN 'Limit'\n    WHEN 3 THEN 'Stop'\n    WHEN 4 THEN 'Stop Limit'\n    WHEN 5 THEN 'Market On Close'\n    WHEN 6 THEN 'With Or Without'\n    WHEN 7 THEN 'Limit Or Better'\n    WHEN 8 THEN 'Limit With Or Without'\n    WHEN 9 THEN 'On Basis'\n    ELSE 'Unknown'\n  END AS order_type,\n\n  -- TIF\n  CASE time_in_force\n    WHEN 0 THEN 'Day'\n    WHEN 1 THEN 'Good Till Cancel'\n    WHEN 2 THEN 'At the Opening'\n    WHEN 3 THEN 'Immediate Or Cancel'\n    WHEN 4 THEN 'Fill Or Kill'\n    WHEN 5 THEN 'Good Till Crossing'\n    WHEN 6 THEN 'Good Till Date'\n    WHEN 7 THEN 'At the Close'\n    ELSE ''\n  END AS tif,\n\n  selini_base_token  AS base_token,\n  selini_quote_token AS quote_token,\n\n  COUNT(*) AS num_orders,\n\n  -- Fill rate\n  ROUND(\n    100.0 * COUNT(*) FILTER (WHERE ord_status IN ('1','2'))\n    / NULLIF(COUNT(*),0),\n    2\n  ) AS fill_rate_pct,\n\n  -- Total volume (ignore $)\n  SUM(cum_qty * COALESCE(avg_px,0)) AS total_volume\n\nFROM orders.orders\n\nWHERE $__timeFilter(inserted_at)\n\nGROUP BY\n  ord_type,\n  time_in_force,\n  selini_base_token,\n  selini_quote_token\n\nORDER BY\n  total_volume DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {},
+                      "renameByName": {
+                        "base_token": "Base Token",
+                        "fill_rate_pct": "Fill Rate Percent",
+                        "num_orders": "Number of Orders",
+                        "order_type": "Order Type",
+                        "quote_token": "Quote Token",
+                        "tif": "Time In Force",
+                        "total_volume": "Total Volume"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 3,
+          "links": [],
+          "title": "Order Type Statistics",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "align": "center",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "enablePagination": true,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "fff3fptiptxj4b"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT\n  client_id,\n\n  MAX(inserted_at) FILTER (WHERE ord_status = '2') AS last_execution_time,\n\n  COUNT(*) AS num_orders,\n\n  ROUND(\n    100.0 * SUM((ord_status = '2')::int) / NULLIF(COUNT(*), 0),\n    2\n  ) AS fill_rate_pct\n\nFROM orders.orders\nGROUP BY client_id\nORDER BY num_orders DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "dff3o56eoxmgwf"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select id as client_id, legal_entity_name from clients",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "joinByField",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "byField": "client_id",
+                      "mode": "outerTabular"
+                    }
+                  }
+                },
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {
+                        "client_id": 0,
+                        "fill_rate_pct": 4,
+                        "last_execution_time": 2,
+                        "legal_entity_name": 1,
+                        "num_orders": 3
+                      },
+                      "renameByName": {
+                        "client_id": "Client ID",
+                        "fill_rate_pct": "Fill Rate Percentage",
+                        "last_execution_time": "Last Execution Time",
+                        "legal_entity_name": "Client Name",
+                        "num_orders": "Number of Orders"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 4,
+          "links": [],
+          "title": "Client Overview",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "align": "center",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      },
+      "panel-5": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "fff3fptiptxj4b"
+                      },
+                      "group": "grafana-postgresql-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT\n  client_id,\n  client_order_id AS order_id,\n  inserted_at     AS order_entry_time,\n\n  CASE ord_status\n    WHEN '0' THEN 'New'\n    WHEN '1' THEN 'Partially Filled'\n    WHEN '2' THEN 'Filled'\n    WHEN '3' THEN 'Done for Day'\n    WHEN '4' THEN 'Canceled'\n    WHEN '5' THEN 'Replaced'\n    WHEN '6' THEN 'Pending Cancel'\n    WHEN '7' THEN 'Stopped'\n    WHEN '8' THEN 'Rejected'\n    WHEN '9' THEN 'Suspended'\n    WHEN 'A' THEN 'Pending New'\n    WHEN 'B' THEN 'Calculated'\n    WHEN 'C' THEN 'Expired'\n    WHEN 'D' THEN 'Accepted for Bidding'\n    WHEN 'E' THEN 'Pending Replace'\n    ELSE 'Unknown'\n  END AS order_status,\n\n  selini_base_token  AS base_token,\n  selini_quote_token AS quote_token,\n\n  CASE side\n    WHEN 1 THEN 'Buy'\n    WHEN 2 THEN 'Sell'\n    WHEN 3 THEN 'Buy Minus'\n    WHEN 4 THEN 'Sell Plus'\n    WHEN 5 THEN 'Sell Short'\n    WHEN 6 THEN 'Sell Short Exempt'\n    WHEN 7 THEN 'Undisclosed'\n    WHEN 8 THEN 'Cross'\n    WHEN 9 THEN 'Cross Short'\n    ELSE 'Unknown'\n  END AS side,\n\n  CASE ord_type\n    WHEN 1 THEN 'Market'\n    WHEN 2 THEN 'Limit'\n    WHEN 3 THEN 'Stop'\n    WHEN 4 THEN 'Stop Limit'\n    WHEN 5 THEN 'Market On Close'\n    WHEN 6 THEN 'With Or Without'\n    WHEN 7 THEN 'Limit Or Better'\n    WHEN 8 THEN 'Limit With Or Without'\n    WHEN 9 THEN 'On Basis'\n    ELSE 'Unknown'\n  END AS order_type,\n\n  CASE time_in_force\n    WHEN 0 THEN 'Day'\n    WHEN 1 THEN 'Good Till Cancel'\n    WHEN 2 THEN 'At the Opening'\n    WHEN 3 THEN 'Immediate Or Cancel'\n    WHEN 4 THEN 'Fill Or Kill'\n    WHEN 5 THEN 'Good Till Crossing'\n    WHEN 6 THEN 'Good Till Date'\n    WHEN 7 THEN 'At the Close'\n    ELSE 'Unknown'\n  END AS tif,\n\n  (cum_qty * avg_px) AS notional,\n\n  order_qty AS target_qty,\n  cum_qty   AS filled_qty,\n  avg_px    AS avg_fill_price,\n  price     AS limit_price,\n\n  ROUND(100.0 * cum_qty / NULLIF(order_qty, 0), 2) AS pct_executed,\n\n  CASE\n    WHEN ord_rej_reason ~ '^[0-9]+$' THEN\n      CASE ord_rej_reason::int\n        WHEN 0  THEN 'Broker / Exchange Option'\n        WHEN 1  THEN 'Unknown Symbol'\n        WHEN 2  THEN 'Exchange Closed'\n        WHEN 3  THEN 'Order Exceeds Limit'\n        WHEN 4  THEN 'Too Late to Enter'\n        WHEN 5  THEN 'Unknown Order'\n        WHEN 6  THEN 'Duplicate Order'\n        WHEN 7  THEN 'Duplicate of a Verbally Communicated Order'\n        WHEN 8  THEN 'Stale Order'\n        WHEN 9  THEN 'Trade Along Required'\n        WHEN 10 THEN 'Invalid Investor ID'\n        WHEN 11 THEN 'Unsupported Order Characteristic'\n        WHEN 12 THEN 'Surveillance Option'\n        WHEN 13 THEN 'Incorrect Quantity'\n        WHEN 14 THEN 'Incorrect Allocated Quantity'\n        WHEN 15 THEN 'Unknown Account(s)'\n        WHEN 99 THEN 'Other'\n        ELSE 'Unknown'\n      END\n    ELSE ord_rej_reason\n  END AS reject_reason,\n\n  text\n\nFROM orders.orders\nWHERE $__timeFilter(inserted_at)\n  AND (ord_status = '8' OR ord_rej_reason IS NOT NULL)\n\nORDER BY inserted_at DESC\nLIMIT 500;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {},
+                      "renameByName": {
+                        "avg_fill_price": "Average Fill Price",
+                        "base_token": "Base Token",
+                        "client_id": "Client ID",
+                        "filled_qty": "Filled Quantity",
+                        "limit_price": "Limit Price",
+                        "notional": "Notional",
+                        "order_entry_time": "Entry Time",
+                        "order_id": "Order ID",
+                        "order_status": "Status",
+                        "order_type": "Order Type",
+                        "pct_executed": "Percent Executed",
+                        "quote_token": "Quote Token",
+                        "reject_reason": "Reject Reason",
+                        "side": "Side",
+                        "target_qty": "Target Quantity",
+                        "text": "Text",
+                        "tif": "Time In Force"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 5,
+          "links": [],
+          "title": "Failure Log",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "align": "center",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "enablePagination": true,
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true
+              }
+            },
+            "version": "10.4.2"
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-1"
+              },
+              "height": 8,
+              "width": 12,
+              "x": 0,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-4"
+              },
+              "height": 8,
+              "width": 12,
+              "x": 12,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-2"
+              },
+              "height": 8,
+              "width": 12,
+              "x": 0,
+              "y": 8
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-3"
+              },
+              "height": 8,
+              "width": 12,
+              "x": 12,
+              "y": 8
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-5"
+              },
+              "height": 6,
+              "width": 24,
+              "x": 0,
+              "y": 16
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "fiscalYearStartMonth": 0,
+      "from": "now-6M",
+      "hideTimepicker": false,
+      "timezone": "browser",
+      "to": "now"
+    },
+    "title": "eOTC Execution Dashboard",
+    "variables": []
+  }
+}

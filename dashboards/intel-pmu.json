@@ -1,0 +1,1745 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "pmu"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Peak PCIe MB/s per 30-second capture window.\n\nTens of MB/s peaks → Normal bursty pattern.\n\n100-500 MB/s peaks → Big market event or reconnect.\n\n\u003e1 GB/s peaks → Investigate — retransmit storm or measurement anomaly.\n\nTypical peak/avg ratio: 7-15×. Ratio \u003e30× consistently → protocol backing up.",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 1,
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 113,
+        "title": "pcm-memory — memory bandwidth",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Total memory read + write bandwidth in MB/s.\n\n\"\u003c2 GB/s\" → Normal for HFT (working set fits in cache).\n\n\"2-10 GB/s\" → Elevated. Investigate what changed.\n\n\"\u003e10 GB/s\" sustained → Memory streaming workload — allocation storm, big scan, or serialization.\n\n\"\u003e50 GB/s\" → Approaching bandwidth wall; latency will suffer.\n\nSudden step-changes are the anomaly signal. Steady state at any level is fine.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 5000
+                },
+                {
+                  "color": "red",
+                  "value": 20000
+                }
+              ]
+            },
+            "unit": "MBs"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 1
+        },
+        "id": 1,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "$col - $tag_host",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "host"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "pcm_memory",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"total_avg\") AS \"total_avg\", mean(\"read_avg\") AS \"read_avg\", mean(\"write_avg\") AS \"write_avg\" FROM \"pcm_memory\" WHERE (\"scope\" = 'system' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval), \"host\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "System memory bandwidth (MB/s)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Read bandwidth for each of 12 memory channels over time.\n\nUniform stripes across all channels → Balanced memory allocation.\n\nConsistent bright/dark tier pattern → Normal (NUMA-aware allocator preferring some channels).\n\nSudden pattern shift → NUMA rebalancing or memory pressure — investigate.\n\nVertical dark gap → Shipper missed a capture cycle.",
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            },
+            "unit": "MBs"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 1
+        },
+        "id": 2,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "exponent": 0.5,
+            "fill": "dark-orange",
+            "mode": "scheme",
+            "reverse": false,
+            "scale": "exponential",
+            "scheme": "YlOrRd",
+            "steps": 64
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          },
+          "filterValues": {
+            "le": 1e-9
+          },
+          "legend": {
+            "show": true
+          },
+          "rowsFrame": {
+            "layout": "auto"
+          },
+          "tooltip": {
+            "mode": "single",
+            "showColorScale": false,
+            "yHistogram": false
+          },
+          "yAxis": {
+            "axisPlacement": "left",
+            "reverse": false
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "ch$tag_channel",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "channel"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "pcm_memory",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"read_avg\") FROM \"pcm_memory\" WHERE (\"scope\" = 'channel' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval), \"channel\" fill(previous)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "Per-channel read bandwidth (heatmap)",
+        "type": "heatmap"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 9
+        },
+        "id": 114,
+        "title": "pcm-numa — per-core efficiency",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Instructions Per Cycle per trading core (filtered by role=trading). Direct measure of core execution efficiency.\n\nIPC 2.5-2.9 → Excellent. Optimized compute code (strategy, decision-making).\n\nIPC 1.5-2.5 → Normal for network-ingest / feed-handler threads (memory-bound reads limit IPC).\n\nIPC 1.0-1.5 → Suspicious for compute cores; normal for spinning/polling threads.\n\nIPC \u003c0.5 → Effectively idle or heavily stalled.\n\nInterpret by thread type — identify with sudo pmu-core-explain \u003ccore\u003e.\n\nWhen to act: A core that was 2.7 dropping to 1.4 = real regression. Look at MPKI/L3 misses next.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "max": 3.5,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "green",
+                  "value": 2.5
+                }
+              ]
+            },
+            "unit": "none"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 10
+        },
+        "id": 104,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": false
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "core"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "pcm_numa",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"ipc_avg\") FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IPC — trading cores (role=trading)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "IPC on non-isolated cores (kernel, systemd, monitoring, IRQs).\n\nIPC 0.2-0.7 → Normal. Kernel code is inherently cache-unfriendly.\n\nIPC \u003c0.2 → Very idle.\n\nIPC \u003e1.0 → UNUSUAL. Application workload may have leaked here — check core pinning.\n\nIPC \u003e2.0 → Definite misconfiguration. Trading-quality thread running on housekeeping core.\n\nWhen to act: Sudden IPC jump on a housekeeping core → workload landed where it shouldn't. \n\nIdentify with sudo pmu-core-explain \u003ccore\u003e.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "max": 3.5,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "green",
+                  "value": 2.5
+                }
+              ]
+            },
+            "unit": "none"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 10
+        },
+        "id": 105,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "core"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "pcm_numa",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"ipc_avg\") FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'housekeeping' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IPC — housekeeping cores (role=housekeeping)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Fleet averages across all cores including idle ones — naturally lower than hot-core IPC.\n\nIPC 1.0-1.5 → Healthy trading host with active workload.\n\nIPC \u003c0.8 → Host unusually idle. Verify strategies are running.\n\nIPC \u003e2.0 → Every core doing real work — highly saturated.\n\nCross-host comparison is misleading (48-core vs 96-core naturally differ). Use per-host baseline.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "total_instructions_avg"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "iops"
+                },
+                {
+                  "id": "displayName",
+                  "value": "Total instructions/sec (all cores)"
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "ipc_avg"
+              },
+              "properties": [
+                {
+                  "id": "unit",
+                  "value": "none"
+                },
+                {
+                  "id": "displayName",
+                  "value": "System avg IPC (mean of cores)"
+                },
+                {
+                  "id": "decimals",
+                  "value": 3
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT last(\"ipc_avg\") AS \"ipc_avg\", last(\"total_instructions_avg\") AS \"total_instructions_avg\" FROM \"pcm_numa\" WHERE (\"scope\" = 'system' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval), \"host\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "System-wide IPC \u0026 instructions/sec",
+        "type": "stat"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 22
+        },
+        "id": 115,
+        "title": "pcm-pcie — PCIe device traffic (NIC + storage)",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "PCIe device-initiated traffic converted to MB/s (64B cache lines).\n\nPCIRdCur = device reads memory (NIC RX, disk read).\n\nItoM = device writes memory (NIC TX, disk write).\n\nItoMCacheNear / WCiLF = coherent cache-line writes.\n\n\u003c10 MB/s avg normal for HFT. \u003e500 MB/s investigate — market data storm or NIC issue.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 15,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 100
+                }
+              ]
+            },
+            "unit": "MBs"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 23
+        },
+        "id": 5,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "$tag_event",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"mbps_avg\") FROM \"pcm_pcie\" WHERE (\"metric_kind\" = 'mbps' AND \"host\" =~ /^$host$/ AND (\"event\" = 'PCIRdCur' OR \"event\" = 'ItoM' OR \"event\" = 'ItoMCacheNear' OR \"event\" = 'WCiLF')) AND $timeFilter GROUP BY time($__interval), \"event\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "PCIe bandwidth (MB/s, avg per interval)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Peak PCIe MB/s per 30-second capture window.\n\nTens of MB/s peaks → Normal bursty pattern.\n\n100-500 MB/s peaks → Big market event or reconnect.\n\n\"\u003e1 GB/s peaks\" → Investigate — retransmit storm or measurement anomaly.\n\nTypical peak/avg ratio: 7-15×. Ratio \u003e30× consistently → protocol backing up.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            },
+            "unit": "MBs"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 23
+        },
+        "id": 6,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "$tag_event.max",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"mbps_max\") FROM \"pcm_pcie\" WHERE (\"metric_kind\" = 'mbps' AND \"host\" =~ /^$host$/ AND (\"event\" = 'PCIRdCur' OR \"event\" = 'ItoM' OR \"event\" = 'ItoMCacheNear' OR \"event\" = 'WCiLF')) AND $timeFilter GROUP BY time($__interval), \"event\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "PCIe peak MB/s per interval",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 31
+        },
+        "id": 116,
+        "title": "pcm-core — L3 cache health \u0026 MPKI",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "Absolute L3 cache misses per second per trading core. Scales with workload volume, so cross-core comparison is misleading — use MPKI panel below for the true health signal.\n\nNormal outliers (not anomalies): Network-ingest threads (NetworkRead, market_feed_handler, WebSocket feed consumers) legitimately run at 20-30M misses/sec. Their working set is arriving packets, which cannot be cached.\n\nTo identify a core: sudo pmu-core-explain \u003ccore\u003e",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 100000
+                },
+                {
+                  "color": "red",
+                  "value": 1000000
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 32
+        },
+        "id": 106,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"l3_miss_avg\") FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L3 misses/sec — trading cores (role=trading)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "L3 misses/sec on non-isolated cores (kernel work, systemd, daemons).\n\n100K-500K misses/sec → Normal. Kernel code has poor cache locality.\n\u003c10K/sec → Core is idle.\n\u003e1M/sec sustained → Something intensive running (log rotation, backup, etc.) \n\nsudo Investigate with pmu-core-explain \u003ccore\u003e",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 100000
+                },
+                {
+                  "color": "red",
+                  "value": 1000000
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        },
+        "id": 107,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"l3_miss_avg\") FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'housekeeping' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "L3 misses/sec — housekeeping cores (role=housekeeping)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "L3 misses per 1000 instructions retired. Workload-normalized cache health.\nInterpret by thread type (use sudo pmu-core-explain \u003ccore\u003e to identify):\n\nStrategy/compute cores — MPKI \u003c0.01 is baseline. \u003e1.0 = memory-bound, investigate.\n\nIngest/feed cores — MPKI 5-15 is normal. Packets cannot be cached.\nSudden jump on any core — real signal regardless of class.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 10,
+                "type": "log"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 4,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 0.01
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 40
+        },
+        "id": 108,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"l3_miss_avg\") / mean(\"instructions_avg\") * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "MPKI — trading cores (role=trading)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "MPKI on housekeeping cores. Baseline 0.1-0.5 — kernel code is inherently cache-unfriendly.\n\nThe 1.0 threshold line does not apply here. Watch for sudden jumps against each core's own history, not absolute values.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 10,
+                "type": "log"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 4,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 0.01
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 40
+        },
+        "id": 109,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "core $tag_core",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT mean(\"l3_miss_avg\") / mean(\"instructions_avg\") * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'housekeeping' AND \"host\" =~ /^$host$/ ) AND $timeFilter GROUP BY time($__interval), \"core\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "MPKI — housekeeping cores (role=housekeeping)",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 48
+        },
+        "id": 117,
+        "title": "Fleet aggregates — trading pool percentiles (min/p25/p50/p75/max across all trading cores)",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "IPC distribution across ALL trading cores in the selected hosts. Each 5-min sample produces min/p25/p50/p75/max.\n\nmin drops below 1.0 — some core has stalled, investigate outliers.\np50 drops noticeably — widespread degradation.\nAll lines drop together — system-wide event (thermal, IRQ storm).",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 1.5
+                },
+                {
+                  "color": "green",
+                  "value": 2
+                }
+              ]
+            },
+            "unit": "none"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 49
+        },
+        "id": 111,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "min",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT min(\"ipc_avg\") FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p25",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT percentile(\"ipc_avg\", 25) FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p50",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT median(\"ipc_avg\") FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p75",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT percentile(\"ipc_avg\", 75) FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "max",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT max(\"ipc_avg\") FROM \"pcm_numa\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "E",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "IPC percentiles across trading pool (fleet)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "afr75v2n5wwzkc"
+        },
+        "description": "MPKI distribution across all trading cores. Log scale, vendor-agnostic.\nmax line normally sits at 5-15 due to ingest cores — this is expected, not an alert.\n\nmax jumps 3x its baseline → new core became memory-bound, investigate.\n\np50 rises above 0.1 → widespread cache pressure on compute cores (real signal).\n\np95 sustained above 0.01 → multiple cores drifting toward cache pressure.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 5,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "log": 10,
+                "type": "log"
+              },
+              "showPoints": "always",
+              "showValues": false,
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "line"
+              }
+            },
+            "decimals": 4,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "orange",
+                  "value": 0.01
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            },
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 49
+        },
+        "id": 112,
+        "options": {
+          "annotations": {
+            "clustering": -1,
+            "multiLane": false
+          },
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "enableFacetedFilter": false,
+            "overflow": "ellipsis",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "desc"
+          }
+        },
+        "pluginVersion": "13.1.0",
+        "targets": [
+          {
+            "alias": "min",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT min(\"l3_miss_avg\") / min(\"instructions_avg\") * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p25",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT percentile(\"l3_miss_avg\", 25) / percentile(\"instructions_avg\", 25) * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "B",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p50",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT percentile(\"l3_miss_avg\", 50) / percentile(\"instructions_avg\", 50) * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "C",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "p75",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT percentile(\"l3_miss_avg\", 75) / percentile(\"instructions_avg\", 75) * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "D",
+            "resultFormat": "time_series"
+          },
+          {
+            "alias": "max",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "afr75v2n5wwzkc"
+            },
+            "query": "SELECT max(\"l3_miss_avg\") / max(\"instructions_avg\") * 1000 FROM \"pcm_core\" WHERE (\"scope\" = 'core' AND \"role\" = 'trading' AND \"host\" =~ /^$host$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+            "rawQuery": true,
+            "refId": "E",
+            "resultFormat": "time_series"
+          }
+        ],
+        "title": "MPKI percentiles across trading pool (fleet, log scale)",
+        "type": "timeseries"
+      }
+    ],
+    "preload": false,
+    "refresh": "1m",
+    "schemaVersion": 42,
+    "tags": [
+      "pmu",
+      "hardware-counters"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allowCustomValue": true,
+          "current": {
+            "text": [
+              "TA-TKY-A-127"
+            ],
+            "value": [
+              "TA-TKY-A-127"
+            ]
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "afr75v2n5wwzkc"
+          },
+          "definition": "SHOW TAG VALUES FROM \"pcm_memory\" WITH KEY = \"host\"",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Host",
+          "multi": true,
+          "name": "host",
+          "options": [],
+          "query": "SHOW TAG VALUES FROM \"pcm_memory\" WITH KEY = \"host\"",
+          "refresh": 1,
+          "regex": "",
+          "regexApplyTo": "value",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ]
+    },
+    "timezone": "browser",
+    "title": "Intel_PMU"
+  }
+}
