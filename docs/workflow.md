@@ -6,7 +6,7 @@ How dashboards move between this repo and Grafana.
 
 | Environment | Grafana URL | Notes |
 | ----------- | ----------- | ----- |
-| selini-grafana-v13 | http://selini-grafana-v13.selini.tech:3000 | Grafana 13.1.0, on-prem. Git Sync repository → this repo, branch `main`, path `dashboards/`, target `folderless` |
+| selini-grafana-v13 | http://selini-grafana-v13.selini.tech:3000 | Grafana 13.1.0, on-prem. Git Sync repository `rpcfxr6` → this repo, branch `main`, path `dashboards/`, target `folderless`, 60s interval |
 
 Script credentials are provided via environment variables (`GRAFANA_URL`, `GRAFANA_TOKEN` — a service account token). Never commit tokens. Git Sync itself authenticates through Grafana's GitHub App connection, so no Grafana credential lives in GitHub.
 

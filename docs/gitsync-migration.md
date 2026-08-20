@@ -1,5 +1,24 @@
 # Git Sync folderless migration runbook
 
+> **Executed 2026-08-20.** Final state: repository **`rpcfxr6`** (folderless, workflows
+> `["branch"]`), **331 dashboards + 45 folders managed**; the only unmanaged dashboard is
+> Alerts reduction (`ffnxhybru8we8d`), which lives in **General** — Grafana forbids unmanaged
+> dashboards inside managed folders (403), so it cannot sit in the managed Peter folder.
+> Deviations from the plan below, kept for the next migration:
+>
+> - Provisioning API bodies are capped at **10KB** and the jobs endpoint takes a **bare JobSpec**
+>   (no `{"spec": ...}` wrapper) — migrate refs must be batched (~50/job).
+> - Migrate jobs need the repo to allow the **`write` workflow** for their export commit;
+>   PATCH it in, restore `["branch"]` after.
+> - Migrate requires feature toggle **`provisioningExport`** (restart needed).
+> - **Selective-migrate bug (13.1.0):** a dashboard whose parent folder is already
+>   repo-managed fails export with "folder NOT found in tree". 148 dashboards hit this; fixed
+>   by committing their files directly (uid-named, from v2 API exports), deleting the
+>   unmanaged originals, then a **full non-incremental pull** (incremental sync will not
+>   reprocess an already-seen commit).
+> - Git Sync's own exports name files by **title slug**, not uid; `validate.sh` treats
+>   filename≠uid as advisory for resource files.
+
 One-time migration of every dashboard on `selini-grafana-v13.selini.tech:3000` to Git Sync
 management from this repo (branch `main`, path `dashboards/`, sync target `folderless`).
 
