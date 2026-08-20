@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "ee37x2iw79fy8a"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "Host List - Reporting to ss_tcp_net_mon_v3_qdb",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -71,22 +75,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -109,22 +113,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working_01"
+                    "refId": "not_working_01",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -147,59 +151,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working_02"
+                    "refId": "not_working_02",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "Host List - Reporting to ss_tcp_net_mon_v3_qdb",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "left",
-                    "cellOptions": {
-                      "type": "color-text"
-                    },
-                    "filterable": true,
-                    "inspect": false
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "blue",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 10
-                      },
-                      {
-                        "color": "purple",
-                        "value": 20
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "cellHeight": "sm",
                 "footer": {
@@ -220,15 +187,52 @@
                     "displayName": "host_group"
                   }
                 ]
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "blue"
+                      },
+                      {
+                        "value": 10,
+                        "color": "green"
+                      },
+                      {
+                        "value": 20,
+                        "color": "purple"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "left",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "filterable": true,
+                    "inspect": false
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Count of Hosts - Reporting to ss_tcp_net_mon_v3_qdb",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -236,13 +240,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -265,47 +269,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Count of Hosts - Reporting to ss_tcp_net_mon_v3_qdb",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "blue",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "short"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "area",
@@ -321,15 +300,40 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "short",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "blue"
+                      },
+                      {
+                        "value": 80,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Mean Drop (Sample by 1 Minute)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -337,13 +341,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -366,22 +370,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working"
+                    "refId": "working",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -404,22 +408,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working"
+                    "refId": "not_working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -442,22 +446,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -480,22 +484,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -518,27 +522,58 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Mean Drop (Sample by 1 Minute)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last *",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -576,52 +611,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last *",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "mean_drop : GROUP BY timestamp, host, process, pid, localport, localaddr",
+          "description": "GROUP BY timestamp, host, process, pid, localport, localaddr",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -629,13 +633,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -658,22 +662,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working"
+                    "refId": "working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -696,27 +700,56 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not-working"
+                    "refId": "not-working",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "GROUP BY timestamp, host, process, pid, localport, localaddr",
-          "id": 4,
-          "links": [],
-          "title": "mean_drop : GROUP BY timestamp, host, process, pid, localport, localaddr",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "last",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -751,50 +784,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "last",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Mean Drop (Sample by 1 Minute)",
+          "description": "Working ..long delay",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -802,13 +806,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -831,22 +835,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working_long_delay"
+                    "refId": "working_long_delay",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -869,22 +873,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working"
+                    "refId": "not_working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -907,22 +911,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -945,22 +949,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -983,27 +987,58 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "Working ..long delay",
-          "id": 6,
-          "links": [],
-          "title": "Mean Drop (Sample by 1 Minute)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last *",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1041,52 +1076,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last *",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "Mean Drop, OOO (Sample by 1 Minute)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1094,13 +1098,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1123,22 +1127,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working"
+                    "refId": "working",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1161,22 +1165,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working"
+                    "refId": "not_working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1199,22 +1203,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1237,22 +1241,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1275,27 +1279,58 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "Mean Drop, OOO (Sample by 1 Minute)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last *",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1333,52 +1368,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last *",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "IP Mean Drop, OOO (Sample by 1 Minute)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1386,13 +1390,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1415,22 +1419,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working"
+                    "refId": "working",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1453,22 +1457,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working"
+                    "refId": "not_working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1491,22 +1495,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1529,22 +1533,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1567,27 +1571,58 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "IP Mean Drop, OOO (Sample by 1 Minute)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last *",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1625,52 +1660,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last *",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "AVG OOO - IP  (Sample by 1 Minute)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1678,13 +1682,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1707,22 +1711,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "not_working"
+                    "refId": "not_working",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
@@ -1745,22 +1749,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "working"
+                    "refId": "working",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1783,22 +1787,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1821,22 +1825,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "de37ukxhtqrr4e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -1859,27 +1863,58 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "AVG OOO - IP  (Sample by 1 Minute)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last *",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1917,46 +1952,11 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last *",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       }
@@ -1968,6 +1968,7 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "",
               "collapse": false,
               "hideHeader": true,
               "layout": {
@@ -1977,90 +1978,90 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 4,
+                        "height": 6,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-2"
-                        },
-                        "height": 6,
-                        "width": 4,
-                        "x": 0,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 4,
+                        "y": 0,
+                        "width": 7,
+                        "height": 14,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-1"
-                        },
-                        "height": 14,
-                        "width": 7,
-                        "x": 4,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 14,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-3"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": 14
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 27,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-7"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": 27
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 40,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-8"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": 40
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 53,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-9"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": 53
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": ""
+              }
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "Old_Query",
               "collapse": true,
               "layout": {
                 "kind": "GridLayout",
@@ -2069,33 +2070,32 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": -39,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-6"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": -39
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": -26,
+                        "width": 24,
+                        "height": 13,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-4"
-                        },
-                        "height": 13,
-                        "width": 24,
-                        "x": 0,
-                        "y": -26
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": "Old_Query"
+              }
             }
           }
         ]
@@ -2109,6 +2109,9 @@
       "QuestDB"
     ],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now-1h",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -2122,44 +2125,41 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-1h",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "SS_TCP_NET_MON_V3_QDB",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "host",
           "current": {
             "text": "TA-TKY-A-54",
             "value": "TA-TKY-A-54"
           },
-          "definition": "SELECT DISTINCT \"host\" FROM ss_tcp_net_mon_v3_qdb ",
-          "description": "Fetch hostname from Grafana",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "host",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "description": "Fetch hostname from Grafana",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana-postgresql-datasource",
+            "version": "v0",
             "datasource": {
               "name": "de37ukxhtqrr4e"
             },
-            "group": "grafana-postgresql-datasource",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT DISTINCT \"host\" FROM ss_tcp_net_mon_v3_qdb "
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SELECT DISTINCT \"host\" FROM ss_tcp_net_mon_v3_qdb ",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]

@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "c718864f-51b3-461b-a786-915263e963b9"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "FH Publish to Mimid - Filtered by channel, but NOT aggregated by channel",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "ETH $tag_stat  - ($tag_host:$tag_message_type)",
                         "groupBy": [
@@ -126,22 +130,22 @@
                             "value": "AInitPubToMimidDelayNsMax"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "ETH $tag_stat  - ($tag_host:$tag_message_type)",
                         "groupBy": [
@@ -219,46 +223,73 @@
                             "value": "BInitPubToMimidDelayNsMax"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "$A - $B",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "BTC XDP - BTC DPDK Latency"
+                    "refId": "BTC XDP - BTC DPDK Latency",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "FH Publish to Mimid - Filtered by channel, but NOT aggregated by channel",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max",
+                    "mean",
+                    "min"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -294,21 +325,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -336,31 +353,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max",
-                    "mean",
-                    "min"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Last Publish to Mimid - Filtered by channel, but NOT aggregated",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -368,13 +372,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_stat  - ($tag_host:$tag_message_type)",
                         "groupBy": [
@@ -452,22 +456,22 @@
                             "value": "ALastPubToMimidDelayNsMax"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_stat  - ($tag_host:$tag_message_type)",
                         "groupBy": [
@@ -545,46 +549,74 @@
                             "value": "BLastPubToMimidDelayNsMax"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "$A - $B",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "UDP - DPDK Latency"
+                    "refId": "UDP - DPDK Latency",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Last Publish to Mimid - Filtered by channel, but NOT aggregated",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Max",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -619,21 +651,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -661,26 +679,8 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Max",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -692,27 +692,27 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 13,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 13,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 13,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 13
+              }
             }
           }
         ]
@@ -723,6 +723,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "2024-09-05T13:25:43.175Z",
+      "to": "2024-09-05T13:27:24.007Z",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -736,19 +739,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "2024-09-05T13:25:43.175Z",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "2024-09-05T13:27:24.007Z"
+      "fiscalYearStartMonth": 0
     },
     "title": "Mimid Feed Latencies - DPDK Comparison",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "host",
           "current": {
             "text": [
               "TA-SGP-C-17"
@@ -757,34 +756,34 @@
               "TA-SGP-C-17"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"host\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "host",
-          "options": [],
+          "refresh": "onTimeRangeChanged",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"host\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onTimeRangeChanged",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"host\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "channel",
           "current": {
             "text": [
               "Crypto ETH\\/USDT\\@BINANCE MD"
@@ -793,34 +792,34 @@
               "Crypto ETH\\/USDT\\@BINANCE MD"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"channel\" WHERE (\"host\"=$host)",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "channel",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"channel\" WHERE (\"host\"=$host)"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "/.*Crypto*./",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"channel\" WHERE (\"host\"=$host)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "message_type",
           "current": {
             "text": [
               "BboUpdate"
@@ -829,28 +828,29 @@
               "BboUpdate"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"message_type\" WHERE (\"host\"=$host)",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Message",
-          "multi": true,
-          "name": "message_type",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"message_type\" WHERE (\"host\"=$host)"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM \"PerMDChannel\" WITH KEY = \"message_type\" WHERE (\"host\"=$host)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       }
     ]

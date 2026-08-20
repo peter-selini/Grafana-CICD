@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "fe56gfbgqfqwwc"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "ibytes",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -101,27 +105,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "ibytes",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bytes",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -156,49 +188,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bytes"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "obytes",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -206,13 +210,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -265,27 +269,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "obytes",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bytes",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -320,49 +352,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bytes"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "ipackets",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -370,13 +374,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -429,27 +433,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "ipackets",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -484,49 +516,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "ierrors",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -534,13 +538,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -593,27 +597,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "ierrors",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -648,49 +680,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "opackets",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -698,13 +702,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -757,27 +761,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "opackets",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -812,49 +844,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "imissed",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -862,13 +866,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -921,27 +925,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "imissed",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -976,49 +1008,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "oerrors",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1026,13 +1030,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -1085,27 +1089,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "oerrors",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1140,49 +1172,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "rx_nombuf",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1190,13 +1194,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "ee53n8nd4qn7kf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -1249,27 +1253,55 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "rx_nombuf",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max",
+                    "mean"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "pps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1304,43 +1336,11 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "pps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max",
-                    "mean"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -1352,105 +1352,105 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 8,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 8
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 8,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 8
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 16,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 16
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 16,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 16
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 24,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 24
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 24,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 24
+              }
             }
           }
         ]
@@ -1461,6 +1461,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now-6h",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -1474,43 +1477,40 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-6h",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "DPDK Monitoring",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "host",
           "current": {
             "text": "TA-TKY-A-22",
             "value": "TA-TKY-A-22"
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"host\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "host",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "ee53n8nd4qn7kf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"host\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"host\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       }
     ]

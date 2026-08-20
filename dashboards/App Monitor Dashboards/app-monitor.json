@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "nV73JGm4k"
@@ -9,27 +9,27 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -40,6 +40,10 @@
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Host Monitor",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -47,59 +51,31 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "iDaPMksnk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
-                        "query": "from(bucket: \"MktData_Monitor\")\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"hostname_good_bad\")\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"total_bad\")\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)\n  |\u003e yield(name: \"last\")"
-                      },
-                      "version": "v0"
+                        "query": "from(bucket: \"MktData_Monitor\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"hostname_good_bad\")\n  |> filter(fn: (r) => r[\"_field\"] == \"total_bad\")\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Host Monitor",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.0.1",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "semi-dark-red",
-                        "value": null
-                      },
-                      {
-                        "color": "#473826",
-                        "value": 0
-                      },
-                      {
-                        "color": "semi-dark-red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -113,15 +89,43 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "semi-dark-red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "#473826"
+                      },
+                      {
+                        "value": 1,
+                        "color": "semi-dark-red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.0.1"
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "Exchanges per Hostname",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -129,58 +133,34 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "KF75DImVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_hostname",
                         "query": "SELECT COUNT(exch_id) FROM (\nSELECT last(\"count\"),\"exch_id\" FROM \"instr_monitor\" WHERE $timeFilter GROUP BY \"exch_id\", \"hostname\"\n) GROUP BY \"hostname\" fill(previous)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "Exchanges per Hostname",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.0.1",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -194,15 +174,39 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.0.1"
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Total Instruments per Hostname",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -210,13 +214,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "KF75DImVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_hostname",
                         "groupBy": [
@@ -266,42 +270,22 @@
                             "value": "kucoin_fh_0-TKY-A-11.ring"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "Total Instruments per Hostname",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.0.1",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -315,9 +299,25 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.0.1"
+            }
           }
         }
       }
@@ -329,40 +329,40 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 4,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 10,
-              "width": 4,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 4,
+              "y": 0,
+              "width": 20,
+              "height": 18,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 18,
-              "width": 20,
-              "x": 4,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 10,
+              "width": 4,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 8,
-              "width": 4,
-              "x": 0,
-              "y": 10
+              }
             }
           }
         ]
@@ -373,6 +373,8 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "from": "now-6h",
+      "to": "now",
       "autoRefresh": "10s",
       "autoRefreshIntervals": [
         "5s",
@@ -386,10 +388,8 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-6h",
       "hideTimepicker": false,
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "App Monitor",
     "variables": []

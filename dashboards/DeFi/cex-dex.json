@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "abb5f1f8-1f49-4e2c-8d1e-aeb39ba840e0"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "CEX vs DEX",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$col",
                         "groupBy": [
@@ -200,22 +204,22 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$col",
                         "groupBy": [
@@ -313,27 +317,51 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "CEX vs DEX",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 4,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -369,22 +397,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 4,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": [
                   {
@@ -510,27 +523,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-10": {
         "kind": "Panel",
         "spec": {
+          "id": 10,
+          "title": "Tao PnL (incl. gas)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -538,27 +542,26 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "-- Dashboard --"
                       },
-                      "group": "datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "panelId": 7
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -569,8 +572,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Tao PnL",
@@ -588,40 +591,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 10,
-          "links": [],
-          "title": "Tao PnL (incl. gas)",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -635,15 +613,41 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-11": {
         "kind": "Panel",
         "spec": {
+          "id": 11,
+          "title": "Broadcast Latency (ms)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -651,13 +655,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "network_rt_time",
                         "groupBy": [
@@ -711,22 +715,22 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "upstream_time",
                         "groupBy": [
@@ -780,27 +784,49 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 11,
-          "links": [],
-          "title": "Broadcast Latency (ms)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 30,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -833,43 +859,21 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 30
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-12": {
         "kind": "Panel",
         "spec": {
+          "id": 12,
+          "title": "Gas Cost",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -877,13 +881,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "gas_cost",
                         "groupBy": [
@@ -937,27 +941,47 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 12,
-          "links": [],
-          "title": "Gas Cost",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -990,18 +1014,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
@@ -1020,27 +1033,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
+          "id": 13,
+          "title": "Total Gas Spent",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1048,13 +1052,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "gas_cost",
                         "groupBy": [
@@ -1108,18 +1112,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -1128,36 +1131,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 13,
-          "links": [],
-          "title": "Total Gas Spent",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "text",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -1171,15 +1153,37 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "text"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-14": {
         "kind": "Panel",
         "spec": {
+          "id": 14,
+          "title": "Failed Transactions",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1187,13 +1191,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "failed",
                         "groupBy": [
@@ -1247,18 +1251,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -1267,36 +1270,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 14,
-          "links": [],
-          "title": "Failed Transactions",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "none"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -1310,15 +1292,37 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-16": {
         "kind": "Panel",
         "spec": {
+          "id": 16,
+          "title": "Failed Transaction Gas Spent",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1326,13 +1330,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$col",
                         "groupBy": [
@@ -1410,18 +1414,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1439,8 +1442,8 @@
                   }
                 },
                 {
-                  "group": "filterFieldsByName",
                   "kind": "Transformation",
+                  "group": "filterFieldsByName",
                   "spec": {
                     "options": {
                       "include": {
@@ -1452,8 +1455,8 @@
                   }
                 },
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "includeTimeField": false,
@@ -1464,36 +1467,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 16,
-          "links": [],
-          "title": "Failed Transaction Gas Spent",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -1507,15 +1489,37 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-17": {
         "kind": "Panel",
         "spec": {
+          "id": 17,
+          "title": "Slippage (bp)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1523,13 +1527,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "slippage",
                         "groupBy": [
@@ -1583,27 +1587,47 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 17,
-          "links": [],
-          "title": "Slippage (bp)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 1,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1636,18 +1660,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 1,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": [
                   {
@@ -1666,27 +1679,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-18": {
         "kind": "Panel",
         "spec": {
+          "id": 18,
+          "title": "Successful Transactions",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1694,13 +1698,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$col",
                         "groupBy": [
@@ -1780,18 +1784,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1809,8 +1812,8 @@
                   }
                 },
                 {
-                  "group": "filterFieldsByName",
                   "kind": "Transformation",
+                  "group": "filterFieldsByName",
                   "spec": {
                     "options": {
                       "include": {
@@ -1822,8 +1825,8 @@
                   }
                 },
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -1832,36 +1835,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 18,
-          "links": [],
-          "title": "Successful Transactions",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "none"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -1875,15 +1857,37 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-19": {
         "kind": "Panel",
         "spec": {
+          "id": 19,
+          "title": "Idealized PnL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1891,13 +1895,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "idealized_pnl",
                         "groupBy": [
@@ -1951,18 +1955,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -1971,40 +1974,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 19,
-          "links": [],
-          "title": "Idealized PnL",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -2018,15 +1996,41 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Delta",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2034,13 +2038,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$col",
                         "groupBy": [
@@ -2190,27 +2194,51 @@
                             "value": "/^$dex$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Delta",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "decimals": 3,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "semi-dark-red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "semi-dark-green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2243,22 +2271,7 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "decimals": 3,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "semi-dark-red",
-                        "value": null
-                      },
-                      {
-                        "color": "semi-dark-green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": [
                   {
@@ -2352,27 +2365,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-20": {
         "kind": "Panel",
         "spec": {
+          "id": 20,
+          "title": "Cumulative Tx Fees",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2380,13 +2384,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "cumulative_tx_fees",
                         "groupBy": [
@@ -2440,27 +2444,51 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 20,
-          "links": [],
-          "title": "Cumulative Tx Fees",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2493,45 +2521,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Position",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2539,55 +2543,55 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "perp_position",
                         "query": "SELECT last(\"positionAsFloat\") \nFROM \"default_signals_retention\".\"StrategySignal\" \nWHERE (\"strategy\"::tag = '$strategy')\nAND $timeFilter \nGROUP BY time($__interval) \nfill(null)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "spot_position",
                         "query": "SELECT last(\"lot_token_balance\") \nFROM \"default_defi_retention\".\"basis\" \nWHERE (\"network\"::tag =~ /^$network$/ AND \"dex\"::tag =~ /^$dex$/ AND \"symbol\"::tag =~ /^$symbol$/) \nAND $timeFilter \nGROUP BY time($__interval) \nfill(null)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "quote_token_balance",
                         "groupBy": [
@@ -2643,18 +2647,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "disabled": true,
                     "options": {
@@ -2673,8 +2676,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "net_position",
@@ -2690,19 +2693,43 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "Position",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2735,20 +2762,6 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -2791,7 +2804,52 @@
                     ]
                   }
                 ]
-              },
+              }
+            }
+          }
+        }
+      },
+      "panel-7": {
+        "kind": "Panel",
+        "spec": {
+          "id": 7,
+          "title": "Tao PnL",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
+                      },
+                      "spec": {
+                        "query": "SELECT mean(\"pnl\") FROM \"default_signals_retention\".\"StrategySignal\"\nWHERE (\"strategy\"::tag = '$strategy')\nAND $timeFilter \nGROUP BY time($__interval) \nfill(null)",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
+            "spec": {
               "options": {
                 "legend": {
                   "calcs": [],
@@ -2803,54 +2861,23 @@
                   "mode": "single",
                   "sort": "none"
                 }
-              }
-            },
-            "version": ""
-          }
-        }
-      },
-      "panel-7": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "query": "SELECT mean(\"pnl\") FROM \"default_signals_retention\".\"StrategySignal\"\nWHERE (\"strategy\"::tag = '$strategy')\nAND $timeFilter \nGROUP BY time($__interval) \nfill(null)",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                }
-              ],
-              "queryOptions": {},
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "Tao PnL",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
+              },
               "fieldConfig": {
                 "defaults": {
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2883,44 +2910,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "Idealized PnL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2928,13 +2932,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "idealized_pnl",
                         "groupBy": [
@@ -2988,27 +2992,51 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "Idealized PnL",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3041,45 +3069,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "Volume",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3087,13 +3091,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "volume",
                         "groupBy": [
@@ -3147,18 +3151,17 @@
                             "value": "/^$symbol$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -3167,39 +3170,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "Volume",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "9.5.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "text",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -3213,9 +3192,30 @@
                   "values": false
                 },
                 "textMode": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "text"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       }
@@ -3227,209 +3227,209 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-11"
-              },
-              "height": 6,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 6,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 6
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 18,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 18
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 26,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 26
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 35,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 35
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 44,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 44
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 52,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-12"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 52
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 60,
+              "width": 24,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-20"
-              },
-              "height": 10,
-              "width": 24,
-              "x": 0,
-              "y": 60
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 70,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-17"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 70
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 78,
+              "width": 5,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-10"
-              },
-              "height": 6,
-              "width": 5,
-              "x": 0,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 5,
+              "y": 78,
+              "width": 4,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-16"
-              },
-              "height": 6,
-              "width": 4,
-              "x": 5,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 9,
+              "y": 78,
+              "width": 4,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-13"
-              },
-              "height": 6,
-              "width": 4,
-              "x": 9,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 13,
+              "y": 78,
+              "width": 3,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-14"
-              },
-              "height": 6,
-              "width": 3,
-              "x": 13,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 16,
+              "y": 78,
+              "width": 3,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-18"
-              },
-              "height": 6,
-              "width": 3,
-              "x": 16,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 19,
+              "y": 78,
+              "width": 5,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-9"
-              },
-              "height": 6,
-              "width": 5,
-              "x": 19,
-              "y": 78
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 84,
+              "width": 5,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-19"
-              },
-              "height": 6,
-              "width": 5,
-              "x": 0,
-              "y": 84
+              }
             }
           }
         ]
@@ -3440,6 +3440,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now-5m",
+      "to": "now",
       "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
@@ -3453,81 +3456,78 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-5m",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "CEX-DEX",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "network",
           "current": {
             "text": "optimism",
             "value": "optimism"
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"network\"",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "network",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"network\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"network\"",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "dex",
           "current": {
             "text": "klayswap",
             "value": "klayswap"
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"dex\" WHERE \"network\" = '$network'",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "DEX",
-          "multi": false,
-          "name": "dex",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"dex\" WHERE \"network\" = '$network'"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"dex\" WHERE \"network\" = '$network'",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "symbol",
           "current": {
             "text": [
               "ETHBUSD_5"
@@ -3536,59 +3536,59 @@
               "ETHBUSD_5"
             ]
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"symbol\" WHERE \"network\" = '$network' AND \"dex\" = '$dex'",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "symbol",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"symbol\" WHERE \"network\" = '$network' AND \"dex\" = '$dex'"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"symbol\" WHERE \"network\" = '$network' AND \"dex\" = '$dex'",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "strategy",
           "current": {
             "text": "1000PEPEUSDT-PERP_NthBest_MSS_Fit_WN_2_NthBestV2",
             "value": "1000PEPEUSDT-PERP_NthBest_MSS_Fit_WN_2_NthBestV2"
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"strategy\"",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "Mimid Strategy",
-          "multi": false,
-          "name": "strategy",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"strategy\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"strategy\"",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]

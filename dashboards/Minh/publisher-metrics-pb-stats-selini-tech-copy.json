@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "ff4gujfusav40a"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "Source to Publisher Recv Delay ",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -131,27 +135,54 @@
                             "value": "/^$message$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "Source to Publisher Recv Delay ",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Max",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -186,48 +217,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Max",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-10": {
         "kind": "Panel",
         "spec": {
+          "id": 10,
+          "title": "Total Subscriptions (exch x instr)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -235,13 +239,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$app_name",
                         "groupBy": [
@@ -281,47 +285,22 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 10,
-          "links": [],
-          "title": "Total Subscriptions (exch x instr)",
           "vizConfig": {
-            "group": "gauge",
             "kind": "VizConfig",
+            "group": "gauge",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "percentage",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "orange",
-                        "value": 70
-                      },
-                      {
-                        "color": "red",
-                        "value": 85
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -336,15 +315,40 @@
                 "showThresholdLabels": false,
                 "showThresholdMarkers": true,
                 "sizing": "auto"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "percentage",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "orange"
+                      },
+                      {
+                        "value": 85,
+                        "color": "red"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-11": {
         "kind": "Panel",
         "spec": {
+          "id": 11,
+          "title": "Read Src Ring Chan to Write Socket Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -352,13 +356,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type core=$tag_thread_id",
                         "groupBy": [
@@ -455,79 +459,22 @@
                             "value": "/^$core$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 11,
-          "links": [],
-          "title": "Read Src Ring Chan to Write Socket Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
-                },
-                "overrides": []
-              },
               "options": {
                 "legend": {
                   "calcs": [
@@ -543,15 +490,72 @@
                   "mode": "single",
                   "sort": "none"
                 }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-12": {
         "kind": "Panel",
         "spec": {
+          "id": 12,
+          "title": "Num Trade Packets Coalesced",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -559,13 +563,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -650,27 +654,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 12,
-          "links": [],
-          "title": "Num Trade Packets Coalesced",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -705,46 +734,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
+          "id": 13,
+          "title": "First to Last Trade Coalesce Ns",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -752,13 +756,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -843,27 +847,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 13,
-          "links": [],
-          "title": "First to Last Trade Coalesce Ns",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -898,46 +927,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-14": {
         "kind": "Panel",
         "spec": {
+          "id": 14,
+          "title": "(Projected for subscribe count) Trade Coalescing Latency Savings Ns",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -945,13 +949,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1036,22 +1040,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1136,22 +1140,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1236,22 +1240,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1336,22 +1340,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1438,22 +1442,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "E"
+                    "refId": "E",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1540,103 +1544,128 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "J"
+                    "refId": "J",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "($A + $B * 5 + $C) * $D - ($E * $D + ($A + $B + $C))",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "F"
+                    "refId": "F",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "($A + $B * 10 + $C) * $D - ($E * $D + ($A + $B + $C))",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "G"
+                    "refId": "G",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "($A + $B * 50 + $C) * $D - ($E * $D + ($A + $B + $C))",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "H"
+                    "refId": "H",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "($A + $B * 100 + $C) * $D - ($E * $D + ($A + $B + $C))",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "I"
+                    "refId": "I",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 14,
-          "links": [],
-          "title": "(Projected for subscribe count) Trade Coalescing Latency Savings Ns",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1671,46 +1700,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-15": {
         "kind": "Panel",
         "spec": {
+          "id": 15,
+          "title": "(Actual subscribe count) Trade Coalescing Latency Savings Ns",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1718,13 +1722,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1809,22 +1813,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -1909,22 +1913,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -2009,22 +2013,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -2109,22 +2113,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -2211,22 +2215,22 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "E"
+                    "refId": "E",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -2313,46 +2317,71 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "J"
+                    "refId": "J",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "($A + $B * $J + $C) * $D - ($E * $D + ($A + $B + $C))",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "F"
+                    "refId": "F",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 15,
-          "links": [],
-          "title": "(Actual subscribe count) Trade Coalescing Latency Savings Ns",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2387,46 +2416,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-16": {
         "kind": "Panel",
         "spec": {
+          "id": 16,
+          "title": "Write ns",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2434,13 +2438,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type core=$tag_thread_id",
                         "groupBy": [
@@ -2537,27 +2541,54 @@
                             "value": "/^$core$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 16,
-          "links": [],
-          "title": "Write ns",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Max",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2592,21 +2623,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -2634,31 +2651,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Max",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-17": {
         "kind": "Panel",
         "spec": {
+          "id": 17,
+          "title": "Read ns",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2666,13 +2670,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type core=$tag_thread_id",
                         "groupBy": [
@@ -2769,27 +2773,54 @@
                             "value": "/^$core$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 17,
-          "links": [],
-          "title": "Read ns",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Max",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2824,21 +2855,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -2866,31 +2883,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Max",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Source and Internal Ring Chan Queue Size",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2898,13 +2902,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -2957,27 +2961,50 @@
                             "value": "/^$host$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Source and Internal Ring Chan Queue Size",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bytes",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3012,21 +3039,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bytes"
+                  }
                 },
                 "overrides": [
                   {
@@ -3054,27 +3067,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Thread Internal Ring Chan Queue Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3082,13 +3086,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type core=$tag_thread_id",
                         "groupBy": [
@@ -3185,27 +3189,54 @@
                             "value": "/^$core$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Thread Internal Ring Chan Queue Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Max",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3240,48 +3271,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Max",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "Subscriber Count in Thread",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3289,13 +3293,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument core=$tag_thread_id",
                         "groupBy": [
@@ -3376,27 +3380,52 @@
                             "value": "/^$core$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "Subscriber Count in Thread",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3431,46 +3460,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Socket Write Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3478,13 +3482,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -3569,27 +3573,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "Socket Write Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3624,46 +3653,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Socket Cleanup Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3671,13 +3675,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -3762,27 +3766,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "Socket Cleanup Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3817,46 +3846,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "Thread Ring Chan Read to Pre-Socket Write Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3864,13 +3868,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -3955,27 +3959,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "Thread Ring Chan Read to Pre-Socket Write Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -4010,46 +4039,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "DPDK Prepare Send Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -4057,13 +4061,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -4148,27 +4152,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "DPDK Prepare Send Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -4203,46 +4232,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "DPDK Send Delay",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -4250,13 +4254,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdzftakoy914wf"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_app_name $tag_exchange $tag_instrument msg=$tag_msg_type",
                         "groupBy": [
@@ -4341,27 +4345,52 @@
                             "value": "/^$exchange$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "DPDK Send Delay",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -4396,40 +4425,11 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -4441,222 +4441,222 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-11"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 8,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-16"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 8
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 16,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-17"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 16
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 24,
+              "width": 24,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 7,
-              "width": 24,
-              "x": 0,
-              "y": 24
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 31,
+              "width": 19,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 7,
-              "width": 19,
-              "x": 0,
-              "y": 31
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 19,
+              "y": 31,
+              "width": 5,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-10"
-              },
-              "height": 7,
-              "width": 5,
-              "x": 19,
-              "y": 31
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 38,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 38
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 46,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 0,
-              "y": 46
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 46,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 12,
-              "y": 46
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 53,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 0,
-              "y": 53
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 53,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 12,
-              "y": 53
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 60,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 0,
-              "y": 60
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 60,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-9"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 12,
-              "y": 60
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 67,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-12"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 0,
-              "y": 67
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 67,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-13"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 12,
-              "y": 67
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 74,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-14"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 0,
-              "y": 74
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 74,
+              "width": 12,
+              "height": 7,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-15"
-              },
-              "height": 7,
-              "width": 12,
-              "x": 12,
-              "y": 74
+              }
             }
           }
         ]
@@ -4667,6 +4667,8 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "from": "now-15m",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -4680,18 +4682,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-15m",
       "hideTimepicker": false,
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "Publisher Metrics - pb-stats.selini.tech Copy",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "host",
           "current": {
             "text": [
               "TA-SGP-C-07"
@@ -4700,35 +4699,35 @@
               "TA-SGP-C-07"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"ring_chan_queue_size\" WITH KEY=\"hostname\"",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Publisher Host",
-          "multi": true,
-          "name": "host",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"ring_chan_queue_size\" WITH KEY=\"hostname\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"ring_chan_queue_size\" WITH KEY=\"hostname\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "exchange",
           "current": {
             "text": [
               "All"
@@ -4737,35 +4736,35 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"exchange\" WHERE \"hostname\" =~ /^$host$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Source Exchange",
-          "multi": true,
-          "name": "exchange",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"exchange\" WHERE \"hostname\" =~ /^$host$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"exchange\" WHERE \"hostname\" =~ /^$host$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "instrument",
           "current": {
             "text": [
               "BTC/USDT-PERP"
@@ -4774,35 +4773,35 @@
               "BTC/USDT-PERP"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"instrument\" WHERE \"hostname\" =~ /^$host$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Instrument",
-          "multi": true,
-          "name": "instrument",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"instrument\" WHERE \"hostname\" =~ /^$host$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"instrument\" WHERE \"hostname\" =~ /^$host$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "message",
           "current": {
             "text": [
               "All"
@@ -4811,35 +4810,35 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"msg_type\" WHERE \"hostname\" =~ /^$host$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Message",
-          "multi": true,
-          "name": "message",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"msg_type\" WHERE \"hostname\" =~ /^$host$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"msg_type\" WHERE \"hostname\" =~ /^$host$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "core",
           "current": {
             "text": [
               "All"
@@ -4848,35 +4847,35 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"thread_id\" WHERE \"hostname\" =~ /^$host$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Core",
-          "multi": true,
-          "name": "core",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"thread_id\" WHERE \"hostname\" =~ /^$host$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"thread_id\" WHERE \"hostname\" =~ /^$host$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": "*",
-          "allowCustomValue": true,
+          "name": "app_name",
           "current": {
             "text": [
               "All"
@@ -4885,28 +4884,29 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"app_name\" WHERE \"hostname\" =~ /^$host$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "App Name",
-          "multi": true,
-          "name": "app_name",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "bdzftakoy914wf"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"app_name\" WHERE \"hostname\" =~ /^$host$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES  ON \"omnia_stats\" FROM \"udp_pub_subscriber_count\" WITH KEY=\"app_name\" WHERE \"hostname\" =~ /^$host$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": "*",
+          "allowCustomValue": true
         }
       }
     ]

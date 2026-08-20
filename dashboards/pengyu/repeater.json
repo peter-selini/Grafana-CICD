@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "dfa3ypw7z4x6ob"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-10": {
         "kind": "Panel",
         "spec": {
+          "id": 10,
+          "title": "repeater process time",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -109,79 +113,22 @@
                             "value": "/^$remote_addr$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 10,
-          "links": [],
-          "title": "repeater process time",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
-                },
-                "overrides": []
-              },
               "options": {
                 "legend": {
                   "calcs": [],
@@ -193,55 +140,23 @@
                   "mode": "single",
                   "sort": "none"
                 }
-              }
-            },
-            "version": ""
-          }
-        }
-      },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "edzfq5lame8e8c"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "[[hostname]] pb: [[remote_addr]]",
-                        "query": "SELECT\n  sum(\"count\") AS \"packet_count\"\nFROM \"winning_packet\"\nWHERE\n  \"hostname\" =~ /^$hostname$/ AND\n  \"remote_addr\" =~ /^$remote_addr$/ AND\n  $timeFilter\nGROUP BY time(1s), \"hostname\", \"remote_addr\"\n",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                }
-              ],
-              "queryOptions": {},
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "winning packets",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -276,19 +191,117 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "id": 2,
+          "title": "winning packets",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "edzfq5lame8e8c"
+                      },
+                      "spec": {
+                        "alias": "[[hostname]] pb: [[remote_addr]]",
+                        "query": "SELECT\n  sum(\"count\") AS \"packet_count\"\nFROM \"winning_packet\"\nWHERE\n  \"hostname\" =~ /^$hostname$/ AND\n  \"remote_addr\" =~ /^$remote_addr$/ AND\n  $timeFilter\nGROUP BY time(1s), \"hostname\", \"remote_addr\"\n",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "green",
-                        "value": null
+                        "value": null,
+                        "color": "green"
                       },
                       {
-                        "color": "red",
-                        "value": 80
+                        "value": 80,
+                        "color": "red"
                       }
                     ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
                   }
                 },
                 "overrides": [
@@ -317,27 +330,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "fh to repeater",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -345,13 +349,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -412,27 +416,50 @@
                             "value": "/^$msg_type$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "fh to repeater",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -467,44 +494,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "fh to udp_publisher",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -512,38 +516,61 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT median(\"avg\") FROM \"udp_publisher_delay_ns\" WHERE (\"exchange\"::tag =~ /^$exchange$/ AND \"hostname\"::tag =~ /^$hostname$/ AND \"instrument\"::tag =~ /^$instrument$/ AND \"msg_type\"::tag =~ /^$msg_type$/) AND $timeFilter GROUP BY time($__interval)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "fh to udp_publisher",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -578,44 +605,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "total received by conn per second",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -623,39 +627,62 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "[[hostname]] pb:[[remote_addr]]",
                         "query": "SELECT\n  SUM(\"total_bytes\") AS \"bytes_per_sec\"\nFROM (\n  SELECT\n    \"avg\" * \"count\" AS \"total_bytes\"\n  FROM \"bytes_received_per_conn\"\n  WHERE\n    \"hostname\"    =~ /^$hostname$/ AND\n    $timeFilter\n)\nGROUP BY time(1s), \"hostname\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "total received by conn per second",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "binBps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -690,44 +717,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "binBps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "max sequence gap",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -735,13 +739,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "[[instrument]] [[exchange]] pb:[[remote_addr]]",
                         "groupBy": [],
@@ -780,27 +784,49 @@
                             "value": "/^$instrument$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "max sequence gap",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -835,19 +861,6 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -876,27 +889,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "number of messages",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -904,13 +908,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edzfq5lame8e8c"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "pb:[[remote_addr]] [[instrument]] [[exchange]] [[msg_type]]",
                         "groupBy": [
@@ -978,27 +982,49 @@
                             "value": "/^$remote_addr$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "number of messages",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1033,37 +1059,11 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -1075,92 +1075,92 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 8,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 8
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 8,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-10"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 8
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 16,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 16
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 16,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 16
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 24,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-9"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 24
+              }
             }
           }
         ]
@@ -1171,6 +1171,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now-3h",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -1184,19 +1187,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-3h",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "repeater",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": ".*",
-          "allowCustomValue": true,
+          "name": "hostname",
           "current": {
             "text": [
               "TA-TKY-A-94"
@@ -1205,34 +1204,34 @@
               "TA-TKY-A-94"
             ]
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"hostname\"",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": true,
-          "name": "hostname",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "edzfq5lame8e8c"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"hostname\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES WITH KEY = \"hostname\"",
+          "options": [],
+          "multi": true,
+          "includeAll": false,
+          "allValue": ".*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": ".*",
-          "allowCustomValue": true,
+          "name": "msg_type",
           "current": {
             "text": [
               "All"
@@ -1241,34 +1240,34 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY=\"msg_type\" where hostname=$hostname",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "msg_type",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "edzfq5lame8e8c"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY=\"msg_type\" where hostname=$hostname"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY=\"msg_type\" where hostname=$hostname",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": ".*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": ".*",
-          "allowCustomValue": true,
+          "name": "instrument",
           "current": {
             "text": [
               "BTC/USDT-PERP"
@@ -1277,34 +1276,34 @@
               "BTC/USDT-PERP"
             ]
           },
-          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"instrument\" where \"hostname\"=$hostname",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "instrument",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "edzfq5lame8e8c"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"instrument\" where \"hostname\"=$hostname"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"instrument\" where \"hostname\"=$hostname",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": ".*",
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allValue": ".*",
-          "allowCustomValue": true,
+          "name": "exchange",
           "current": {
             "text": [
               "OKEX"
@@ -1313,27 +1312,28 @@
               "OKEX"
             ]
           },
-          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"exchange\" where \"hostname\"=$hostname",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "exchange",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "edzfq5lame8e8c"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"exchange\" where \"hostname\"=$hostname"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES ON \"omnia_stats\" from \"publish_delay_ns\" WITH KEY = \"exchange\" where \"hostname\"=$hostname",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allValue": ".*",
+          "allowCustomValue": true
         }
       }
     ]

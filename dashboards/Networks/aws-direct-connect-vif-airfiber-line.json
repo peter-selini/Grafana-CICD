@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "dfcwez5hwsv0gb"
@@ -9,27 +9,27 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -40,6 +40,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "BGP Status",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -47,13 +51,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "ConnectionId": "dxcon-fgxhxhtu"
@@ -72,44 +76,22 @@
                         "region": "ap-northeast-1",
                         "sqlExpression": "",
                         "statistic": "Maximum"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "BGP Status",
-          "transparent": true,
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -125,15 +107,37 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 1,
+                        "color": "green"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-10": {
         "kind": "Panel",
         "spec": {
+          "id": 10,
+          "title": "Packet In (pps)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -141,13 +145,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "VirtualInterfaceId": "dxvif-ffjkjbav"
@@ -201,28 +205,54 @@
                         },
                         "sqlExpression": "SELECT MAX(VirtualInterfacePpsIngress) FROM \"AWS/DX\" WHERE VirtualInterfaceId = 'dxvif-ffjkjbav'",
                         "statistic": "Average"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 10,
-          "links": [],
-          "title": "Packet In (pps)",
-          "transparent": true,
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -257,48 +287,22 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "max",
-                    "min"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Error Count",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -306,13 +310,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "ConnectionId": "dxcon-fgxhxhtu"
@@ -331,47 +335,22 @@
                         "region": "ap-northeast-1",
                         "sqlExpression": "",
                         "statistic": "Sum"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Error Count",
-          "transparent": true,
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "area",
@@ -387,15 +366,40 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "TKY-A Ingress Traffic (bps) [TKY-A <== HKG-D]",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -403,13 +407,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "VirtualInterfaceId": "dxvif-ffjkjbav"
@@ -463,28 +467,54 @@
                         },
                         "sqlExpression": "SELECT MAX(VirtualInterfaceBpsIngress) FROM \"AWS/DX\" WHERE VirtualInterfaceId = 'dxvif-ffjkjbav'",
                         "statistic": "Average"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "TKY-A Ingress Traffic (bps) [TKY-A \u003c== HKG-D]",
-          "transparent": true,
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -519,48 +549,22 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "max",
-                    "min"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "TKY-A Egress Traffic (bps) [TKY-A => HKG-D]",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -568,13 +572,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "VirtualInterfaceId": "dxvif-ffjkjbav"
@@ -628,28 +632,54 @@
                         },
                         "sqlExpression": "SELECT MAX(VirtualInterfaceBpsEgress) FROM \"AWS/DX\" WHERE VirtualInterfaceId = 'dxvif-ffjkjbav'",
                         "statistic": "Average"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "TKY-A Egress Traffic (bps) [TKY-A =\u003e HKG-D]",
-          "transparent": true,
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -684,48 +714,22 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "max",
-                    "min"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "Packet Out (pps)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -733,13 +737,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdrfnqbp2k8w0f"
                       },
-                      "group": "cloudwatch",
-                      "kind": "DataQuery",
                       "spec": {
                         "dimensions": {
                           "VirtualInterfaceId": "dxvif-ffjkjbav"
@@ -793,28 +797,54 @@
                         },
                         "sqlExpression": "SELECT MAX(VirtualInterfacePpsEgress) FROM \"AWS/DX\" WHERE VirtualInterfaceId = 'dxvif-ffjkjbav'",
                         "statistic": "Average"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "Packet Out (pps)",
-          "transparent": true,
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "max",
+                    "min"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "bps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -849,43 +879,13 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "bps"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "max",
-                    "min"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
-          }
+            }
+          },
+          "transparent": true
         }
       }
     },
@@ -896,79 +896,79 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 10,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 10,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 10
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 19,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-10"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 0,
-              "y": 19
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 19,
+              "width": 12,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-9"
-              },
-              "height": 8,
-              "width": 12,
-              "x": 12,
-              "y": 19
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 27,
+              "width": 12,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 6,
-              "width": 12,
-              "x": 0,
-              "y": 27
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 27,
+              "width": 12,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 6,
-              "width": 12,
-              "x": 12,
-              "y": 27
+              }
             }
           }
         ]
@@ -982,6 +982,9 @@
       "vif"
     ],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now-2d",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -995,11 +998,8 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-2d",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "AWS Direct Connect VIF - AirFiber Line",
     "variables": []

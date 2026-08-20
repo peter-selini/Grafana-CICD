@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "fewg8jxqr2sjkd"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "Top 10 instances - max_packets_in",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,18 +46,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "devd3wmtd8v0gc"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT\n    e.instance_name AS instance,      -- get instance_name instead of instance_id\n    MAX(c.intranet_in_rate_average) AS max_packets_in\nFROM aliyuncms_acs_ecs_dashboard c                -- your metrics table\nJOIN ecs_instances e                  -- table containing instance_id -\u003e instance_name mapping\n    ON c.instanceId = e.instance_id\nWHERE e.region = '$region'\n  AND $__timeFilter(c.timestamp)      -- Grafana macro for time filter\nGROUP BY e.instance_name\nORDER BY max_packets_in DESC\nLIMIT 10;",
+                        "rawSql": "SELECT\n    e.instance_name AS instance,      -- get instance_name instead of instance_id\n    MAX(c.intranet_in_rate_average) AS max_packets_in\nFROM aliyuncms_acs_ecs_dashboard c                -- your metrics table\nJOIN ecs_instances e                  -- table containing instance_id -> instance_name mapping\n    ON c.instanceId = e.instance_id\nWHERE e.region = '$region'\n  AND $__timeFilter(c.timestamp)      -- Grafana macro for time filter\nGROUP BY e.instance_name\nORDER BY max_packets_in DESC\nLIMIT 10;",
                         "sql": {
                           "columns": [
                             {
@@ -71,51 +75,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "Top 10 instances - max_packets_in",
-          "transparent": true,
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "continuous-GrYlRd"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "color-text"
-                    },
-                    "inspect": false
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "binbps"
-                },
-                "overrides": []
-              },
               "options": {
                 "cellHeight": "sm",
                 "footer": {
@@ -127,15 +102,44 @@
                   "show": false
                 },
                 "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "binbps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "continuous-GrYlRd"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Top 10 instances - max_packets_out",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -143,18 +147,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "devd3wmtd8v0gc"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT\n    e.instance_name AS instance,      -- get instance_name instead of instance_id\n    MAX(c.intranet_out_rate_average) AS max_packets_out\nFROM aliyuncms_acs_ecs_dashboard c                -- your metrics table\nJOIN ecs_instances e                  -- table containing instance_id -\u003e instance_name mapping\n    ON c.instanceId = e.instance_id\nWHERE e.region = '$region'\n  AND $__timeFilter(c.timestamp)      -- Grafana macro for time filter\nGROUP BY e.instance_name\nORDER BY max_packets_out DESC\nLIMIT 10;",
+                        "rawSql": "SELECT\n    e.instance_name AS instance,      -- get instance_name instead of instance_id\n    MAX(c.intranet_out_rate_average) AS max_packets_out\nFROM aliyuncms_acs_ecs_dashboard c                -- your metrics table\nJOIN ecs_instances e                  -- table containing instance_id -> instance_name mapping\n    ON c.instanceId = e.instance_id\nWHERE e.region = '$region'\n  AND $__timeFilter(c.timestamp)      -- Grafana macro for time filter\nGROUP BY e.instance_name\nORDER BY max_packets_out DESC\nLIMIT 10;",
                         "sql": {
                           "columns": [
                             {
@@ -172,51 +176,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Top 10 instances - max_packets_out",
-          "transparent": true,
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "continuous-GrYlRd"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "color-text"
-                    },
-                    "inspect": false
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "binbps"
-                },
-                "overrides": []
-              },
               "options": {
                 "cellHeight": "sm",
                 "footer": {
@@ -228,15 +203,44 @@
                   "show": false
                 },
                 "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "binbps",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "continuous-GrYlRd"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "color-text"
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
-          }
+            }
+          },
+          "transparent": true
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Network In and Out per instance",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -244,13 +248,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "devd3wmtd8v0gc"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -273,28 +277,49 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Network In and Out per instance",
-          "transparent": true,
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull",
+                    "min",
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -329,38 +354,13 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull",
-                    "min",
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
-          }
+            }
+          },
+          "transparent": true
         }
       }
     },
@@ -371,40 +371,40 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-1"
-              },
-              "height": 12,
-              "width": 12,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 12,
-              "width": 12,
-              "x": 12,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 12,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 12
+              }
             }
           }
         ]
@@ -415,6 +415,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now-6h",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -428,74 +431,71 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-6h",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "Alicloud-ECS-Network-Traffic",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "InstanceId",
           "current": {
             "text": "i-j6c1vnepu5dztygf2030(AC-HKG-DEV-PING)",
             "value": "i-j6c1vnepu5dztygf2030(AC-HKG-DEV-PING)"
           },
-          "definition": "SELECT \n    instance_id || '(' || instance_name || ')' AS instance_info\nFROM \n    ecs_instances\nWHERE \n    region = '${region}';",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "InstanceId",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana-postgresql-datasource",
+            "version": "v0",
             "datasource": {
               "name": "devd3wmtd8v0gc"
             },
-            "group": "grafana-postgresql-datasource",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT \n    instance_id || '(' || instance_name || ')' AS instance_info\nFROM \n    ecs_instances\nWHERE \n    region = '${region}';"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT \n    instance_id || '(' || instance_name || ')' AS instance_info\nFROM \n    ecs_instances\nWHERE \n    region = '${region}';",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "region",
           "current": {
             "text": "cn-hongkong",
             "value": "cn-hongkong"
           },
-          "definition": "SELECT DISTINCT RegionId FROM aliyuncms_acs_ecs_dashboard ORDER BY RegionId ASC",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "region",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana-postgresql-datasource",
+            "version": "v0",
             "datasource": {
               "name": "devd3wmtd8v0gc"
             },
-            "group": "grafana-postgresql-datasource",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT DISTINCT RegionId FROM aliyuncms_acs_ecs_dashboard ORDER BY RegionId ASC"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT RegionId FROM aliyuncms_acs_ecs_dashboard ORDER BY RegionId ASC",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]

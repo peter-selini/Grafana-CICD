@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "cfox0to1sq8zkd"
@@ -9,25 +9,25 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "grafana"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
-          }
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
         }
       }
     ],
@@ -37,6 +37,10 @@
       "panel-21": {
         "kind": "Panel",
         "spec": {
+          "id": 21,
+          "title": "Connection win rates per message type",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -44,13 +48,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -87,22 +91,22 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -139,22 +143,22 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "F"
+                    "refId": "F",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -190,22 +194,22 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "E"
+                    "refId": "E",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -241,18 +245,17 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -298,8 +301,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -329,8 +332,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -361,8 +364,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -390,8 +393,8 @@
                   }
                 },
                 {
-                  "group": "groupingToMatrix",
                   "kind": "Transformation",
+                  "group": "groupingToMatrix",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -405,13 +408,14 @@
                   }
                 },
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
                       "options": "/^(?:F)$/"
                     },
+                    "topic": "series",
                     "options": {
                       "fields": {
                         "Time": {
@@ -441,13 +445,12 @@
                           "operation": "aggregate"
                         }
                       }
-                    },
-                    "topic": "series"
+                    }
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -484,8 +487,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -516,8 +519,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -526,7 +529,7 @@
                     "options": {
                       "excludeByName": {
                         "Time": false,
-                        "channel": false,
+                        "channel": true,
                         "conn_id": false,
                         "conn_slot": true
                       },
@@ -537,8 +540,8 @@
                   }
                 },
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -567,8 +570,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "filter": {
                       "id": "byRefId",
@@ -594,8 +597,8 @@
                   }
                 },
                 {
-                  "group": "joinByField",
                   "kind": "Transformation",
+                  "group": "joinByField",
                   "spec": {
                     "options": {
                       "byField": "conn_id",
@@ -604,8 +607,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -614,30 +617,29 @@
                       },
                       "includeByName": {},
                       "indexByName": {
-                        "Time FeedChanFeedMsg": 15,
-                        "agg_trade": 12,
-                        "bbo": 9,
-                        "channel": 0,
-                        "conn_id": 1,
-                        "depth": 10,
-                        "dst_ip": 3,
-                        "duration": 6,
-                        "end_time": 5,
-                        "feed": 2,
-                        "gaps": 7,
-                        "lifetime_wins": 8,
-                        "mark_price": 13,
-                        "slot": 14,
-                        "start_time": 4,
-                        "trade": 11
+                        "Time FeedChanFeedMsg": 14,
+                        "agg_trade": 11,
+                        "bbo": 8,
+                        "conn_id": 0,
+                        "depth": 9,
+                        "dst_ip": 2,
+                        "duration": 5,
+                        "end_time": 4,
+                        "feed": 1,
+                        "gaps": 6,
+                        "lifetime_wins": 7,
+                        "mark_price": 12,
+                        "slot": 13,
+                        "start_time": 3,
+                        "trade": 10
                       },
                       "renameByName": {}
                     }
                   }
                 },
                 {
-                  "group": "sortBy",
                   "kind": "Transformation",
+                  "group": "sortBy",
                   "spec": {
                     "options": {
                       "fields": {},
@@ -650,19 +652,65 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 21,
-          "links": [],
-          "title": "Connection win rates per message type",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "enablePagination": true,
+                "frameIndex": 1,
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "bbo"
+                  }
+                ]
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "percent",
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null+nan",
+                        "result": {
+                          "color": "transparent",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "empty",
+                        "result": {
+                          "color": "transparent",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "continuous-RdYlGr"
                   },
@@ -677,43 +725,7 @@
                     },
                     "inspect": false
                   },
-                  "fieldMinMax": true,
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "null+nan",
-                        "result": {
-                          "color": "transparent",
-                          "index": 0
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "empty",
-                        "result": {
-                          "color": "transparent",
-                          "index": 1
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "percent"
+                  "fieldMinMax": true
                 },
                 "overrides": [
                   {
@@ -731,18 +743,14 @@
                       {
                         "id": "unit",
                         "value": "none"
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 77
                       }
                     ]
                   },
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "start_time",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "start_time"
                     },
                     "properties": [
                       {
@@ -756,8 +764,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "end_time",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "end_time"
                     },
                     "properties": [
                       {
@@ -771,8 +779,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "duration",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "duration"
                     },
                     "properties": [
                       {
@@ -794,8 +802,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "lifetime_wins",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "lifetime_wins"
                     },
                     "properties": [
                       {
@@ -847,8 +855,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "gaps",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "gaps"
                     },
                     "properties": [
                       {
@@ -862,63 +870,20 @@
                         }
                       }
                     ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "channel",
-                      "scope": "series"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.width",
-                        "value": 241
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "auto"
-                        }
-                      },
-                      {
-                        "id": "mappings",
-                        "value": [
-                          {
-                            "options": {
-                              "pattern": "Crypto (.*) MD",
-                              "result": {
-                                "index": 0,
-                                "text": "$1"
-                              }
-                            },
-                            "type": "regex"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "enablePagination": true,
-                "frameIndex": 1,
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "bbo"
                   }
                 ]
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-22": {
         "kind": "Panel",
         "spec": {
+          "id": 22,
+          "title": "Feed-connection win rates over time",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -926,13 +891,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -951,7 +916,7 @@
                         ],
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role fill(none)\n)\nWHERE (wins + losses) \u003e 0\nGROUP BY time($AggregationWindow), conn_slot, role fill(none)",
+                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role fill(none)\n)\nWHERE (wins + losses) > 0\nGROUP BY time($AggregationWindow), conn_slot, role fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table",
                         "select": [
@@ -969,46 +934,45 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT sum(count) as wins, last(conn_id) as conn_id\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/ and \"channel\" =~ /$Channel/ and feed =~ /^$FeedSet/\nGROUP BY time($AggregationWindow), conn_slot, role, feed fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "merge",
                   "kind": "Transformation",
+                  "group": "merge",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1026,8 +990,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1049,8 +1013,8 @@
                   }
                 },
                 {
-                  "group": "partitionByValues",
                   "kind": "Transformation",
+                  "group": "partitionByValues",
                   "spec": {
                     "options": {
                       "fields": [
@@ -1064,22 +1028,22 @@
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "joinByField",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "transpose",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "sortBy",
                   "kind": "Transformation",
+                  "group": "sortBy",
                   "spec": {
                     "options": {
                       "fields": {},
@@ -1092,15 +1056,15 @@
                   }
                 },
                 {
-                  "group": "transpose",
                   "kind": "Transformation",
+                  "group": "transpose",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "renameByRegex",
                   "kind": "Transformation",
+                  "group": "renameByRegex",
                   "spec": {
                     "options": {
                       "regex": "Field",
@@ -1109,8 +1073,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -1124,8 +1088,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -1138,19 +1102,68 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 22,
-          "links": [],
-          "title": "Feed-connection win rates over time",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "percent",
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null+nan",
+                        "result": {
+                          "color": "transparent",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "empty",
+                        "result": {
+                          "color": "transparent",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1188,39 +1201,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": true,
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "null+nan",
-                        "result": {
-                          "color": "transparent",
-                          "index": 0
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "empty",
-                        "result": {
-                          "color": "transparent",
-                          "index": 1
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "percent"
+                  "fieldMinMax": true
                 },
                 "overrides": [
                   {
@@ -1248,34 +1229,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-23": {
         "kind": "Panel",
         "spec": {
+          "id": 23,
+          "title": "(Destination IP, Conn_id) over time",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1283,13 +1248,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -1326,46 +1291,45 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT sum(count) as wins, last(conn_id) as conn_id\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and role =~ /$FeedRole/ AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/ and \"channel\" =~ /$Channel/ and feed =~ /^$FeedSet/\nGROUP BY time(1m), conn_slot, role, feed fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "merge",
                   "kind": "Transformation",
+                  "group": "merge",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1383,8 +1347,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "test",
@@ -1400,8 +1364,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1425,8 +1389,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -1440,8 +1404,8 @@
                   }
                 },
                 {
-                  "group": "partitionByValues",
                   "kind": "Transformation",
+                  "group": "partitionByValues",
                   "spec": {
                     "options": {
                       "fields": [
@@ -1454,48 +1418,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 23,
-          "links": [],
-          "title": "(Destination IP, Conn_id) over time",
           "vizConfig": {
-            "group": "state-timeline",
             "kind": "VizConfig",
+            "group": "state-timeline",
+            "version": "13.1.0",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisPlacement": "auto",
-                    "fillOpacity": 20,
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineWidth": 1,
-                    "spanNulls": false
-                  },
-                  "fieldMinMax": false,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "none"
-                },
-                "overrides": []
-              },
               "options": {
                 "alignValue": "center",
                 "annotations": {
@@ -1516,15 +1447,49 @@
                   "mode": "single",
                   "sort": "none"
                 }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "fillOpacity": 20,
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineWidth": 1,
+                    "spanNulls": false
+                  },
+                  "fieldMinMax": false
+                },
+                "overrides": []
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-24": {
         "kind": "Panel",
         "spec": {
+          "id": 24,
+          "title": "Instances of new connections to same IP as an active connection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1532,28 +1497,27 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "-- Dashboard --"
                       },
-                      "group": "datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "panelId": 21,
                         "withTransforms": true
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "options": {
                       "fields": {
@@ -1617,8 +1581,8 @@
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1647,8 +1611,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "TMP",
@@ -1675,8 +1639,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "TMP2",
@@ -1703,8 +1667,8 @@
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -1724,8 +1688,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1761,8 +1725,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "disabled": true,
                     "options": {
@@ -1790,8 +1754,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "disabled": true,
                     "options": {
@@ -1819,8 +1783,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1850,19 +1814,40 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 24,
-          "links": [],
-          "title": "Instances of new connections to same IP as an active connection",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": false,
+                    "displayName": "dst_ip (count)"
+                  }
+                ]
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -1875,27 +1860,14 @@
                       "reducers": []
                     },
                     "inspect": false
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*duration.*/",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "/.*duration.*/"
                     },
                     "properties": [
                       {
@@ -1905,25 +1877,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": false,
-                    "displayName": "dst_ip (count)"
-                  }
-                ]
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-25": {
         "kind": "Panel",
         "spec": {
+          "id": 25,
+          "title": "Feed-vs-feed win rates over time",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1931,13 +1896,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -1956,7 +1921,7 @@
                         ],
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role fill(none)\n)\nWHERE (wins + losses) \u003e 0\nGROUP BY time($AggregationWindow), conn_slot, role fill(none)",
+                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role fill(none)\n)\nWHERE (wins + losses) > 0\nGROUP BY time($AggregationWindow), conn_slot, role fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table",
                         "select": [
@@ -1974,46 +1939,45 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT sum(count) as wins, last(conn_id) as conn_id\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/ and \"channel\" =~ /$Channel/ and feed =~ /^$FeedSet/\nGROUP BY time($AggregationWindow), conn_slot, role, feed fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "merge",
                   "kind": "Transformation",
+                  "group": "merge",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -2031,8 +1995,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -2054,20 +2018,20 @@
                   }
                 },
                 {
-                  "group": "extractFields",
                   "kind": "Transformation",
+                  "group": "extractFields",
                   "spec": {
                     "options": {
                       "delimiter": ",",
                       "format": "regexp",
-                      "regExp": "/(?\u003cbase_feed\u003e.*)-[0-9]+/",
+                      "regExp": "/(?<base_feed>.*)-[0-9]+/",
                       "source": "feed"
                     }
                   }
                 },
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "options": {
                       "fields": {
@@ -2093,8 +2057,8 @@
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -2114,8 +2078,8 @@
                   }
                 },
                 {
-                  "group": "partitionByValues",
                   "kind": "Transformation",
+                  "group": "partitionByValues",
                   "spec": {
                     "options": {
                       "fields": [
@@ -2129,22 +2093,22 @@
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "joinByField",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "transpose",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "sortBy",
                   "kind": "Transformation",
+                  "group": "sortBy",
                   "spec": {
                     "options": {
                       "fields": {},
@@ -2157,15 +2121,15 @@
                   }
                 },
                 {
-                  "group": "transpose",
                   "kind": "Transformation",
+                  "group": "transpose",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "renameByRegex",
                   "kind": "Transformation",
+                  "group": "renameByRegex",
                   "spec": {
                     "options": {
                       "regex": "Field",
@@ -2174,8 +2138,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -2190,8 +2154,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -2204,19 +2168,74 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 25,
-          "links": [],
-          "title": "Feed-vs-feed win rates over time",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "mean",
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Mean",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "percent",
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null+nan",
+                        "result": {
+                          "color": "transparent",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "empty",
+                        "result": {
+                          "color": "transparent",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2254,39 +2273,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": true,
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "null+nan",
-                        "result": {
-                          "color": "transparent",
-                          "index": 0
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "empty",
-                        "result": {
-                          "color": "transparent",
-                          "index": 1
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "percent"
+                  "fieldMinMax": true
                 },
                 "overrides": [
                   {
@@ -2316,8 +2303,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Time",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "Time"
                     },
                     "properties": [
                       {
@@ -2327,40 +2314,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "min",
-                    "mean",
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Mean",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-26": {
         "kind": "Panel",
         "spec": {
+          "id": 26,
+          "title": "Per message type feed-vs-feed win rates over time",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2368,13 +2333,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "groupBy": [
@@ -2393,7 +2358,7 @@
                         ],
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)\n)\nWHERE (wins + losses) \u003e 0\nGROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)",
+                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)\n)\nWHERE (wins + losses) > 0\nGROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table",
                         "select": [
@@ -2411,46 +2376,45 @@
                           ]
                         ],
                         "tags": []
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "cdx4otleasflsb"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT sum(count) as wins, last(conn_id) as conn_id\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/ and \"channel\" =~ /$Channel/ and feed =~ /^$FeedSet/\nGROUP BY time($AggregationWindow), conn_slot, role, feed fill(none)",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "merge",
                   "kind": "Transformation",
+                  "group": "merge",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -2468,8 +2432,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -2491,20 +2455,20 @@
                   }
                 },
                 {
-                  "group": "extractFields",
                   "kind": "Transformation",
+                  "group": "extractFields",
                   "spec": {
                     "options": {
                       "delimiter": ",",
                       "format": "regexp",
-                      "regExp": "/(?\u003cbase_feed\u003e.*)-[0-9]+/",
+                      "regExp": "/(?<base_feed>.*)-[0-9]+/",
                       "source": "feed"
                     }
                   }
                 },
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "options": {
                       "fields": {
@@ -2534,8 +2498,8 @@
                   }
                 },
                 {
-                  "group": "filterByValue",
                   "kind": "Transformation",
+                  "group": "filterByValue",
                   "spec": {
                     "options": {
                       "filters": [
@@ -2555,8 +2519,8 @@
                   }
                 },
                 {
-                  "group": "partitionByValues",
                   "kind": "Transformation",
+                  "group": "partitionByValues",
                   "spec": {
                     "options": {
                       "fields": [
@@ -2571,22 +2535,22 @@
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "joinByField",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
+                  "kind": "Transformation",
                   "group": "transpose",
-                  "kind": "Transformation",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "sortBy",
                   "kind": "Transformation",
+                  "group": "sortBy",
                   "spec": {
                     "options": {
                       "fields": {},
@@ -2599,15 +2563,15 @@
                   }
                 },
                 {
-                  "group": "transpose",
                   "kind": "Transformation",
+                  "group": "transpose",
                   "spec": {
                     "options": {}
                   }
                 },
                 {
-                  "group": "renameByRegex",
                   "kind": "Transformation",
+                  "group": "renameByRegex",
                   "spec": {
                     "options": {
                       "regex": "Field",
@@ -2616,8 +2580,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -2632,8 +2596,8 @@
                   }
                 },
                 {
-                  "group": "convertFieldType",
                   "kind": "Transformation",
+                  "group": "convertFieldType",
                   "spec": {
                     "options": {
                       "conversions": [
@@ -2647,8 +2611,8 @@
                   }
                 },
                 {
-                  "group": "renameByRegex",
                   "kind": "Transformation",
+                  "group": "renameByRegex",
                   "spec": {
                     "options": {
                       "regex": "win_rate \\(sum\\) ([a-zA-Z]+) (.*)",
@@ -2656,19 +2620,74 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 26,
-          "links": [],
-          "title": "Per message type feed-vs-feed win rates over time",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "mean",
+                    "max"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "sortBy": "Mean",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "percent",
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null+nan",
+                        "result": {
+                          "color": "transparent",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "empty",
+                        "result": {
+                          "color": "transparent",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2706,39 +2725,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": true,
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "null+nan",
-                        "result": {
-                          "color": "transparent",
-                          "index": 0
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "empty",
-                        "result": {
-                          "color": "transparent",
-                          "index": 1
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "percent"
+                  "fieldMinMax": true
                 },
                 "overrides": [
                   {
@@ -2768,8 +2755,8 @@
                   {
                     "matcher": {
                       "id": "byName",
-                      "options": "Time",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "Time"
                     },
                     "properties": [
                       {
@@ -2777,521 +2764,10 @@
                         "value": ""
                       }
                     ]
-                  },
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "bbo-combined [bbo]",
-                          "bbo-separate-ETH/USDT-PERP [bbo]",
-                          "bbo-trade-combined [bbo]",
-                          "bbo-separate-BTC/USDT-PERP [bbo]"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": true,
-                          "viz": true
-                        }
-                      }
-                    ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "min",
-                    "mean",
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Mean",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
-          }
-        }
-      },
-      "panel-27": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "cdx4otleasflsb"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "",
-                        "groupBy": [
-                          {
-                            "params": [
-                              "$__interval"
-                            ],
-                            "type": "time"
-                          },
-                          {
-                            "params": [
-                              "null"
-                            ],
-                            "type": "fill"
-                          }
-                        ],
-                        "orderByTime": "ASC",
-                        "policy": "default",
-                        "query": "SELECT 100 * (sum(wins) / (sum(wins) + sum(losses))) as win_rate, last(conn_id) as conn_id\nFROM\n(\n SELECT sum(\"first\") as wins, sum(\"dup\") as losses , last(conn_id) as conn_id FROM \"XdpConnDedup\"\n WHERE $timeFilter AND (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/\n GROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)\n)\nWHERE (wins + losses) \u003e 0\nGROUP BY time($AggregationWindow), conn_slot, role, msg_type fill(none)",
-                        "rawQuery": true,
-                        "resultFormat": "table",
-                        "select": [
-                          [
-                            {
-                              "params": [
-                                "value"
-                              ],
-                              "type": "field"
-                            },
-                            {
-                              "params": [],
-                              "type": "mean"
-                            }
-                          ]
-                        ],
-                        "tags": []
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "cdx4otleasflsb"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "",
-                        "query": "SELECT sum(count) as wins, last(conn_id) as conn_id\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and (\"host\" =~ /^$Host$/) AND \"endpoint\" =~ /^$Endpoint$/ AND \"role\" =~ /^$FeedRole$/ and \"channel\" =~ /$Channel/ and feed =~ /^$FeedSet/\nGROUP BY time($AggregationWindow), conn_slot, role, feed fill(none)",
-                        "rawQuery": true,
-                        "resultFormat": "table"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "D"
-                  }
-                }
-              ],
-              "queryOptions": {},
-              "transformations": [
-                {
-                  "group": "merge",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {}
-                  }
-                },
-                {
-                  "group": "filterByValue",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "filters": [
-                        {
-                          "config": {
-                            "id": "isNotNull",
-                            "options": {}
-                          },
-                          "fieldName": "feed"
-                        }
-                      ],
-                      "match": "any",
-                      "type": "include"
-                    }
-                  }
-                },
-                {
-                  "group": "organize",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "excludeByName": {
-                        "Time 2": true,
-                        "Value 2": true,
-                        "conn_id": true,
-                        "conn_slot": true,
-                        "role": true,
-                        "wins": true
-                      },
-                      "includeByName": {},
-                      "indexByName": {},
-                      "renameByName": {
-                        "Time 2": "",
-                        "Value 1": "win_rate",
-                        "Value 2": "wins"
-                      }
-                    }
-                  }
-                },
-                {
-                  "group": "extractFields",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "delimiter": ",",
-                      "format": "regexp",
-                      "regExp": "/(?\u003cbase_feed\u003e.*)-[0-9]+/",
-                      "source": "feed"
-                    }
-                  }
-                },
-                {
-                  "group": "groupBy",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "fields": {
-                        "Time": {
-                          "aggregations": [],
-                          "operation": "groupby"
-                        },
-                        "base_feed": {
-                          "aggregations": [],
-                          "operation": "groupby"
-                        },
-                        "feed": {
-                          "aggregations": []
-                        },
-                        "msg_type": {
-                          "aggregations": [],
-                          "operation": "groupby"
-                        },
-                        "win_rate": {
-                          "aggregations": [
-                            "sum"
-                          ],
-                          "operation": "aggregate"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "group": "filterByValue",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "filters": [
-                        {
-                          "config": {
-                            "id": "greater",
-                            "options": {
-                              "value": 0
-                            }
-                          },
-                          "fieldName": "win_rate (sum)"
-                        }
-                      ],
-                      "match": "any",
-                      "type": "include"
-                    }
-                  }
-                },
-                {
-                  "group": "partitionByValues",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "fields": [
-                        "base_feed",
-                        "msg_type"
-                      ],
-                      "keepFields": false,
-                      "naming": {
-                        "asLabels": false
-                      }
-                    }
-                  }
-                },
-                {
-                  "group": "joinByField",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {}
-                  }
-                },
-                {
-                  "group": "transpose",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {}
-                  }
-                },
-                {
-                  "group": "sortBy",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "fields": {},
-                      "sort": [
-                        {
-                          "field": "Field"
-                        }
-                      ]
-                    }
-                  }
-                },
-                {
-                  "group": "transpose",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {}
-                  }
-                },
-                {
-                  "group": "renameByRegex",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "regex": "Field",
-                      "renamePattern": "Time"
-                    }
-                  }
-                },
-                {
-                  "group": "convertFieldType",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "conversions": [
-                        {
-                          "destinationType": "number",
-                          "targetField": "Time"
-                        },
-                        {}
-                      ],
-                      "fields": {}
-                    }
-                  }
-                },
-                {
-                  "group": "convertFieldType",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "conversions": [
-                        {
-                          "destinationType": "time",
-                          "targetField": "Time"
-                        }
-                      ],
-                      "fields": {}
-                    }
-                  }
-                },
-                {
-                  "group": "renameByRegex",
-                  "kind": "Transformation",
-                  "spec": {
-                    "options": {
-                      "regex": "win_rate \\(sum\\) ([a-zA-Z]+) (.*)",
-                      "renamePattern": "$2 [$1]"
-                    }
-                  }
-                }
-              ]
             }
-          },
-          "description": "",
-          "id": 27,
-          "links": [],
-          "title": "Per message type feed-vs-feed win rates histogram",
-          "vizConfig": {
-            "group": "histogram",
-            "kind": "VizConfig",
-            "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "fillOpacity": 46,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineWidth": 1,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    }
-                  },
-                  "fieldMinMax": true,
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "null+nan",
-                        "result": {
-                          "color": "transparent",
-                          "index": 0
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "empty",
-                        "result": {
-                          "color": "transparent",
-                          "index": 1
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "max": 100,
-                  "min": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "percent"
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "conn_id"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "none"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "win_rate"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "${__series.name}"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Time",
-                      "scope": "series"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": ""
-                      }
-                    ]
-                  },
-                  {
-                    "__systemRef": "hideSeriesFrom",
-                    "matcher": {
-                      "id": "byNames",
-                      "options": {
-                        "mode": "exclude",
-                        "names": [
-                          "bbo-combined [bbo]",
-                          "bbo-separate-BTC/USDT-PERP [bbo]",
-                          "bbo-separate-ETH/USDT-PERP [bbo]",
-                          "bbo-trade-combined [bbo]"
-                        ],
-                        "prefix": "All except:",
-                        "readOnly": true
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": false,
-                          "tooltip": true,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "options": {
-                "bucketSize": 1,
-                "legend": {
-                  "calcs": [
-                    "mean",
-                    "min",
-                    "median",
-                    "max"
-                  ],
-                  "displayMode": "table",
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "sortBy": "Median",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              }
-            },
-            "version": "13.1.0"
           }
         }
       }
@@ -3303,92 +2779,79 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-22"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 12,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-25"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 12
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 24,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-26"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 24
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
-              "element": {
-                "kind": "ElementReference",
-                "name": "panel-27"
-              },
-              "height": 12,
-              "width": 24,
               "x": 0,
-              "y": 36
-            }
-          },
-          {
-            "kind": "GridLayoutItem",
-            "spec": {
+              "y": 36,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-23"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 48
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 48,
+              "width": 24,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-21"
-              },
-              "height": 12,
-              "width": 24,
-              "x": 0,
-              "y": 60
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 60,
+              "width": 24,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-24"
-              },
-              "height": 8,
-              "width": 24,
-              "x": 0,
-              "y": 72
+              }
             }
           }
         ]
@@ -3399,150 +2862,150 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now-3h",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5m"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-3h",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "NGI Connection Profiler",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "Host",
           "current": {
             "text": "TA-TKY-A-200",
             "value": "TA-TKY-A-200"
           },
-          "definition": "SELECT DISTINCT(host) as host FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host)",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "Host",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "cdx4otleasflsb"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
-              "__legacyStringValue": "SELECT DISTINCT(host) as host FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host)"
-            },
-            "version": "v0"
+              "__legacyStringValue": "SELECT DISTINCT(host) as host FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt > 0 AND $timeFilter GROUP BY host)"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT(host) as host FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt > 0 AND $timeFilter GROUP BY host)",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "Endpoint",
           "current": {
             "text": "fstream.binance.com:443",
             "value": "fstream.binance.com:443"
           },
-          "definition": "SELECT DISTINCT(endpoint) as endpoint FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host, endpoint) WHERE host =~ /$Host/",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "Endpoint",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "cdx4otleasflsb"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
-              "__legacyStringValue": "SELECT DISTINCT(endpoint) as endpoint FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host, endpoint) WHERE host =~ /$Host/"
-            },
-            "version": "v0"
+              "__legacyStringValue": "SELECT DISTINCT(endpoint) as endpoint FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt > 0 AND $timeFilter GROUP BY host, endpoint) WHERE host =~ /$Host/"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT(endpoint) as endpoint FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt > 0 AND $timeFilter GROUP BY host, endpoint) WHERE host =~ /$Host/",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "FeedRole",
           "current": {
             "text": "mdh",
             "value": "mdh"
           },
-          "definition": "SELECT role\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/\nGROUP BY role\n)",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "FeedRole",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "cdx4otleasflsb"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT role\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/\nGROUP BY role\n)"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT role\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/\nGROUP BY role\n)",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "Channel",
           "current": {
             "text": "Crypto BTC/USDT-PERP@BINANCEDM MD",
             "value": "Crypto BTC/USDT-PERP@BINANCEDM MD"
           },
-          "definition": "SELECT channel\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/\nGROUP BY channel\n)",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": true,
-          "name": "Channel",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "cdx4otleasflsb"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT channel\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/\nGROUP BY channel\n)"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT channel\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/\nGROUP BY channel\n)",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "FeedSet",
           "current": {
             "text": [
               "bbo-trade"
@@ -3551,46 +3014,46 @@
               "bbo-trade"
             ]
           },
-          "definition": "SELECT feed FROM \n(\nSELECT last(count)\nFROM FeedChanFeedMsg\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/ and channel =~ /${Channel:regex}/\nGROUP BY feed\n)",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "FeedSet",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "cdx4otleasflsb"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "query": "SELECT feed FROM \n(\nSELECT last(count)\nFROM FeedChanFeedMsg\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/ and channel =~ /${Channel:regex}/\nGROUP BY feed\n)",
               "refId": "InfluxVariableQueryEditor-VariableQuery"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "/(.*)-[0-9]+/",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT feed FROM \n(\nSELECT last(count)\nFROM FeedChanFeedMsg\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/ and channel =~ /${Channel:regex}/\nGROUP BY feed\n)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "CustomVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "AggregationWindow",
+          "query": "1m, 2m, 5m, 10m",
           "current": {
             "text": "5m",
             "value": "5m"
           },
-          "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "AggregationWindow",
           "options": [],
-          "query": "1m, 2m, 5m, 10m",
+          "multi": false,
+          "includeAll": false,
+          "hide": "dontHide",
           "skipUrlSync": false,
+          "allowCustomValue": true,
           "valuesFormat": "csv"
         }
       }

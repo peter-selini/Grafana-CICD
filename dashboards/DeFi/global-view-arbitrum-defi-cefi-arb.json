@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "edn2ul7suof0ge"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Tao Cumulative PnL (All Placements)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_strategy",
                         "groupBy": [
@@ -98,22 +102,22 @@
                             "value": "/ARB_V2_DEFI_DEFICEFI_/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdx4oxj0828lce"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_strategy",
                         "groupBy": [
@@ -163,20 +167,17 @@
                             "value": "/ARB_V2_DEFI_DEFICEFI_/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {
-                "maxDataPoints": 10000
-              },
               "transformations": [
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "index": {
@@ -190,19 +191,45 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {
+                "maxDataPoints": 10000
+              }
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Tao Cumulative PnL (All Placements)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 300
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -237,19 +264,6 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -308,28 +322,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 300
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Period PnL (All Placements)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -337,28 +341,27 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "-- Dashboard --"
                       },
-                      "group": "datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "panelId": 2,
                         "withTransforms": true
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -369,8 +372,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "PnL",
@@ -387,39 +390,15 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Period PnL (All Placements)",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -435,15 +414,40 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-4": {
         "kind": "Panel",
         "spec": {
+          "id": 4,
+          "title": "Period PnL By Placement",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -451,27 +455,26 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "-- Dashboard --"
                       },
-                      "group": "datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "panelId": 2
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "reduce",
                   "kind": "Transformation",
+                  "group": "reduce",
                   "spec": {
                     "options": {
                       "reducers": [
@@ -482,8 +485,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "PnL",
@@ -499,19 +502,51 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 4,
-          "links": [],
-          "title": "Period PnL By Placement",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "fields": [
+                    "PnL"
+                  ],
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": true
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "PnL"
+                  }
+                ]
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -521,21 +556,7 @@
                       "type": "color-text"
                     },
                     "inspect": false
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
@@ -581,35 +602,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "footer": {
-                  "countRows": false,
-                  "fields": [
-                    "PnL"
-                  ],
-                  "reducer": [
-                    "sum"
-                  ],
-                  "show": true
-                },
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "PnL"
-                  }
-                ]
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Gas Balance USD",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -617,13 +621,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_dex $tag_pool",
                         "groupBy": [
@@ -709,22 +713,22 @@
                             "value": "/^$strategy$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edwyuzf1woqgwd"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_dex $tag_pool",
                         "groupBy": [
@@ -810,29 +814,51 @@
                             "value": "/^$strategy$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 10
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "Gas Balance USD",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -867,19 +893,6 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -896,27 +909,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Token Balances (USD)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -924,13 +928,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -980,22 +984,22 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edwyuzf1woqgwd"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -1045,18 +1049,17 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "mode": "reduceRow",
@@ -1068,19 +1071,42 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "Token Balances (USD)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "asc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1115,43 +1141,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "asc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "Stats (Pool-level)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1159,51 +1163,50 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT count(\"alive\") AS \"Count\", 100 * (1 - sum(\"contract_error_fld\")/count(\"alive\")) AS \"Hit Rate\", sum(\"expected_pnl_post_fill\") AS \"PnL\", sum(\"expected_pnl_post_fill\") - sum(\"expected_pnl_pre_fill\") AS \"Slippage\",  sum(\"fill_size_usd\") AS \"Volume\", 10000 * sum(\"expected_pnl_post_fill\") / sum(\"fill_size_usd\") AS \"PPM\"\nFROM \"defi_cefi_arbitrage_v0_post_trade\"\nWHERE (\"network\"::tag =~ /^$network$/ AND \"mode\"::tag =~ /^$mode$/ AND \"dex\"::tag =~ /^$dex$/ AND \"pool\"::tag =~ /^$pool$/ AND \"stage\"::tag =~ /^$stage$/)\nAND $timeFilter\nGROUP BY \"mode\"::tag, \"dex\"::tag, \"pool\"::tag\nfill(null)\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edwyuzf1woqgwd"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT count(\"alive\") AS \"Count\", 100 * (1 - sum(\"contract_error_fld\")/count(\"alive\")) AS \"Hit Rate\", sum(\"expected_pnl_post_fill\") AS \"PnL\", sum(\"expected_pnl_post_fill\") - sum(\"expected_pnl_pre_fill\") AS \"Slippage\",  sum(\"fill_size_usd\") AS \"Volume\", 10000 * sum(\"expected_pnl_post_fill\") / sum(\"fill_size_usd\") AS \"PPM\"\nFROM \"defi_cefi_arbitrage_v0_post_trade\"\nWHERE (\"network\"::tag =~ /^$network$/ AND \"mode\"::tag =~ /^$mode$/ AND \"dex\"::tag =~ /^$dex$/ AND \"pool\"::tag =~ /^$pool$/ AND \"stage\"::tag =~ /^$stage$/)\nAND $timeFilter\nGROUP BY \"mode\"::tag, \"dex\"::tag, \"pool\"::tag\nfill(null)\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1226,19 +1229,49 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "Stats (Pool-level)",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "countRows": false,
+                  "fields": [],
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": true
+                },
+                "frameIndex": 0,
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "PnL"
+                  }
+                ]
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -1248,19 +1281,6 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -1361,34 +1381,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "footer": {
-                  "countRows": false,
-                  "fields": [],
-                  "reducer": [
-                    "sum"
-                  ],
-                  "show": true
-                },
-                "frameIndex": 0,
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "PnL"
-                  }
-                ]
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "Balance / Target Ratios",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1396,13 +1400,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -1452,22 +1456,22 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -1517,41 +1521,41 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "$A / $B",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "Ratio"
+                    "refId": "Ratio",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edwyuzf1woqgwd"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -1601,22 +1605,22 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "edwyuzf1woqgwd"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_token",
                         "groupBy": [
@@ -1666,46 +1670,68 @@
                             "value": "/^$mode$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "$C / $D",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "Ratio 10-Defi"
+                    "refId": "Ratio 10-Defi",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "Balance / Target Ratios",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "asc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1740,37 +1766,11 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "asc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -1782,92 +1782,92 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 15,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 15,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 15,
+              "width": 24,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 10,
-              "width": 24,
-              "x": 0,
-              "y": 15
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 25,
+              "width": 24,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 10,
-              "width": 24,
-              "x": 0,
-              "y": 25
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 35,
+              "width": 6,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 4,
-              "width": 6,
-              "x": 0,
-              "y": 35
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 6,
+              "y": 35,
+              "width": 18,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 14,
-              "width": 18,
-              "x": 6,
-              "y": 35
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 39,
+              "width": 6,
+              "height": 10,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-4"
-              },
-              "height": 10,
-              "width": 6,
-              "x": 0,
-              "y": 39
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 49,
+              "width": 24,
+              "height": 13,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 13,
-              "width": 24,
-              "x": 0,
-              "y": 49
+              }
             }
           }
         ]
@@ -1878,6 +1878,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now/d",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -1891,18 +1894,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now/d",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "[Global View] Arbitrum Defi Cefi Arb",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "stage",
           "current": {
             "text": [
               "prod"
@@ -1911,33 +1911,33 @@
               "prod"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"stage\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "stage",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"stage\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"stage\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "mode",
           "current": {
             "text": [
               "trial"
@@ -1946,33 +1946,33 @@
               "trial"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"mode\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "mode",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"mode\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"mode\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "network",
           "current": {
             "text": [
               "arbitrum"
@@ -1981,33 +1981,33 @@
               "arbitrum"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"network\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "network",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"network\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"network\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "dex",
           "current": {
             "text": [
               "All"
@@ -2016,33 +2016,33 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"dex\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "dex",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"dex\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"dex\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "pool",
           "current": {
             "text": [
               "All"
@@ -2051,33 +2051,33 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"pool\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "pool",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"pool\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "^(?!usdc_).*",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"pool\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "placement",
           "current": {
             "text": [
               "ARB_V2_DEFI_DEFICEFI_ARB_BDM_USDT_Q|H"
@@ -2086,33 +2086,33 @@
               "ARB_V2_DEFI_DEFICEFI_ARB_BDM_USDT_Q|H"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"strategy\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "placement",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"strategy\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "/ARB_V2_DEFI_/g",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0\" WITH KEY = \"strategy\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "token",
           "current": {
             "text": [
               "usdc"
@@ -2121,27 +2121,27 @@
               "usdc"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0_asset_balances\" WITH KEY = \"token\"",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "token",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "a9dc3ee6-58c8-4525-9db8-42574d4b4d9d"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0_asset_balances\" WITH KEY = \"token\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM \"defi_cefi_arbitrage_v0_asset_balances\" WITH KEY = \"token\"",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       }
     ]

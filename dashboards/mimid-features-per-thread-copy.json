@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "dbd81dbc-d428-4dcb-b78b-4b7cb2946582"
@@ -9,27 +9,27 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "datasource",
+            "version": "v0",
             "datasource": {
               "name": "grafana"
             },
-            "group": "datasource",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -40,6 +40,10 @@
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Feature Calc",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -47,13 +51,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_alias $col $measurement",
                         "groupBy": [
@@ -197,27 +201,52 @@
                             "value": "/^$MachineAlias$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Feature Calc",
           "vizConfig": {
-            "group": "histogram",
             "kind": "VizConfig",
+            "group": "histogram",
+            "version": "9.5.2",
             "spec": {
+              "options": {
+                "bucketOffset": 0,
+                "bucketSize": 1000,
+                "legend": {
+                  "calcs": [
+                    "mean",
+                    "stdDev"
+                  ],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "max": 60000,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -230,22 +259,7 @@
                       "viz": false
                     },
                     "lineWidth": 1
-                  },
-                  "max": 60000,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -273,22 +287,8 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "bucketOffset": 0,
-                "bucketSize": 1000,
-                "legend": {
-                  "calcs": [
-                    "mean",
-                    "stdDev"
-                  ],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true
-                }
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       }
@@ -300,14 +300,14 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 14,
-              "width": 24,
-              "x": 0,
-              "y": 0
+              }
             }
           }
         ]
@@ -318,6 +318,8 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "from": "2024-03-06T21:18:21.626Z",
+      "to": "2024-03-07T01:15:39.384Z",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -331,17 +333,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "2024-03-06T21:18:21.626Z",
       "hideTimepicker": false,
-      "to": "2024-03-07T01:15:39.384Z"
+      "fiscalYearStartMonth": 0
     },
     "title": "Mimid Features Per Thread Copy",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "MachineAlias",
           "current": {
             "text": [
               "@CR:SGP-C-17"
@@ -350,33 +350,33 @@
               "@CR:SGP-C-17"
             ]
           },
-          "definition": "",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "MachineAlias",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES  WITH KEY = alias"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "Thread",
           "current": {
             "text": [
               "All"
@@ -385,27 +385,27 @@
               "$__all"
             ]
           },
-          "definition": "",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "Thread",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "c686145c-a4d8-4b52-a7f7-256136935d40"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /FeatureCyclesThread.*/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       }
     ]

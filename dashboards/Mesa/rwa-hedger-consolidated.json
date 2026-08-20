@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "f9284hf80eq9in"
@@ -9,46 +9,37 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
-          }
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
         }
       },
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "enable": false,
-          "filter": {
-            "exclude": false,
-            "ids": [
-              26
-            ]
-          },
-          "hide": true,
-          "iconColor": "orange",
-          "name": "IBGW-poller restarts",
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "efm5nvo6ne874a"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "fromAnnotations": true,
               "limit": 100,
               "name": "IBGW-poller restarts",
-              "query": "  SELECT \"d\" FROM (     SELECT difference(\"epoch_ns\") AS d     FROM \"ib_derived_pnl\"     WHERE $timeFilter AND \"env\" = 'prod'   ) WHERE \"d\" \u003e 0",
+              "query": "  SELECT \"d\" FROM (     SELECT difference(\"epoch_ns\") AS d     FROM \"ib_derived_pnl\"     WHERE $timeFilter AND \"env\" = 'prod'   ) WHERE \"d\" > 0",
               "queryType": "tags",
               "rawQuery": true,
               "refId": "",
@@ -59,8 +50,17 @@
               "timeEndColumn": "",
               "titleColumn": "",
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": false,
+          "hide": true,
+          "iconColor": "orange",
+          "name": "IBGW-poller restarts",
+          "filter": {
+            "exclude": false,
+            "ids": [
+              26
+            ]
           }
         }
       }
@@ -71,6 +71,10 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
+          "id": 1,
+          "title": "Positions now",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -78,49 +82,48 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
-                        "query": "  SELECT last(\"qty\") AS \"qty\", last(\"avg_cost\") AS \"avg_cost\", last(\"multiplier\") AS \"multiplier\"\n  FROM \"ib_position\"\n  WHERE (\"account\" =~ /^$account$/) AND \"symbol\" =~ /^$symbol$/\n    AND time \u003e= ${__to}ms - 30s AND time \u003c= ${__to}ms\n  GROUP BY \"account\", \"symbol\"",
+                        "query": "  SELECT last(\"qty\") AS \"qty\", last(\"avg_cost\") AS \"avg_cost\", last(\"multiplier\") AS \"multiplier\"\n  FROM \"ib_position\"\n  WHERE (\"account\" =~ /^$account$/) AND \"symbol\" =~ /^$symbol$/\n    AND time >= ${__to}ms - 30s AND time <= ${__to}ms\n  GROUP BY \"account\", \"symbol\"",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
-                        "query": "  SELECT last(\"market_price\") AS \"mark_px\", last(\"market_value\") AS \"market_value\",\n         last(\"unrealized_pnl\") AS \"upnl\", last(\"daily_pnl\") AS \"daily_pnl\"\n  FROM \"ib_position_pnl\"\n  WHERE (\"account\" =~ /^$account$/) AND \"symbol\" =~ /^$symbol$/\n    AND time \u003e= ${__to}ms - 30s AND time \u003c= ${__to}ms\n  GROUP BY \"account\", \"symbol\"",
+                        "query": "  SELECT last(\"market_price\") AS \"mark_px\", last(\"market_value\") AS \"market_value\",\n         last(\"unrealized_pnl\") AS \"upnl\", last(\"daily_pnl\") AS \"daily_pnl\"\n  FROM \"ib_position_pnl\"\n  WHERE (\"account\" =~ /^$account$/) AND \"symbol\" =~ /^$symbol$/\n    AND time >= ${__to}ms - 30s AND time <= ${__to}ms\n  GROUP BY \"account\", \"symbol\"",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "joinByField",
                   "kind": "Transformation",
+                  "group": "joinByField",
                   "spec": {
                     "options": {
                       "byField": "symbol",
@@ -129,8 +132,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "avg_px",
@@ -157,8 +160,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -189,22 +192,35 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 1,
-          "links": [],
-          "title": "Positions now",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "text"
+                      }
+                    ]
+                  },
                   "color": {
-                    "fixedColor": "orange",
-                    "mode": "thresholds"
+                    "mode": "thresholds",
+                    "fixedColor": "orange"
                   },
                   "custom": {
                     "align": "auto",
@@ -218,18 +234,7 @@
                     "inspect": false,
                     "minWidth": 50
                   },
-                  "decimals": 2,
-                  "fieldMinMax": false,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "text",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  "fieldMinMax": false
                 },
                 "overrides": [
                   {
@@ -251,8 +256,8 @@
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/.*pnl.*/",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "/.*pnl.*/"
                     },
                     "properties": [
                       {
@@ -276,8 +281,8 @@
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/(market_value)|(upnl)|(daily_pnl)/",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "/(market_value)|(upnl)|(daily_pnl)/"
                     },
                     "properties": [
                       {
@@ -289,19 +294,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
+          "id": 13,
+          "title": "Hedger order event log",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -309,29 +313,28 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "  SELECT \"symbol\", \"side\", \"event\", \"qty\", \"filled\",\n         \"limit_price\", \"fill_qty\", \"fill_price\", \"perm_id\"\n  FROM \"hedger_order_event\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"event\" != 'ValidationError' AND \"event\" != 'PendingCancel'\n  ORDER BY time DESC\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {},
@@ -365,19 +368,34 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 13,
-          "links": [],
-          "title": "Hedger order event log",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -392,19 +410,6 @@
                     },
                     "inspect": false,
                     "minWidth": 50
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -441,19 +446,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-14": {
         "kind": "Panel",
         "spec": {
+          "id": 14,
+          "title": "Hedger order events",
+          "description": "Recommended to filter entire dashboard to a single symbol to view",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -461,72 +465,71 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol $tag_side request",
                         "query": "SELECT \"qty\" * \"limit_price\" FROM \"hedger_order_event\" WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"event\"='PendingSubmit' GROUP BY \"symbol\", \"event\", \"side\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol $tag_side fill",
                         "query": "SELECT \"fill_qty\" * \"fill_price\" FROM \"hedger_order_event\" WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"event\"='Fill' GROUP BY \"symbol\", \"event\", \"side\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol $tag_side cancelled",
                         "query": "SELECT (\"qty\" - \"filled\") * \"limit_price\" FROM \"hedger_order_event\" WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"event\"='Cancelled' GROUP BY \"symbol\", \"event\", \"side\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {},
@@ -560,19 +563,52 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "Recommended to filter entire dashboard to a single symbol to view",
-          "id": 14,
-          "links": [],
-          "title": "Hedger order events",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "hoverProximity": 10,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -610,21 +646,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
@@ -668,36 +690,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "hoverProximity": 10,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-15": {
         "kind": "Panel",
         "spec": {
+          "id": 15,
+          "title": "Service heartbeats",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -705,105 +709,173 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "IBGW $tag_env",
                         "query": "  SELECT min(\"connected\") FROM \"ib_poller_heartbeat\"\n  WHERE $timeFilter\n  GROUP BY time($__interval), \"env\" fill(-1)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "IBGW-poller $tag_env",
                         "query": "  SELECT min(\"poller_up\") FROM \"ib_poller_heartbeat\"\n  WHERE $timeFilter\n  GROUP BY time($__interval), \"env\" fill(0)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "RS-poller $tag_env",
                         "query": "  SELECT min(\"up\") FROM \"rwa_poller_heartbeat\"\n  WHERE $timeFilter\n  GROUP BY time($__interval), \"env\" fill(0)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "Hedger $tag_env",
                         "query": "SELECT last(\"enriched_state\") FROM \"hedger_heartbeat\"\nWHERE $timeFilter GROUP BY time($__interval), \"env\" fill(null)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 200
-              },
-              "transformations": []
+                "maxDataPoints": 200,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 15,
-          "links": [],
-          "title": "Service heartbeats",
           "vizConfig": {
-            "group": "status-history",
             "kind": "VizConfig",
+            "group": "status-history",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "colWidth": 0.9,
+                "legend": {
+                  "displayMode": "list",
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": false,
+                  "width": 200
+                },
+                "rowHeight": 0.9,
+                "showValue": "never",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "mappings": [
+                    {
+                      "type": "value",
+                      "options": {
+                        "-1": {
+                          "text": "UNKNOWN",
+                          "color": "purple",
+                          "index": 2
+                        },
+                        "0": {
+                          "text": "DOWN",
+                          "color": "red",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 1,
+                        "to": 1000000,
+                        "result": {
+                          "text": "UP",
+                          "color": "green",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "transparent"
+                      },
+                      {
+                        "value": -1,
+                        "color": "purple"
+                      },
+                      {
+                        "value": 0,
+                        "color": "red"
+                      },
+                      {
+                        "value": 1,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -817,56 +889,6 @@
                       "viz": false
                     },
                     "lineWidth": 1
-                  },
-                  "mappings": [
-                    {
-                      "options": {
-                        "-1": {
-                          "color": "purple",
-                          "index": 2,
-                          "text": "UNKNOWN"
-                        },
-                        "0": {
-                          "color": "red",
-                          "index": 0,
-                          "text": "DOWN"
-                        }
-                      },
-                      "type": "value"
-                    },
-                    {
-                      "options": {
-                        "from": 1,
-                        "result": {
-                          "color": "green",
-                          "index": 1,
-                          "text": "UP"
-                        },
-                        "to": 1000000
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "transparent",
-                        "value": 0
-                      },
-                      {
-                        "color": "purple",
-                        "value": -1
-                      },
-                      {
-                        "color": "red",
-                        "value": 0
-                      },
-                      {
-                        "color": "green",
-                        "value": 1
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -962,36 +984,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "colWidth": 0.9,
-                "legend": {
-                  "displayMode": "list",
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": false,
-                  "width": 200
-                },
-                "rowHeight": 0.9,
-                "showValue": "never",
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-18": {
         "kind": "Panel",
         "spec": {
+          "id": 18,
+          "title": "Positions (notional)",
+          "description": "Notional calculated from price of the most recent fill from any tanius account with that symbol",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -999,81 +1003,113 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol hedge",
                         "query": "  SELECT last(\"notional\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'hedge'\n  GROUP BY time($__interval), \"symbol\", \"tanius_acct\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol perp_total",
                         "query": "  SELECT last(\"notional\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'perp_total' AND ('${perp}' = 'perp_aggregated' OR '${perp}' = 'perp_with_legs')\n  GROUP BY time($__interval), \"symbol\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol perp $tag_tanius_acct",
                         "query": "  SELECT last(\"notional\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\n  GROUP BY time($__interval), \"symbol\", \"tanius_acct\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "Notional calculated from price of the most recent fill from any tanius account with that symbol",
-          "id": 18,
-          "links": [],
-          "title": "Positions (notional)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "hoverProximity": 10,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1111,24 +1147,98 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
+              }
+            }
+          }
+        }
+      },
+      "panel-19": {
+        "kind": "Panel",
+        "spec": {
+          "id": 19,
+          "title": "Fills (notional)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol $tag_leg_type $tag_direction",
+                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'hedge'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol perp $tag_direction",
+                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_aggregated'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol $tag_leg_type $tag_tanius_acct $tag_direction",
+                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\nGROUP BY \"symbol\", \"direction\", \"leg_type\", \"tanius_acct\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
+            "spec": {
               "options": {
                 "annotations": {
                   "clustering": -1,
@@ -1149,97 +1259,23 @@
                   "mode": "multi",
                   "sort": "none"
                 }
-              }
-            },
-            "version": "13.1.0"
-          }
-        }
-      },
-      "panel-19": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol $tag_leg_type $tag_direction",
-                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'hedge'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol perp $tag_direction",
-                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_aggregated'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "B"
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol $tag_leg_type $tag_tanius_acct $tag_direction",
-                        "query": "SELECT \"notional\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\nGROUP BY \"symbol\", \"direction\", \"leg_type\", \"tanius_acct\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "C"
-                  }
-                }
-              ],
-              "queryOptions": {},
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 19,
-          "links": [],
-          "title": "Fills (notional)",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1277,53 +1313,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "hoverProximity": 10,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "Order log",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1331,29 +1335,28 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "  SELECT \"account\", \"symbol\", \"side\", \"status\", \"qty\", \"filled\", \"limit_price\", \"order_id\", \"perm_id\", \"completed_time\"\n  FROM \"ib_order\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/\n  ORDER BY time DESC\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "groupBy",
                   "kind": "Transformation",
+                  "group": "groupBy",
                   "spec": {
                     "options": {
                       "fields": {
@@ -1474,8 +1477,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -1512,19 +1515,36 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "Order log",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": []
+              },
               "fieldConfig": {
                 "defaults": {
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -1539,20 +1559,6 @@
                     },
                     "inspect": false,
                     "minWidth": 50
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -1589,20 +1595,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "sortBy": []
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-20": {
         "kind": "Panel",
         "spec": {
+          "id": 20,
+          "title": "Event type count",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1610,38 +1614,71 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT count(\"perm_id\")\nFROM \"hedger_order_event\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/\nGROUP BY \"event\"\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 20,
-          "links": [],
-          "title": "Event type count",
           "vizConfig": {
-            "group": "barchart",
             "kind": "VizConfig",
+            "group": "barchart",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "orientation": "auto",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -1665,54 +1702,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "barRadius": 0,
-                "barWidth": 0.97,
-                "fullHighlight": false,
-                "groupWidth": 0.7,
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "orientation": "auto",
-                "showValue": "auto",
-                "stacking": "none",
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                },
-                "xTickLabelRotation": 0,
-                "xTickLabelSpacing": 0
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-21": {
         "kind": "Panel",
         "spec": {
+          "id": 21,
+          "title": "Positions",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1720,81 +1724,113 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol hedge",
                         "query": "  SELECT last(\"risk_qty\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'hedge'\n  GROUP BY time($__interval), \"symbol\", \"tanius_acct\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol perp_total",
                         "query": "  SELECT last(\"risk_qty\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'perp_total' AND ('${perp}' = 'perp_aggregated' OR '${perp}' = 'perp_with_legs')\n  GROUP BY time($__interval), \"symbol\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol perp $tag_tanius_acct",
                         "query": "  SELECT last(\"risk_qty\") FROM \"rwa_position\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\n  GROUP BY time($__interval), \"symbol\", \"tanius_acct\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 21,
-          "links": [],
-          "title": "Positions",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "hoverProximity": 10,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1832,24 +1868,98 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
+              }
+            }
+          }
+        }
+      },
+      "panel-22": {
+        "kind": "Panel",
+        "spec": {
+          "id": 22,
+          "title": "Fills",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol $tag_leg_type $tag_direction",
+                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'hedge'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol perp $tag_direction",
+                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_aggregated'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "efm5nvo6ne874a"
+                      },
+                      "spec": {
+                        "alias": "$tag_symbol $tag_leg_type $tag_tanius_acct $tag_direction",
+                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\nGROUP BY \"symbol\", \"direction\", \"leg_type\", \"tanius_acct\"",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
+            "spec": {
               "options": {
                 "annotations": {
                   "clustering": -1,
@@ -1870,97 +1980,23 @@
                   "mode": "multi",
                   "sort": "none"
                 }
-              }
-            },
-            "version": "13.1.0"
-          }
-        }
-      },
-      "panel-22": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol $tag_leg_type $tag_direction",
-                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'hedge'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol perp $tag_direction",
-                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_aggregated'\nGROUP BY \"symbol\", \"direction\", \"leg_type\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "B"
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "efm5nvo6ne874a"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "alias": "$tag_symbol $tag_leg_type $tag_tanius_acct $tag_direction",
-                        "query": "SELECT \"last_qty\"\nFROM \"rwa_fill\"\nWHERE $timeFilter AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND \"tanius_acct\" != None AND \"leg_type\" = 'perp' AND '${perp}' = 'perp_with_legs'\nGROUP BY \"symbol\", \"direction\", \"leg_type\", \"tanius_acct\"",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "C"
-                  }
-                }
-              ],
-              "queryOptions": {},
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 22,
-          "links": [],
-          "title": "Fills",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1998,53 +2034,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "hoverProximity": 10,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-23": {
         "kind": "Panel",
         "spec": {
+          "id": 23,
+          "title": "Perp vs hedge slippage (directional, vol-weighted)",
+          "description": "Direction-adjusted volume-weighted perp-vs-hedge slippage, 2m buckets. 2m width chosen so a perp print and its trailing ~1min TWAP hedge fall in the SAME window (both legs share one time(2m) grid so the join holds). Per bucket: VWAP = sum(notional)/sum(last_qty) per leg. Direction = sign of sum(signed_qty) on perp leg (>0 Buy, <0 Sell). Slippage sign-adjusted so POSITIVE = ADVERSE (bought above / sold below perp ref): adj_slip = (hedge_vwap - perp_vwap) * sign(perp signed_qty). Slip notional ($) = adj_slip * Volume; sort to find costly buckets. Volume (qty) = hedge last_qty; filter Volume >= N to drop noise. Vol-weighted avg adverse slippage = footer SUM(Slip notional)/SUM(Volume). CAVEATS: a perp trade near a 2m boundary whose hedge completes after the boundary straddles two buckets (minority case, irreducible without event-grouping). Back-to-back perp trades <2m apart merge into one bucket (visible as high Volume). Direction is NET per bucket. Missing-leg buckets show —. This is the InfluxQL ceiling; true per-trade markout needs Flux or upstream precompute.",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2052,116 +2056,113 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "hedge_notional",
                         "query": "SELECT sum(\"notional\") AS \"hedge_notional\" FROM \"rwa_fill\" WHERE (\"leg_type\"::tag = 'hedge') AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND $timeFilter GROUP BY time(2m) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "hedge_qty",
                         "query": "SELECT sum(\"last_qty\") AS \"hedge_qty\" FROM \"rwa_fill\" WHERE (\"leg_type\"::tag = 'hedge') AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND $timeFilter GROUP BY time(2m) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "perp_notional",
                         "query": "SELECT sum(\"notional\") AS \"perp_notional\" FROM \"rwa_fill\" WHERE (\"leg_type\"::tag = 'perp') AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND $timeFilter GROUP BY time(2m) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "perp_qty",
                         "query": "SELECT sum(\"last_qty\") AS \"perp_qty\" FROM \"rwa_fill\" WHERE (\"leg_type\"::tag = 'perp') AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND $timeFilter GROUP BY time(2m) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "perp_signed_qty",
                         "query": "SELECT sum(\"signed_qty\") AS \"perp_signed_qty\" FROM \"rwa_fill\" WHERE (\"leg_type\"::tag = 'perp') AND \"account\" =~ /^$account$/ AND \"symbol\" =~ /^$symbol$/ AND $timeFilter GROUP BY time(2m) fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "E"
+                    "refId": "E",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {
-                "interval": "2m"
-              },
               "transformations": [
                 {
-                  "group": "joinByField",
                   "kind": "Transformation",
+                  "group": "joinByField",
                   "spec": {
                     "options": {
                       "byField": "Time",
@@ -2170,8 +2171,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Hedge VWAP",
@@ -2188,8 +2189,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Perp VWAP",
@@ -2206,8 +2207,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "raw_slip",
@@ -2224,8 +2225,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "abs_signed_qty",
@@ -2238,8 +2239,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "dir_sign",
@@ -2256,8 +2257,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Adverse slip ($)",
@@ -2274,8 +2275,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "adv_ratio",
@@ -2292,8 +2293,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Adverse slip (bps)",
@@ -2310,8 +2311,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "Slip notional ($)",
@@ -2328,8 +2329,8 @@
                   }
                 },
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -2358,19 +2359,60 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {
+                "interval": "2m"
+              }
             }
           },
-          "description": "Direction-adjusted volume-weighted perp-vs-hedge slippage, 2m buckets. 2m width chosen so a perp print and its trailing ~1min TWAP hedge fall in the SAME window (both legs share one time(2m) grid so the join holds). Per bucket: VWAP = sum(notional)/sum(last_qty) per leg. Direction = sign of sum(signed_qty) on perp leg (\u003e0 Buy, \u003c0 Sell). Slippage sign-adjusted so POSITIVE = ADVERSE (bought above / sold below perp ref): adj_slip = (hedge_vwap - perp_vwap) * sign(perp signed_qty). Slip notional ($) = adj_slip * Volume; sort to find costly buckets. Volume (qty) = hedge last_qty; filter Volume \u003e= N to drop noise. Vol-weighted avg adverse slippage = footer SUM(Slip notional)/SUM(Volume). CAVEATS: a perp trade near a 2m boundary whose hedge completes after the boundary straddles two buckets (minority case, irreducible without event-grouping). Back-to-back perp trades \u003c2m apart merge into one bucket (visible as high Volume). Direction is NET per bucket. Missing-leg buckets show —. This is the InfluxQL ceiling; true per-trade markout needs Flux or upstream precompute.",
-          "id": 23,
-          "links": [],
-          "title": "Perp vs hedge slippage (directional, vol-weighted)",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Time"
+                  }
+                ]
+              },
               "fieldConfig": {
                 "defaults": {
+                  "mappings": [
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "nan",
+                        "result": {
+                          "text": "—",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "special",
+                      "options": {
+                        "match": "null",
+                        "result": {
+                          "text": "—",
+                          "index": 1
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "text"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -2385,37 +2427,6 @@
                     },
                     "inspect": false,
                     "minWidth": 100
-                  },
-                  "mappings": [
-                    {
-                      "options": {
-                        "match": "nan",
-                        "result": {
-                          "index": 0,
-                          "text": "—"
-                        }
-                      },
-                      "type": "special"
-                    },
-                    {
-                      "options": {
-                        "match": "null",
-                        "result": {
-                          "index": 1,
-                          "text": "—"
-                        }
-                      },
-                      "type": "special"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "text",
-                        "value": 0
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -2698,25 +2709,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "Time"
-                  }
-                ]
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-25": {
         "kind": "Panel",
         "spec": {
+          "id": 25,
+          "title": "Live health",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2724,98 +2728,92 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "IBGW $tag_env",
-                        "query": "SELECT last(\"connected\")  FROM \"ib_poller_heartbeat\" WHERE time \u003e now() - 2m GROUP BY \"env\"\n",
+                        "query": "SELECT last(\"connected\")  FROM \"ib_poller_heartbeat\" WHERE time > now() - 2m GROUP BY \"env\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "IBGW-poller $tag_env",
-                        "query": "SELECT last(\"poller_up\")  FROM \"ib_poller_heartbeat\" WHERE time \u003e now() - 2m GROUP BY \"env\"\n",
+                        "query": "SELECT last(\"poller_up\")  FROM \"ib_poller_heartbeat\" WHERE time > now() - 2m GROUP BY \"env\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "RS-poller $tag_env",
-                        "query": "SELECT last(\"up\")         FROM \"rwa_poller_heartbeat\" WHERE time \u003e now() - 2m GROUP BY \"env\"\n",
+                        "query": "SELECT last(\"up\")         FROM \"rwa_poller_heartbeat\" WHERE time > now() - 2m GROUP BY \"env\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "Hedger $tag_env",
-                        "query": "SELECT last(\"healthy\")    FROM \"hedger_heartbeat\"     WHERE time \u003e now() - 2m GROUP BY \"env\"",
+                        "query": "SELECT last(\"healthy\")    FROM \"hedger_heartbeat\"     WHERE time > now() - 2m GROUP BY \"env\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "D"
+                    "refId": "D",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {
-                "hideTimeOverride": true,
-                "interval": "1m",
-                "maxDataPoints": 200,
-                "timeFrom": "now-10m"
-              },
               "transformations": [
                 {
-                  "group": "filterFieldsByName",
                   "kind": "Transformation",
+                  "group": "filterFieldsByName",
                   "spec": {
                     "options": {
                       "byVariable": false,
@@ -2835,82 +2833,106 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {
+                "timeFrom": "now-10m",
+                "maxDataPoints": 200,
+                "interval": "1m",
+                "hideTimeOverride": true
+              }
             }
           },
-          "description": "",
-          "id": 25,
-          "links": [],
-          "title": "Live health",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "colorMode": "background_solid",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "text": {
+                  "titleSize": 14,
+                  "valueSize": 14
+                },
+                "textMode": "value_and_name",
+                "wideLayout": true
+              },
               "fieldConfig": {
                 "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
                   "mappings": [
                     {
+                      "type": "value",
                       "options": {
                         "-1": {
+                          "text": "UNKNOWN",
                           "color": "purple",
-                          "index": 2,
-                          "text": "UNKNOWN"
+                          "index": 2
                         },
                         "0": {
+                          "text": "DOWN",
                           "color": "red",
-                          "index": 0,
-                          "text": "DOWN"
+                          "index": 0
                         }
-                      },
-                      "type": "value"
+                      }
                     },
                     {
+                      "type": "range",
                       "options": {
                         "from": 1,
+                        "to": 1000000,
                         "result": {
+                          "text": "UP",
                           "color": "green",
-                          "index": 1,
-                          "text": "UP"
-                        },
-                        "to": 1000000
-                      },
-                      "type": "range"
+                          "index": 1
+                        }
+                      }
                     },
                     {
+                      "type": "special",
                       "options": {
                         "match": "null",
                         "result": {
+                          "text": "DOWN",
                           "color": "red",
-                          "index": 3,
-                          "text": "DOWN"
+                          "index": 3
                         }
-                      },
-                      "type": "special"
+                      }
                     }
                   ],
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "transparent",
-                        "value": 0
+                        "value": 0,
+                        "color": "transparent"
                       },
                       {
-                        "color": "purple",
-                        "value": -1
+                        "value": -1,
+                        "color": "purple"
                       },
                       {
-                        "color": "red",
-                        "value": 0
+                        "value": 0,
+                        "color": "red"
                       },
                       {
-                        "color": "green",
-                        "value": 1
+                        "value": 1,
+                        "color": "green"
                       }
                     ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
                   }
                 },
                 "overrides": [
@@ -2979,36 +3001,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "colorMode": "background_solid",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "horizontal",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "text": {
-                  "titleSize": 14,
-                  "valueSize": 14
-                },
-                "textMode": "value_and_name",
-                "wideLayout": true
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-26": {
         "kind": "Panel",
         "spec": {
+          "id": 26,
+          "title": "PnL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3016,55 +3020,55 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "A",
                         "query": "  SELECT difference(last(\"pnl\")) FROM \"ib_derived_pnl\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/\n  GROUP BY time($__interval), \"env\", \"account\", \"currency\" fill(none)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "B",
                         "query": "  SELECT difference(last(\"epoch_ns\")) FROM \"ib_derived_pnl\"\n  WHERE $timeFilter AND \"account\" =~ /^$account$/\n  GROUP BY time($__interval), \"env\", \"account\", \"currency\" fill(none)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
                         "expression": "$A * ($B == 0)",
                         "reducer": "last",
@@ -3072,18 +3076,17 @@
                           "mode": "dropNN"
                         },
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {},
@@ -3096,8 +3099,8 @@
                   }
                 },
                 {
-                  "group": "calculateField",
                   "kind": "Transformation",
+                  "group": "calculateField",
                   "spec": {
                     "options": {
                       "alias": "PnL",
@@ -3112,19 +3115,57 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 26,
-          "links": [],
-          "title": "PnL",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "lines": {
+                    "width": 2
+                  },
+                  "multiLane": false,
+                  "regions": {
+                    "opacity": 0.1
+                  }
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": false,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds",
                     "seriesBy": "last"
@@ -3166,28 +3207,14 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": 0
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "/C.*/",
-                      "scope": "series"
+                      "scope": "series",
+                      "options": "/C.*/"
                     },
                     "properties": [
                       {
@@ -3201,41 +3228,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "lines": {
-                    "width": 2
-                  },
-                  "multiLane": false,
-                  "regions": {
-                    "opacity": 0.1
-                  }
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": false,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-27": {
         "kind": "Panel",
         "spec": {
+          "id": 27,
+          "title": "Private fill notionals",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3243,42 +3247,77 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol",
                         "query": "  SELECT sum(\"notional\") FROM \"ib_fill\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/ AND \"account\" =~ /^$account$/\n  GROUP BY time($__interval), \"symbol\" fill(0)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1s",
-                "maxDataPoints": 50
-              },
-              "transformations": []
+                "maxDataPoints": 50,
+                "interval": "1s"
+              }
             }
           },
-          "description": "",
-          "id": 27,
-          "links": [],
-          "title": "Private fill notionals",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "sum"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": true,
+                  "hoverProximity": 30,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3316,56 +3355,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "sum"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": true,
-                  "hoverProximity": 30,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Private fill log",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3373,29 +3377,28 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "  SELECT \"symbol\", \"side\", \"qty\", \"multiplier\", \"price\", \"notional\", \"account\", \"perm_id\"\n  FROM \"ib_fill\"\n  WHERE (\"account\" =~ /^$account$/) AND \"symbol\" =~ /^$symbol$/ AND $timeFilter\n  ORDER BY time DESC\n",
                         "rawQuery": true,
                         "resultFormat": "table"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -3427,19 +3430,35 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Private fill log",
           "vizConfig": {
-            "group": "table",
             "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -3454,21 +3473,7 @@
                     },
                     "inspect": false,
                     "minWidth": 100
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": [
                   {
@@ -3516,19 +3521,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-30": {
         "kind": "Panel",
         "spec": {
+          "id": 30,
+          "title": "Positions",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3536,63 +3540,98 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol",
                         "query": "  SELECT sum(\"notional\") FROM \"ib_fill\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/ AND \"account\" =~ /^$account$/\n  GROUP BY time($__interval), \"symbol\" fill(0)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol",
                         "query": "  SELECT last(\"market_value\") AS \"market_value\"\n  FROM \"ib_position_pnl\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/ AND \"account\" =~ /^$account$/\n  GROUP BY time($__interval), \"symbol\"",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1s",
-                "maxDataPoints": 50
-              },
-              "transformations": []
+                "maxDataPoints": 50,
+                "interval": "1s"
+              }
             }
           },
-          "description": "",
-          "id": 30,
-          "links": [],
-          "title": "Positions",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": true,
+                  "hoverProximity": 30,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3630,56 +3669,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": true,
-                  "hoverProximity": 30,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Market price and private fills (public trades can be toggled)",
+          "description": "Enable query B to display trades. If many symbols are enabled, will likely timeout.",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3687,72 +3691,71 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol mid",
                         "query": "  SELECT \"mid\" FROM \"ib_price\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/\n  GROUP BY \"symbol\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol public trade",
                         "query": "  SELECT \"price\" FROM \"ib_trade\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/\n  GROUP BY \"symbol\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "efm5nvo6ne874a"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_symbol $tag_side private fill",
                         "query": "  SELECT \"price\" FROM \"ib_fill\"\n  WHERE $timeFilter AND \"symbol\" =~ /^$symbol$/ AND \"account\" =~ /^$account$/\n  GROUP BY \"symbol\", \"side\"\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "C"
+                    "refId": "C",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
               "transformations": [
                 {
-                  "group": "organize",
                   "kind": "Transformation",
+                  "group": "organize",
                   "spec": {
                     "options": {
                       "excludeByName": {
@@ -3764,19 +3767,53 @@
                     }
                   }
                 }
-              ]
+              ],
+              "queryOptions": {}
             }
           },
-          "description": "Enable query B to display trades. If many symbols are enabled, will likely timeout.",
-          "id": 5,
-          "links": [],
-          "title": "Market price and private fills (public trades can be toggled)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.0",
             "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true,
+                  "width": 200
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "hoverProximity": 20,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -3814,22 +3851,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": 0
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
@@ -3865,30 +3887,8 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true,
-                  "width": 200
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "hoverProximity": 20,
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "13.1.0"
+            }
           }
         }
       }
@@ -3900,6 +3900,7 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "Heartbeat",
               "collapse": false,
               "layout": {
                 "kind": "GridLayout",
@@ -3908,38 +3909,38 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 22,
+                        "height": 11,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-15"
-                        },
-                        "height": 11,
-                        "width": 22,
-                        "x": 0,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 22,
+                        "y": 0,
+                        "width": 2,
+                        "height": 11,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-25"
-                        },
-                        "height": 11,
-                        "width": 2,
-                        "x": 22,
-                        "y": 0
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": "Heartbeat"
+              }
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "IBGW-polled",
               "collapse": false,
               "layout": {
                 "kind": "GridLayout",
@@ -3948,103 +3949,103 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 12,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-2"
-                        },
-                        "height": 10,
-                        "width": 12,
-                        "x": 0,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 12,
+                        "y": 0,
+                        "width": 12,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-3"
-                        },
-                        "height": 10,
-                        "width": 12,
-                        "x": 12,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 10,
+                        "width": 24,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-5"
-                        },
-                        "height": 10,
-                        "width": 24,
-                        "x": 0,
-                        "y": 10
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 20,
+                        "width": 24,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-27"
-                        },
-                        "height": 10,
-                        "width": 24,
-                        "x": 0,
-                        "y": 20
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 30,
+                        "width": 22,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-26"
-                        },
-                        "height": 9,
-                        "width": 22,
-                        "x": 0,
-                        "y": 30
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 39,
+                        "width": 24,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-30"
-                        },
-                        "height": 10,
-                        "width": 24,
-                        "x": 0,
-                        "y": 39
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 49,
+                        "width": 14,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-1"
-                        },
-                        "height": 9,
-                        "width": 14,
-                        "x": 0,
-                        "y": 49
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": "IBGW-polled"
+              }
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "Hedger-published",
               "collapse": false,
               "layout": {
                 "kind": "GridLayout",
@@ -4053,51 +4054,51 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 14,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-13"
-                        },
-                        "height": 10,
-                        "width": 14,
-                        "x": 0,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 14,
+                        "y": 0,
+                        "width": 10,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-20"
-                        },
-                        "height": 10,
-                        "width": 10,
-                        "x": 14,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 10,
+                        "width": 24,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-14"
-                        },
-                        "height": 9,
-                        "width": 24,
-                        "x": 0,
-                        "y": 10
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": "Hedger-published"
+              }
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
+              "title": "RiskServer-polled",
               "collapse": false,
               "layout": {
                 "kind": "GridLayout",
@@ -4106,72 +4107,71 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 24,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-18"
-                        },
-                        "height": 9,
-                        "width": 24,
-                        "x": 0,
-                        "y": 0
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 9,
+                        "width": 24,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-19"
-                        },
-                        "height": 9,
-                        "width": 24,
-                        "x": 0,
-                        "y": 9
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 18,
+                        "width": 24,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-21"
-                        },
-                        "height": 9,
-                        "width": 24,
-                        "x": 0,
-                        "y": 18
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 27,
+                        "width": 24,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-22"
-                        },
-                        "height": 9,
-                        "width": 24,
-                        "x": 0,
-                        "y": 27
+                        }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
+                        "x": 0,
+                        "y": 36,
+                        "width": 24,
+                        "height": 11,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-23"
-                        },
-                        "height": 11,
-                        "width": 24,
-                        "x": 0,
-                        "y": 36
+                        }
                       }
                     }
                   ]
                 }
-              },
-              "title": "RiskServer-polled"
+              }
             }
           }
         ]
@@ -4182,6 +4182,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now-3h",
+      "to": "now",
       "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
@@ -4195,82 +4198,79 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-3h",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "RWA hedger consolidated",
     "variables": [
       {
         "kind": "CustomVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "account",
+          "query": "prod : U24362133, pilot : U25650461, paper : DUP816582",
           "current": {
             "text": "pilot",
             "value": "U25650461"
           },
-          "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "account",
           "options": [],
-          "query": "prod : U24362133, pilot : U25650461, paper : DUP816582",
+          "multi": false,
+          "includeAll": false,
+          "hide": "dontHide",
           "skipUrlSync": false,
+          "allowCustomValue": true,
           "valuesFormat": "csv"
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "symbol",
           "current": {
             "text": "All",
             "value": [
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES FROM /^(ib_position|ib_fill|rwa_position|rwa_fill|hedger_order_event)$/ WITH KEY = \"symbol\" WHERE time \u003e now() - 7d AND (\"account\" =~ /^$account$/)",
           "hide": "dontHide",
-          "includeAll": true,
-          "multi": true,
-          "name": "symbol",
-          "options": [],
+          "refresh": "onTimeRangeChanged",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "efm5nvo6ne874a"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
-              "query": "SHOW TAG VALUES FROM /^(ib_position|ib_fill|rwa_position|rwa_fill|hedger_order_event)$/ WITH KEY = \"symbol\" WHERE time \u003e now() - 7d AND (\"account\" =~ /^$account$/)",
+              "query": "SHOW TAG VALUES FROM /^(ib_position|ib_fill|rwa_position|rwa_fill|hedger_order_event)$/ WITH KEY = \"symbol\" WHERE time > now() - 7d AND (\"account\" =~ /^$account$/)",
               "refId": "InfluxVariableQueryEditor-VariableQuery"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onTimeRangeChanged",
           "regex": "",
           "regexApplyTo": "value",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES FROM /^(ib_position|ib_fill|rwa_position|rwa_fill|hedger_order_event)$/ WITH KEY = \"symbol\" WHERE time > now() - 7d AND (\"account\" =~ /^$account$/)",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "CustomVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "perp",
+          "query": "none,perp_aggregated,perp_with_legs",
           "current": {
             "text": "perp_aggregated",
             "value": "perp_aggregated"
           },
-          "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "perp",
           "options": [],
-          "query": "none,perp_aggregated,perp_with_legs",
+          "multi": false,
+          "includeAll": false,
+          "hide": "dontHide",
           "skipUrlSync": false,
+          "allowCustomValue": true,
           "valuesFormat": "csv"
         }
       }

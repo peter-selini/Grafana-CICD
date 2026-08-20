@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "dfls49pef4vlsf"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "CDF",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "fflrolt3pnuo0e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
@@ -71,27 +75,47 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "CDF",
           "vizConfig": {
-            "group": "trend",
             "kind": "VizConfig",
+            "group": "trend",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                },
+                "xField": "bucket"
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "percentunit",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "blue"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -130,17 +154,7 @@
                       "mode": "dashed"
                     }
                   },
-                  "fieldMinMax": true,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "blue",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "percentunit"
+                  "fieldMinMax": true
                 },
                 "overrides": [
                   {
@@ -156,28 +170,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none"
-                },
-                "xField": "bucket"
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "$__interval Quantiles",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -185,18 +189,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "fflrolt3pnuo0e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
                         "rawQuery": true,
-                        "rawSql": "  SELECT\n      time,\n      quantile_name AS metric,\n      min(bucket) AS value\n  FROM (\n      SELECT\n        time,\n        bucket,\n        sum(cnt) OVER (PARTITION BY time ORDER BY bucket) * 1.0\n          / sum(cnt) OVER (PARTITION BY time) AS pct\n      FROM (\n        SELECT\n          timestamp_floor('$__interval', timestamp) AS time,\n          bucket,\n          sum(count) AS cnt\n        FROM jack_latency\n        WHERE metric = '$metric'\n          AND $__timeFilter(timestamp)\n        GROUP BY time, bucket\n      )\n    )\n    CROSS JOIN (\n      SELECT 0.5 AS quantile, 'P50' AS quantile_name UNION ALL\n      SELECT 0.99, 'P99' UNION ALL\n      SELECT 0.999, 'P99.9' UNION ALL\n      SELECT 1.0,  'P100'\n    )\n    WHERE pct \u003e= quantile\n    GROUP BY time, quantile_name\n    ORDER BY time, quantile_name;\n",
+                        "rawSql": "  SELECT\n      time,\n      quantile_name AS metric,\n      min(bucket) AS value\n  FROM (\n      SELECT\n        time,\n        bucket,\n        sum(cnt) OVER (PARTITION BY time ORDER BY bucket) * 1.0\n          / sum(cnt) OVER (PARTITION BY time) AS pct\n      FROM (\n        SELECT\n          timestamp_floor('$__interval', timestamp) AS time,\n          bucket,\n          sum(count) AS cnt\n        FROM jack_latency\n        WHERE metric = '$metric'\n          AND $__timeFilter(timestamp)\n        GROUP BY time, bucket\n      )\n    )\n    CROSS JOIN (\n      SELECT 0.5 AS quantile, 'P50' AS quantile_name UNION ALL\n      SELECT 0.99, 'P99' UNION ALL\n      SELECT 0.999, 'P99.9' UNION ALL\n      SELECT 1.0,  'P100'\n    )\n    WHERE pct >= quantile\n    GROUP BY time, quantile_name\n    ORDER BY time, quantile_name;\n",
                         "sql": {
                           "columns": [
                             {
@@ -214,32 +218,55 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "interval": "15s"
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "$__interval Quantiles",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "last"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true,
+                  "sortBy": "Last",
+                  "sortDesc": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
-                    "fixedColor": "red",
                     "mode": "fixed",
+                    "fixedColor": "red",
                     "seriesBy": "max"
                   },
                   "custom": {
@@ -274,17 +301,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  }
                 },
                 "overrides": [
                   {
@@ -348,31 +365,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "last"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true,
-                  "sortBy": "Last",
-                  "sortDesc": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "desc"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Heatmap",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -380,18 +384,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "fflrolt3pnuo0e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "time_series",
                         "rawQuery": true,
-                        "rawSql": "SELECT\n    timestamp_floor('$__interval', timestamp) AS time,\n    (CASE\n      WHEN bucket \u003c 1000 THEN bucket / 10 * 10\n      WHEN bucket \u003c 10000 THEN bucket / 100 * 100\n      WHEN bucket \u003c 100000 THEN bucket / 1000 * 1000\n      WHEN bucket \u003c 1000000 THEN bucket / 10000 * 10000\n      WHEN bucket \u003c 10000000 THEN bucket / 100000 * 100000\n      ELSE bucket / 1000000 * 1000000\n    END)::text AS metric,\n    sum(count) AS value\n  FROM jack_latency\n  WHERE $__timeFilter(timestamp)\n    AND metric = '$metric'\n  GROUP BY time, metric\n  ORDER BY time, metric",
+                        "rawSql": "SELECT\n    timestamp_floor('$__interval', timestamp) AS time,\n    (CASE\n      WHEN bucket < 1000 THEN bucket / 10 * 10\n      WHEN bucket < 10000 THEN bucket / 100 * 100\n      WHEN bucket < 100000 THEN bucket / 1000 * 1000\n      WHEN bucket < 1000000 THEN bucket / 10000 * 10000\n      WHEN bucket < 10000000 THEN bucket / 100000 * 100000\n      ELSE bucket / 1000000 * 1000000\n    END)::text AS metric,\n    sum(count) AS value\n  FROM jack_latency\n  WHERE $__timeFilter(timestamp)\n    AND metric = '$metric'\n  GROUP BY time, metric\n  ORDER BY time, metric",
                         "sql": {
                           "columns": [
                             {
@@ -409,42 +413,24 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "interval": "10s"
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "Heatmap",
           "vizConfig": {
-            "group": "heatmap",
             "kind": "VizConfig",
+            "group": "heatmap",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "custom": {
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "scaleDistribution": {
-                      "type": "linear"
-                    }
-                  }
-                },
-                "overrides": []
-              },
               "options": {
                 "calculate": false,
                 "cellGap": 0,
@@ -479,15 +465,33 @@
                   "reverse": false,
                   "unit": "ns"
                 }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "custom": {
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "scaleDistribution": {
+                      "type": "linear"
+                    }
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Histogram",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -495,18 +499,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "fflrolt3pnuo0e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "  SELECT\n      bucket_rounded::text AS bucket,\n      sum(count) AS \"Samples\"\n  FROM (\n    SELECT\n      (CASE\n        WHEN bucket \u003c 1000     THEN bucket / 10     * 10\n        WHEN bucket \u003c 10000    THEN bucket / 100    * 100\n        WHEN bucket \u003c 100000   THEN bucket / 1000   * 1000\n        WHEN bucket \u003c 1000000  THEN bucket / 10000  * 10000\n        WHEN bucket \u003c 10000000 THEN bucket / 100000 * 100000\n        ELSE bucket / 1000000 * 1000000\n      END) AS bucket_rounded,\n      count\n    FROM jack_latency\n    WHERE $__timeFilter(timestamp) AND metric = '$metric'\n  ) t\n  GROUP BY bucket_rounded\n  ORDER BY bucket_rounded;",
+                        "rawSql": "  SELECT\n      bucket_rounded::text AS bucket,\n      sum(count) AS \"Samples\"\n  FROM (\n    SELECT\n      (CASE\n        WHEN bucket < 1000     THEN bucket / 10     * 10\n        WHEN bucket < 10000    THEN bucket / 100    * 100\n        WHEN bucket < 100000   THEN bucket / 1000   * 1000\n        WHEN bucket < 1000000  THEN bucket / 10000  * 10000\n        WHEN bucket < 10000000 THEN bucket / 100000 * 100000\n        ELSE bucket / 1000000 * 1000000\n      END) AS bucket_rounded,\n      count\n    FROM jack_latency\n    WHERE $__timeFilter(timestamp) AND metric = '$metric'\n  ) t\n  GROUP BY bucket_rounded\n  ORDER BY bucket_rounded;",
                         "sql": {
                           "columns": [
                             {
@@ -524,27 +528,56 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "Histogram",
           "vizConfig": {
-            "group": "barchart",
             "kind": "VizConfig",
+            "group": "barchart",
+            "version": "",
             "spec": {
+              "options": {
+                "barRadius": 0,
+                "barWidth": 1,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "orientation": "auto",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 100
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "ns",
+                  "min": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -569,18 +602,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": false,
-                  "min": 0,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "ns"
+                  "fieldMinMax": false
                 },
                 "overrides": [
                   {
@@ -608,36 +630,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "barRadius": 0,
-                "barWidth": 1,
-                "fullHighlight": false,
-                "groupWidth": 0.7,
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "orientation": "auto",
-                "showValue": "auto",
-                "stacking": "none",
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                },
-                "xTickLabelRotation": 0,
-                "xTickLabelSpacing": 100
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-7": {
         "kind": "Panel",
         "spec": {
+          "id": 7,
+          "title": "Overall Quantiles",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -645,18 +649,18 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "grafana-postgresql-datasource",
+                      "version": "v0",
                       "datasource": {
                         "name": "fflrolt3pnuo0e"
                       },
-                      "group": "grafana-postgresql-datasource",
-                      "kind": "DataQuery",
                       "spec": {
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT\n      quantile_name AS metric,\n      CASE WHEN quantile = 1.0 THEN max(bucket) ELSE min(bucket) END AS value\n  FROM (\n    SELECT\n      bucket,\n      sum(cnt) OVER (ORDER BY bucket) * 1.0 / sum(cnt) OVER () AS pct\n    FROM (\n      SELECT bucket, sum(count) AS cnt\n      FROM jack_latency\n      WHERE metric = '$metric'\n        AND $__timeFilter(timestamp)\n      GROUP BY bucket\n    )\n  )\n  CROSS JOIN (\n    SELECT 0.5    AS quantile, 'P50'    AS quantile_name, 1 AS ord UNION ALL\n    SELECT 0.99,    'P99',    2 UNION ALL\n    SELECT 0.999,   'P99.9',  3 UNION ALL\n    SELECT 0.9999,  'P99.99', 4 UNION ALL\n    SELECT 1.0,     'P100',   5\n  )\n  WHERE pct \u003e= quantile\n  GROUP BY quantile_name, quantile, ord\n  ORDER BY ord desc;",
+                        "rawSql": "SELECT\n      quantile_name AS metric,\n      CASE WHEN quantile = 1.0 THEN max(bucket) ELSE min(bucket) END AS value\n  FROM (\n    SELECT\n      bucket,\n      sum(cnt) OVER (ORDER BY bucket) * 1.0 / sum(cnt) OVER () AS pct\n    FROM (\n      SELECT bucket, sum(count) AS cnt\n      FROM jack_latency\n      WHERE metric = '$metric'\n        AND $__timeFilter(timestamp)\n      GROUP BY bucket\n    )\n  )\n  CROSS JOIN (\n    SELECT 0.5    AS quantile, 'P50'    AS quantile_name, 1 AS ord UNION ALL\n    SELECT 0.99,    'P99',    2 UNION ALL\n    SELECT 0.999,   'P99.9',  3 UNION ALL\n    SELECT 0.9999,  'P99.99', 4 UNION ALL\n    SELECT 1.0,     'P100',   5\n  )\n  WHERE pct >= quantile\n  GROUP BY quantile_name, quantile, ord\n  ORDER BY ord desc;",
                         "sql": {
                           "columns": [
                             {
@@ -674,43 +678,22 @@
                           ],
                           "limit": 50
                         }
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 7,
-          "links": [],
-          "title": "Overall Quantiles",
           "vizConfig": {
-            "group": "bargauge",
             "kind": "VizConfig",
+            "group": "bargauge",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "continuous-GrYlRd"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "ns"
-                },
-                "overrides": []
-              },
               "options": {
                 "displayMode": "gradient",
                 "maxVizHeight": 300,
@@ -728,9 +711,26 @@
                 "showUnfilled": true,
                 "sizing": "auto",
                 "valueMode": "text"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "ns",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "continuous-GrYlRd"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       }
@@ -742,66 +742,66 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 22,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 22,
-              "width": 12,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 28,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 28,
-              "width": 12,
-              "x": 12,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 22,
+              "width": 12,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 12,
-              "width": 12,
-              "x": 0,
-              "y": 22
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 12,
+              "y": 28,
+              "width": 12,
+              "height": 12,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 12,
-              "width": 12,
-              "x": 12,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 34,
+              "width": 12,
+              "height": 6,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-7"
-              },
-              "height": 6,
-              "width": 12,
-              "x": 0,
-              "y": 34
+              }
             }
           }
         ]
@@ -812,6 +812,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now-30m",
+      "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
         "5s",
@@ -825,44 +828,41 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now-30m",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "QuestDB Histogram Test",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "metric",
           "current": {
             "text": "l3_chase",
             "value": "l3_chase"
           },
-          "definition": "SELECT DISTINCT metric FROM jack_latency",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "Metric",
-          "multi": false,
-          "name": "metric",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana-postgresql-datasource",
+            "version": "v0",
             "datasource": {
               "name": "fflrolt3pnuo0e"
             },
-            "group": "grafana-postgresql-datasource",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SELECT DISTINCT metric FROM jack_latency"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT metric FROM jack_latency",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]

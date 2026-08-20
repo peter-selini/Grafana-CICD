@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "adohieabwzxfka"
@@ -9,27 +9,27 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -40,6 +40,10 @@
       "panel-10": {
         "kind": "Panel",
         "spec": {
+          "id": 10,
+          "title": "Notional Risk by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -47,13 +51,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -84,7 +88,7 @@
                         "measurement": "acct_lvl_grp_risk",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"level\"] == \"${level}\")\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grp_risk\")\r\n  |> filter(fn: (r) => r[\"level\"] == \"${level}\")\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -113,266 +117,24 @@
                             "value": "/^$label$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 10,
-          "links": [],
-          "title": "Notional Risk by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#ffa6ec",
-                        "value": null
-                      },
-                      {
-                        "color": "#4c4636",
-                        "value": -10000
-                      },
-                      {
-                        "color": "blue",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -392,15 +154,257 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#ffa6ec"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "blue"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-11": {
         "kind": "Panel",
         "spec": {
+          "id": 11,
+          "title": "Total Daily PnL for Selection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -408,277 +412,36 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT SUM(last_pnl) FROM (\n  SELECT last(\"pnl\") as last_pnl\n  FROM (\n    SELECT \"pnl\", \"label\", substring(\"label\" from 1 for position(\"--\" in \"label\") + length('--')) as level_1_label\n    FROM \"default\".\"acct_lvl_daily_pnl\"\n    WHERE (\"label\" =~ /^$label$/)\n    AND (\"level\" =~ /^5$/)\n    AND $timeFilter\n  )\n  WHERE (\n    '$filter_coin' = '' OR \"label\" =~ /.*$filter_coin.*/\n  )\n  GROUP BY time($__interval), \"level_1_label\" fill(none)\n) \nGROUP BY time($__interval)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 11,
-          "links": [],
-          "title": "Total Daily PnL for Selection",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#4c4636",
-                        "value": -1000
-                      },
-                      {
-                        "color": "green",
-                        "value": 1000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -698,15 +461,256 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -1000,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 1000,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-12": {
         "kind": "Panel",
         "spec": {
+          "id": 12,
+          "title": "Total Daily PnL for Selection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -714,13 +718,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -781,30 +785,55 @@
                             "value": "1"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
-              },
-              "transformations": []
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 12,
-          "links": [],
-          "title": "Total Daily PnL for Selection",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -839,46 +868,21 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
+          "id": 13,
+          "title": "Total Daily Trade Volume for Selection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -886,273 +890,36 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "SELECT SUM(last_trade_vol) FROM (\nSELECT last(\"trade_vol\") as last_trade_vol\nFROM \"default\".\"acct_lvl_daily_trade_vol\"\nWHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/)\nAND $timeFilter\nGROUP BY time($__interval), \"label\", \"level\"\n)\nGROUP BY time($__interval)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 13,
-          "links": [],
-          "title": "Total Daily Trade Volume for Selection",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#4c4636",
-                        "value": null
-                      },
-                      {
-                        "color": "yellow",
-                        "value": 1000000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -1172,15 +939,252 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 1000000,
+                        "color": "yellow"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-14": {
         "kind": "Panel",
         "spec": {
+          "id": 14,
+          "title": "Total Daily Trade Volume for Selection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1188,44 +1192,69 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT SUM(last_trade_vol) FROM (\n    SELECT last(\"trade_vol\") AS last_trade_vol \n    FROM \"default\".\"acct_lvl_daily_trade_vol\"\n    WHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/)\n    AND $timeFilter\n    GROUP BY time($__interval), \"label\", \"level\"\n) \nGROUP BY time($__interval)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
-              },
-              "transformations": []
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 14,
-          "links": [],
-          "title": "Total Daily Trade Volume for Selection",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 0,
+                        "color": "#EAB839"
+                      }
+                    ]
+                  },
                   "color": {
-                    "fixedColor": "yellow",
-                    "mode": "thresholds"
+                    "mode": "thresholds",
+                    "fixedColor": "yellow"
                   },
                   "custom": {
                     "axisBorderShow": false,
@@ -1258,21 +1287,7 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#4c4636",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": [
                   {
@@ -1300,7 +1315,55 @@
                     ]
                   }
                 ]
-              },
+              }
+            }
+          }
+        }
+      },
+      "panel-15": {
+        "kind": "Panel",
+        "spec": {
+          "id": 15,
+          "title": "Total Notional Risk for Selection",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "_NkF9laVk"
+                      },
+                      "spec": {
+                        "query": "SELECT SUM(last_grp_risk) FROM (\n    SELECT last(\"grp_risk\") AS last_grp_risk \n    FROM \"default\".\"acct_lvl_grp_risk\"\n    WHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/)\n    AND $timeFilter\n    GROUP BY time($__interval), \"label\", \"level\"\n) \nGROUP BY time($__interval)",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
+            "spec": {
               "options": {
                 "legend": {
                   "calcs": [
@@ -1314,57 +1377,23 @@
                   "mode": "single",
                   "sort": "none"
                 }
-              }
-            },
-            "version": ""
-          }
-        }
-      },
-      "panel-15": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "_NkF9laVk"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "query": "SELECT SUM(last_grp_risk) FROM (\n    SELECT last(\"grp_risk\") AS last_grp_risk \n    FROM \"default\".\"acct_lvl_grp_risk\"\n    WHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/)\n    AND $timeFilter\n    GROUP BY time($__interval), \"label\", \"level\"\n) \nGROUP BY time($__interval)",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                }
-              ],
-              "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
               },
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 15,
-          "links": [],
-          "title": "Total Notional Risk for Selection",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#ffa6ec"
+                      },
+                      {
+                        "value": 0,
+                        "color": "blue"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds",
                     "seriesBy": "last"
@@ -1400,46 +1429,21 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#ffa6ec",
-                        "value": null
-                      },
-                      {
-                        "color": "blue",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-16": {
         "kind": "Panel",
         "spec": {
+          "id": 16,
+          "title": "Total Notional Risk for Selection",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1447,276 +1451,35 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT SUM(last_grp_risk) FROM (\nSELECT last(\"grp_risk\") as last_grp_risk\nFROM \"default\".\"acct_lvl_grp_risk\"\nWHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/)\nAND $timeFilter\nGROUP BY time($__interval), \"label\", \"level\"\n)\nGROUP BY time($__interval)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 16,
-          "links": [],
-          "title": "Total Notional Risk for Selection",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#ffa6ec",
-                        "value": null
-                      },
-                      {
-                        "color": "#4c4636",
-                        "value": -10000
-                      },
-                      {
-                        "color": "blue",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -1736,15 +1499,256 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#ffa6ec"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "blue"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-18": {
         "kind": "Panel",
         "spec": {
+          "id": 18,
+          "title": "PPM by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1752,13 +1756,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -1789,7 +1793,7 @@
                         "measurement": "acct_lvl_daily_pnl_trade_vol_ratio",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e contains(value: r[\"level\"], set: ${level:json}))\r\n  |\u003e filter(fn: (r) =\u003e contains(value: r[\"label\"], set: ${label:json}))\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grp_risk\")\r\n  |> filter(fn: (r) => contains(value: r[\"level\"], set: ${level:json}))\r\n  |> filter(fn: (r) => contains(value: r[\"label\"], set: ${label:json}))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -1818,55 +1822,24 @@
                             "value": "/^$label$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 18,
-          "links": [],
-          "title": "PPM by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#F2495C",
-                        "value": null
-                      },
-                      {
-                        "color": "#4c4636",
-                        "value": -50
-                      },
-                      {
-                        "color": "green",
-                        "value": 50
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -1886,15 +1859,46 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#F2495C"
+                      },
+                      {
+                        "value": -50,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 50,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-20": {
         "kind": "Panel",
         "spec": {
+          "id": 20,
+          "title": "PPM by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1902,13 +1906,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": true,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -1939,7 +1943,7 @@
                         "measurement": "acct_lvl_daily_pnl_trade_vol_ratio",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e contains(value: r[\"level\"], set: ${level:json}))\r\n  |\u003e filter(fn: (r) =\u003e contains(value: r[\"label\"], set: ${label:json}))\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grp_risk\")\r\n  |> filter(fn: (r) => contains(value: r[\"level\"], set: ${level:json}))\r\n  |> filter(fn: (r) => contains(value: r[\"label\"], set: ${label:json}))\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -1968,49 +1972,70 @@
                             "value": "/^$level$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": true
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "__expr__",
+                      "version": "v0",
                       "datasource": {
                         "name": "__expr__"
                       },
-                      "group": "__expr__",
-                      "kind": "DataQuery",
                       "spec": {
-                        "expression": "($A \u003e 1000) * (1000 - $A) + $A + ($A \u003c -1000) * (-1000 - $A)",
+                        "expression": "($A > 1000) * (1000 - $A) + $A + ($A < -1000) * (-1000 - $A)",
                         "type": "math"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "cappedPPM"
+                    "refId": "cappedPPM",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 1440
-              },
-              "transformations": []
+                "maxDataPoints": 1440,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 20,
-          "links": [],
-          "title": "PPM by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2045,42 +2070,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "desc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "Daily PnL by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2088,13 +2092,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -2125,7 +2129,7 @@
                         "measurement": "acct_lvl_daily_pnl",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_daily_pnl\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"pnl\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"level\"] == \"${level}\")\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_daily_pnl\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"pnl\")\r\n  |> filter(fn: (r) => r[\"level\"] == \"${level}\")\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -2160,30 +2164,51 @@
                             "value": "/^$label$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 1440
-              },
-              "transformations": []
+                "maxDataPoints": 1440,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "Daily PnL by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "desc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2218,42 +2243,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "desc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "Notional Risk by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2261,13 +2265,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -2298,7 +2302,7 @@
                         "measurement": "acct_lvl_grp_risk",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"grp_risk\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"level\"] == \"${level}\")\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_grp_risk\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grp_risk\")\r\n  |> filter(fn: (r) => r[\"level\"] == \"${level}\")\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -2327,30 +2331,51 @@
                             "value": "/^$level$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 1440
-              },
-              "transformations": []
+                "maxDataPoints": 1440,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "Notional Risk by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2385,42 +2410,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "desc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-6": {
         "kind": "Panel",
         "spec": {
+          "id": 6,
+          "title": "Daily Trade Volume by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2428,13 +2432,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -2465,7 +2469,7 @@
                         "measurement": "acct_lvl_daily_trade_vol",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |\u003e filter(fn: (r) =\u003e r[\"_measurement\"] == \"acct_lvl_daily_trade_vol\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"_field\"] == \"trade_vol\")\r\n  |\u003e filter(fn: (r) =\u003e r[\"level\"] == \"${level}\")\r\n  |\u003e aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |\u003e yield(name: \"last\")",
+                        "query": "from(bucket: \"Mimid_PnLStatsTestNew\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"acct_lvl_daily_trade_vol\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"trade_vol\")\r\n  |> filter(fn: (r) => r[\"level\"] == \"${level}\")\r\n  |> aggregateWindow(every: $__interval, fn: last, createEmpty: false)  \r\n  |> yield(name: \"last\")",
                         "resultFormat": "time_series",
                         "select": [
                           [
@@ -2500,30 +2504,51 @@
                             "value": "/^$label$/"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 1440
-              },
-              "transformations": []
+                "maxDataPoints": 1440,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 6,
-          "links": [],
-          "title": "Daily Trade Volume by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -2558,42 +2583,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "desc"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-8": {
         "kind": "Panel",
         "spec": {
+          "id": 8,
+          "title": "Daily PnL by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2601,13 +2605,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -2674,266 +2678,24 @@
                             "value": "0"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 8,
-          "links": [],
-          "title": "Daily PnL by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#4c4636",
-                        "value": -1000
-                      },
-                      {
-                        "color": "green",
-                        "value": 1000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -2953,15 +2715,257 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -1000,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 1000,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-9": {
         "kind": "Panel",
         "spec": {
+          "id": 9,
+          "title": "Daily Trade Volume by Mimid Account Level ${level}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2969,13 +2973,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -3006,7 +3010,7 @@
                         "measurement": "acct_lvl_daily_trade_vol",
                         "orderByTime": "ASC",
                         "policy": "default",
-                        "query": "SELECT last(\"trade_vol\") FROM \"default\".\"acct_lvl_daily_trade_vol\" WHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/ AND abs(\"trade_vol\") \u003e 0) AND $timeFilter GROUP BY time($__interval), \"label\", \"level\" fill(none)",
+                        "query": "SELECT last(\"trade_vol\") FROM \"default\".\"acct_lvl_daily_trade_vol\" WHERE (\"level\" =~ /^$level$/ AND \"label\" =~ /^$label$/ AND abs(\"trade_vol\") > 0) AND $timeFilter GROUP BY time($__interval), \"label\", \"level\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series",
                         "select": [
@@ -3038,266 +3042,28 @@
                           {
                             "condition": "AND",
                             "key": "trade_vol::field",
-                            "operator": "\u003e",
+                            "operator": ">",
                             "value": "0"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 9,
-          "links": [],
-          "title": "Daily Trade Volume by Mimid Account Level ${level}",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#4c4636",
-                        "value": null
-                      },
-                      {
-                        "color": "yellow",
-                        "value": 1000000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -3317,9 +3083,243 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#4c4636"
+                      },
+                      {
+                        "value": 1000000,
+                        "color": "yellow"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       }
@@ -3331,183 +3331,183 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-11"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 8,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-13"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 8,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 16,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-16"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 16,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-12"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 0,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 8,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-14"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 8,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 16,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-15"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 16,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 12,
+              "width": 6,
+              "height": 16,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-8"
-              },
-              "height": 16,
-              "width": 6,
-              "x": 0,
-              "y": 12
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 6,
+              "y": 12,
+              "width": 18,
+              "height": 16,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 16,
-              "width": 18,
-              "x": 6,
-              "y": 12
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 28,
+              "width": 6,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-9"
-              },
-              "height": 14,
-              "width": 6,
-              "x": 0,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 6,
+              "y": 28,
+              "width": 18,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-6"
-              },
-              "height": 14,
-              "width": 18,
-              "x": 6,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 42,
+              "width": 6,
+              "height": 13,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-10"
-              },
-              "height": 13,
-              "width": 6,
-              "x": 0,
-              "y": 42
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 6,
+              "y": 42,
+              "width": 18,
+              "height": 13,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 13,
-              "width": 18,
-              "x": 6,
-              "y": 42
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 55,
+              "width": 6,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-18"
-              },
-              "height": 14,
-              "width": 6,
-              "x": 0,
-              "y": 55
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 6,
+              "y": 55,
+              "width": 18,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-20"
-              },
-              "height": 14,
-              "width": 18,
-              "x": 6,
-              "y": 55
+              }
             }
           }
         ]
@@ -3518,6 +3518,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now/d",
+      "to": "now",
       "autoRefresh": "1m",
       "autoRefreshIntervals": [
         "5s",
@@ -3531,64 +3534,61 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now/d",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "Crypto-Account-Level-Tracking-by-coin",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "level",
           "current": {
             "text": "1",
             "value": "1"
           },
-          "definition": "SHOW TAG VALUES WITH KEY IN (\"level\")",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "Mimid Account Level",
-          "multi": false,
-          "name": "level",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "_NkF9laVk"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY IN (\"level\")"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY IN (\"level\")",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "TextVariable",
         "spec": {
+          "name": "include",
           "current": {
             "text": "",
             "value": ""
           },
-          "hide": "dontHide",
-          "label": "Label Start Filter",
-          "name": "include",
           "query": "",
+          "label": "Label Start Filter",
+          "hide": "dontHide",
           "skipUrlSync": false
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "exclude",
           "current": {
             "text": [
               "SLN--DEFI",
@@ -3599,34 +3599,34 @@
               "SLN--IDEXDM"
             ]
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "Exclude Labels",
-          "multi": true,
-          "name": "exclude",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "_NkF9laVk"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/",
+          "options": [],
+          "multi": true,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "label",
           "current": {
             "text": [
               "All"
@@ -3635,57 +3635,57 @@
               "$__all"
             ]
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/ AND \"label\" !~ /^$exclude$/",
-          "hide": "dontHide",
-          "includeAll": true,
           "label": "Mimid Label",
-          "multi": true,
-          "name": "label",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "_NkF9laVk"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/ AND \"label\" !~ /^$exclude$/"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = \"label\" WHERE \"level\" =~ /^$level$/ AND \"label\" =~ /^$include.*/ AND \"label\" !~ /^$exclude$/",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "query0",
           "current": {
             "text": "",
             "value": ""
           },
-          "definition": "",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": false,
-          "name": "query0",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "datasource",
+            "version": "v0",
             "datasource": {
               "name": "grafana"
             },
-            "group": "datasource",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
           },
-          "refresh": "onDashboardLoad",
           "regex": "",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]

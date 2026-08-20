@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "ffnxlptwv6i2od"
@@ -9,22 +9,22 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -35,6 +35,10 @@
       "panel-2": {
         "kind": "Panel",
         "spec": {
+          "id": 2,
+          "title": "BTC vs ETH (bps from window start)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -42,13 +46,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "aecrekfr5f9q8f"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_strategy $col",
                         "dsType": "influxdb",
@@ -75,7 +79,7 @@
                         "measurement": "StrategySignal",
                         "orderByTime": "ASC",
                         "policy": "default_signals_retention",
-                        "query": "data = from(bucket: \"signals_db/default_signals_retention\")\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |\u003e filter(fn: (r) =\u003e r._measurement == \"StrategySignal\"\n        and r._field == \"bid\"\n        and r.strategy == \"BDM_ETHUSDT-PERP_PFG\")\n  |\u003e aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |\u003e keep(columns: [\"_time\", \"_value\"])\n\nprice = data |\u003e set(key: \"_field\", value: \"price\")\nbase  = data |\u003e first() |\u003e set(key: \"_field\", value: \"base\")\n\nunion(tables: [price, base])\n  |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |\u003e fill(column: \"base\", usePrevious: true)\n  |\u003e map(fn: (r) =\u003e ({ _time: r._time, asset: \"ETH\", _value: (r.price / r.base - 1.0) * 10000.0 }))\n  |\u003e group(columns: [\"asset\"])\n  |\u003e yield(name: \"ETH\")",
+                        "query": "data = from(bucket: \"signals_db/default_signals_retention\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"StrategySignal\"\n        and r._field == \"bid\"\n        and r.strategy == \"BDM_ETHUSDT-PERP_PFG\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])\n\nprice = data |> set(key: \"_field\", value: \"price\")\nbase  = data |> first() |> set(key: \"_field\", value: \"base\")\n\nunion(tables: [price, base])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> fill(column: \"base\", usePrevious: true)\n  |> map(fn: (r) => ({ _time: r._time, asset: \"ETH\", _value: (r.price / r.base - 1.0) * 10000.0 }))\n  |> group(columns: [\"asset\"])\n  |> yield(name: \"ETH\")",
                         "rawQuery": false,
                         "resultFormat": "time_series",
                         "select": [
@@ -123,45 +127,73 @@
                             "value": "BIN_BTCUSDT_PFG"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 },
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "aecrekfr5f9q8f"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
-                        "query": "data = from(bucket: \"signals_db/default_signals_retention\")\n  |\u003e range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |\u003e filter(fn: (r) =\u003e r._measurement == \"StrategySignal\"\n        and r._field == \"bid\"\n        and r.strategy == \"BDM_BTCUSDT-PERP_PFG\")\n  |\u003e aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |\u003e keep(columns: [\"_time\", \"_value\"])\n\nprice = data |\u003e set(key: \"_field\", value: \"price\")\nbase  = data |\u003e first() |\u003e set(key: \"_field\", value: \"base\")\n\nunion(tables: [price, base])\n  |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |\u003e fill(column: \"base\", usePrevious: true)\n  |\u003e map(fn: (r) =\u003e ({ _time: r._time, asset: \"BTC\", _value: (r.price / r.base - 1.0) * 10000.0 }))\n  |\u003e group(columns: [\"asset\"])\n  |\u003e yield(name: \"BTC\")"
-                      },
-                      "version": "v0"
+                        "query": "data = from(bucket: \"signals_db/default_signals_retention\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"StrategySignal\"\n        and r._field == \"bid\"\n        and r.strategy == \"BDM_BTCUSDT-PERP_PFG\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> keep(columns: [\"_time\", \"_value\"])\n\nprice = data |> set(key: \"_field\", value: \"price\")\nbase  = data |> first() |> set(key: \"_field\", value: \"base\")\n\nunion(tables: [price, base])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> fill(column: \"base\", usePrevious: true)\n  |> map(fn: (r) => ({ _time: r._time, asset: \"BTC\", _value: (r.price / r.base - 1.0) * 10000.0 }))\n  |> group(columns: [\"asset\"])\n  |> yield(name: \"BTC\")"
+                      }
                     },
-                    "refId": "B"
+                    "refId": "B",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 2,
-          "links": [],
-          "title": "BTC vs ETH (bps from window start)",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "9.5.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true,
+                  "width": 400
+                },
+                "timezone": [
+                  "browser",
+                  "utc"
+                ],
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -200,21 +232,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": false,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  "fieldMinMax": false
                 },
                 "overrides": [
                   {
@@ -484,32 +502,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "table",
-                  "placement": "bottom",
-                  "showLegend": true,
-                  "width": 400
-                },
-                "timezone": [
-                  "browser",
-                  "utc"
-                ],
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-3": {
         "kind": "Panel",
         "spec": {
+          "id": 3,
+          "title": "ETH",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -517,13 +521,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "bdx4oxj0828lce"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_strategy $col",
                         "dsType": "influxdb",
@@ -598,27 +602,55 @@
                             "value": "BIN_ETHUSDT_PFG"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 3,
-          "links": [],
-          "title": "ETH",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "9.5.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": false,
+                  "width": 400
+                },
+                "timezone": [
+                  "browser",
+                  "utc"
+                ],
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -658,21 +690,7 @@
                       "mode": "off"
                     }
                   },
-                  "fieldMinMax": false,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "none"
+                  "fieldMinMax": false
                 },
                 "overrides": [
                   {
@@ -942,32 +960,18 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": false,
-                  "width": 400
-                },
-                "timezone": [
-                  "browser",
-                  "utc"
-                ],
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "9.5.2"
+            }
           }
         }
       },
       "panel-5": {
         "kind": "Panel",
         "spec": {
+          "id": 5,
+          "title": "MM PNL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -975,39 +979,61 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "MM PNL",
-                        "query": "SELECT last(\"pnl\") FROM \"acct_lvl_daily_pnl\" WHERE (\"label\" =~ /^(ARB|BO|DEFI|DLP|INSTL|MIDFT|MM|PD|RWA|RWD|STAGE|STAGING|UTIL)$/ AND \"level\" =~ /^(0)$/ AND \"label\"::tag =~ /^(MM)$/) AND time \u003e= 1780358400000ms and time \u003c= 1780413632257ms GROUP BY time(1m), \"label\", \"level\" fill(none) ORDER BY time ASC",
+                        "query": "SELECT last(\"pnl\") FROM \"acct_lvl_daily_pnl\" WHERE (\"label\" =~ /^(ARB|BO|DEFI|DLP|INSTL|MIDFT|MM|PD|RWA|RWD|STAGE|STAGING|UTIL)$/ AND \"level\" =~ /^(0)$/ AND \"label\"::tag =~ /^(MM)$/) AND time >= 1780358400000ms and time <= 1780413632257ms GROUP BY time(1m), \"label\", \"level\" fill(none) ORDER BY time ASC",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 5,
-          "links": [],
-          "title": "MM PNL",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1045,19 +1071,6 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": [
@@ -1086,21 +1099,8 @@
                     ]
                   }
                 ]
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       }
@@ -1112,40 +1112,40 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 21,
+              "height": 11,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-3"
-              },
-              "height": 11,
-              "width": 21,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 11,
+              "width": 21,
+              "height": 15,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-5"
-              },
-              "height": 15,
-              "width": 21,
-              "x": 0,
-              "y": 11
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 26,
+              "width": 21,
+              "height": 16,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-2"
-              },
-              "height": 16,
-              "width": 21,
-              "x": 0,
-              "y": 26
+              }
             }
           }
         ]
@@ -1156,6 +1156,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "browser",
+      "from": "now/d",
+      "to": "now",
       "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
@@ -1169,11 +1172,8 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now/d",
       "hideTimepicker": false,
-      "timezone": "browser",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "MM dashboard",
     "variables": []

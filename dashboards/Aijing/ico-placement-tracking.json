@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v0alpha1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "adkyby66nasxsb"
@@ -9,27 +9,27 @@
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "legacyOptions": {
-            "type": "dashboard"
-          },
-          "name": "Annotations \u0026 Alerts",
           "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
             "datasource": {
               "name": "-- Grafana --"
             },
-            "group": "grafana",
-            "kind": "DataQuery",
             "spec": {
               "limit": 100,
               "matchAny": false,
               "tags": [],
               "type": "dashboard"
-            },
-            "version": "v0"
+            }
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true,
+          "legacyOptions": {
+            "type": "dashboard"
           }
         }
       }
@@ -40,6 +40,10 @@
       "panel-11": {
         "kind": "Panel",
         "spec": {
+          "id": 11,
+          "title": "Daily PnL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -47,59 +51,36 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "alias": "",
                         "query": "\n        SELECT last(\"pnl\") AS last_pnl \n        FROM \"default\".\"acct_lvl_daily_pnl\"\n        WHERE (\"label\" =~/^$label$/)\n        AND $timeFilter\n        GROUP BY time($__interval), \"label\" fill(none)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 11,
-          "links": [],
-          "title": "Daily PnL",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 1
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -115,15 +96,38 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 1,
+                        "color": "green"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-12": {
         "kind": "Panel",
         "spec": {
+          "id": 12,
+          "title": "Daily PnL",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -131,13 +135,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "groupBy": [
                           {
@@ -198,30 +202,56 @@
                             "value": "1"
                           }
                         ]
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
-              },
-              "transformations": []
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 12,
-          "links": [],
-          "title": "Daily PnL",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -256,47 +286,21 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
+          "id": 13,
+          "title": "Daily Trade Volume",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -304,273 +308,35 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"trade_vol\") FROM \"default\".\"acct_lvl_daily_trade_vol\" WHERE ( \"label\" =~ /$label$/ AND $timeFilter) GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 13,
-          "links": [],
-          "title": "Daily Trade Volume",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "light-yellow",
-                        "value": null
-                      },
-                      {
-                        "color": "yellow",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -590,15 +356,253 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "light-yellow"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "yellow"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-14": {
         "kind": "Panel",
         "spec": {
+          "id": 14,
+          "title": "Daily Trade Volume",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -606,41 +610,67 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"trade_vol\") FROM \"acct_lvl_daily_trade_vol\" WHERE (\"label\" =~ /$label$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
-              },
-              "transformations": []
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
             }
           },
-          "description": "",
-          "id": 14,
-          "links": [],
-          "title": "Daily Trade Volume",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -675,25 +705,58 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
+              }
+            }
+          }
+        }
+      },
+      "panel-15": {
+        "kind": "Panel",
+        "spec": {
+          "id": 15,
+          "title": "Risk (Notional)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "_NkF9laVk"
+                      },
+                      "spec": {
+                        "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE (\"label\" =~ /^$label$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
+                        "rawQuery": true,
+                        "resultFormat": "time_series"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 480,
+                "interval": "1m"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
+            "spec": {
               "options": {
                 "legend": {
                   "calcs": [
@@ -707,57 +770,24 @@
                   "mode": "single",
                   "sort": "none"
                 }
-              }
-            },
-            "version": "10.4.2"
-          }
-        }
-      },
-      "panel-15": {
-        "kind": "Panel",
-        "spec": {
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "hidden": false,
-                    "query": {
-                      "datasource": {
-                        "name": "_NkF9laVk"
-                      },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
-                      "spec": {
-                        "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE (\"label\" =~ /^$label$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
-                        "rawQuery": true,
-                        "resultFormat": "time_series"
-                      },
-                      "version": "v0"
-                    },
-                    "refId": "A"
-                  }
-                }
-              ],
-              "queryOptions": {
-                "interval": "1m",
-                "maxDataPoints": 480
               },
-              "transformations": []
-            }
-          },
-          "description": "",
-          "id": 15,
-          "links": [],
-          "title": "Risk (Notional)",
-          "vizConfig": {
-            "group": "timeseries",
-            "kind": "VizConfig",
-            "spec": {
               "fieldConfig": {
                 "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "super-light-orange"
+                      },
+                      {
+                        "value": 0,
+                        "color": "semi-dark-blue"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "thresholds",
                     "seriesBy": "last"
@@ -793,47 +823,21 @@
                     "thresholdsStyle": {
                       "mode": "area"
                     }
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "super-light-orange",
-                        "value": null
-                      },
-                      {
-                        "color": "semi-dark-blue",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-16": {
         "kind": "Panel",
         "spec": {
+          "id": 16,
+          "title": "Risk (Notional)",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -841,277 +845,35 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE (\"label\" =~ /^$label$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
+              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 100
-              },
-              "transformations": []
+              }
             }
           },
-          "description": "",
-          "id": 16,
-          "links": [],
-          "title": "Risk (Notional)",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "decimals": 1,
-                  "displayName": "${__field.labels.label}",
-                  "mappings": [
-                    {
-                      "options": {
-                        "from": -99,
-                        "result": {
-                          "index": 0,
-                          "text": "0.0k"
-                        },
-                        "to": 99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -199,
-                        "result": {
-                          "index": 1,
-                          "text": "-0.1k"
-                        },
-                        "to": -99
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -299,
-                        "result": {
-                          "index": 2,
-                          "text": "-0.2k"
-                        },
-                        "to": -199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -399,
-                        "result": {
-                          "index": 3,
-                          "text": "-0.3k"
-                        },
-                        "to": -299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -499,
-                        "result": {
-                          "index": 4,
-                          "text": "-0.4k"
-                        },
-                        "to": -399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -599,
-                        "result": {
-                          "index": 5,
-                          "text": "-0.5k"
-                        },
-                        "to": -499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -699,
-                        "result": {
-                          "index": 6,
-                          "text": "-0.6k"
-                        },
-                        "to": -599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -799,
-                        "result": {
-                          "index": 7,
-                          "text": "-0.7k"
-                        },
-                        "to": -699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -899,
-                        "result": {
-                          "index": 8,
-                          "text": "-0.8k"
-                        },
-                        "to": -799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": -999,
-                        "result": {
-                          "index": 9,
-                          "text": "-0.9k"
-                        },
-                        "to": -899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 99,
-                        "result": {
-                          "index": 10,
-                          "text": "0.1k"
-                        },
-                        "to": 199
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 199,
-                        "result": {
-                          "index": 11,
-                          "text": "0.2k"
-                        },
-                        "to": 299
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 299,
-                        "result": {
-                          "index": 12,
-                          "text": "0.3k"
-                        },
-                        "to": 399
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 399,
-                        "result": {
-                          "index": 13,
-                          "text": "0.4k"
-                        },
-                        "to": 499
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 499,
-                        "result": {
-                          "index": 14,
-                          "text": "0.5k"
-                        },
-                        "to": 599
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 599,
-                        "result": {
-                          "index": 15,
-                          "text": "0.6k"
-                        },
-                        "to": 699
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 699,
-                        "result": {
-                          "index": 16,
-                          "text": "0.7k"
-                        },
-                        "to": 799
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 799,
-                        "result": {
-                          "index": 17,
-                          "text": "0.8k"
-                        },
-                        "to": 899
-                      },
-                      "type": "range"
-                    },
-                    {
-                      "options": {
-                        "from": 899,
-                        "result": {
-                          "index": 18,
-                          "text": "0.9k"
-                        },
-                        "to": 999
-                      },
-                      "type": "range"
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "#ffa6ec",
-                        "value": null
-                      },
-                      {
-                        "color": "yellow",
-                        "value": -10000
-                      },
-                      {
-                        "color": "blue",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "value",
                 "graphMode": "none",
@@ -1131,15 +893,257 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "decimals": 1,
+                  "mappings": [
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -99,
+                        "to": 99,
+                        "result": {
+                          "text": "0.0k",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -199,
+                        "to": -99,
+                        "result": {
+                          "text": "-0.1k",
+                          "index": 1
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -299,
+                        "to": -199,
+                        "result": {
+                          "text": "-0.2k",
+                          "index": 2
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -399,
+                        "to": -299,
+                        "result": {
+                          "text": "-0.3k",
+                          "index": 3
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -499,
+                        "to": -399,
+                        "result": {
+                          "text": "-0.4k",
+                          "index": 4
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -599,
+                        "to": -499,
+                        "result": {
+                          "text": "-0.5k",
+                          "index": 5
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -699,
+                        "to": -599,
+                        "result": {
+                          "text": "-0.6k",
+                          "index": 6
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -799,
+                        "to": -699,
+                        "result": {
+                          "text": "-0.7k",
+                          "index": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -899,
+                        "to": -799,
+                        "result": {
+                          "text": "-0.8k",
+                          "index": 8
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": -999,
+                        "to": -899,
+                        "result": {
+                          "text": "-0.9k",
+                          "index": 9
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 99,
+                        "to": 199,
+                        "result": {
+                          "text": "0.1k",
+                          "index": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 199,
+                        "to": 299,
+                        "result": {
+                          "text": "0.2k",
+                          "index": 11
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 299,
+                        "to": 399,
+                        "result": {
+                          "text": "0.3k",
+                          "index": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 399,
+                        "to": 499,
+                        "result": {
+                          "text": "0.4k",
+                          "index": 13
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 499,
+                        "to": 599,
+                        "result": {
+                          "text": "0.5k",
+                          "index": 14
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 599,
+                        "to": 699,
+                        "result": {
+                          "text": "0.6k",
+                          "index": 15
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 699,
+                        "to": 799,
+                        "result": {
+                          "text": "0.7k",
+                          "index": 16
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 799,
+                        "to": 899,
+                        "result": {
+                          "text": "0.8k",
+                          "index": 17
+                        }
+                      }
+                    },
+                    {
+                      "type": "range",
+                      "options": {
+                        "from": 899,
+                        "to": 999,
+                        "result": {
+                          "text": "0.9k",
+                          "index": 18
+                        }
+                      }
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "#ffa6ec"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "blue"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-17": {
         "kind": "Panel",
         "spec": {
+          "id": 17,
+          "title": "ICO PnL Breakdown by Deal",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1147,60 +1151,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"pnl\") FROM \"default\".\"acct_lvl_daily_pnl\" WHERE (\"level\" =~ /^(3)$/ AND \"label\" =~ /^SLN--ICO--.*$/ AND \"label\" !~ /^SLN--ICO--UPTIME.*$/ AND \"label\" !~ /^SLN--ICO--VOLUME.*$/  )  AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 17,
-          "links": [],
-          "title": "ICO PnL Breakdown by Deal",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -200
-                      },
-                      {
-                        "color": "green",
-                        "value": 200
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -1220,15 +1197,42 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -200,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 200,
+                        "color": "green"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-18": {
         "kind": "Panel",
         "spec": {
+          "id": 18,
+          "title": "Signal Width -- ${Strategy}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1236,38 +1240,60 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT (\"AskSignal\" - \"BidSignal\")/((\"AskSignal\" +\"BidSignal\")/2) From\n(SELECT \"AskSignal\" as \"AskSignal\", \"BidSignal\" as \"BidSignal\" \nFROM \"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND $timeFilter)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 18,
-          "links": [],
-          "title": "Signal Width -- ${Strategy}",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1302,43 +1328,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-19": {
         "kind": "Panel",
         "spec": {
+          "id": 19,
+          "title": "Signal Width Histogram -- ${Strategy}",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1346,38 +1350,57 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT (\"AskSignal\" - \"BidSignal\")/((\"AskSignal\" +\"BidSignal\")/2) From\n(SELECT \"AskSignal\" as \"AskSignal\", \"BidSignal\" as \"BidSignal\" \nFROM \"StrategySignal\" WHERE (\"strategy\" =~ /^$Strategy$/) AND $timeFilter)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 19,
-          "links": [],
-          "title": "Signal Width Histogram -- ${Strategy}",
           "vizConfig": {
-            "group": "histogram",
             "kind": "VizConfig",
+            "group": "histogram",
+            "version": "",
             "spec": {
+              "options": {
+                "bucketSize": 0.0005,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1390,40 +1413,21 @@
                       "viz": false
                     },
                     "lineWidth": 1
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
                   }
                 },
                 "overrides": []
-              },
-              "options": {
-                "bucketSize": 0.0005,
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": false
-                }
               }
-            },
-            "version": ""
+            }
           }
         }
       },
       "panel-20": {
         "kind": "Panel",
         "spec": {
+          "id": 20,
+          "title": "ICO Risk Breakdown by Deal",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1431,60 +1435,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE ( \"level\" =~/^(3)$/ AND \"label\" =~ /^SLN--ICO--.*$/ AND \"label\" !~ /^SLN--ICO--UPTIME.*$/ AND \"label\" !~ /^SLN--ICO--VOLUME.*$/) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 20,
-          "links": [],
-          "title": "ICO Risk Breakdown by Deal",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -10000
-                      },
-                      {
-                        "color": "red",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -1504,15 +1481,42 @@
                 },
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "red"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-21": {
         "kind": "Panel",
         "spec": {
+          "id": 21,
+          "title": "ICO PnL Breakdown by Deal",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1520,38 +1524,66 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"pnl\") FROM \"default\".\"acct_lvl_daily_pnl\" WHERE (\"level\" =~ /^(3)$/ AND \"label\" =~ /^SLN--ICO--.*$/ AND \"label\" !~ /^SLN--ICO--UPTIME.*$/ )  AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 21,
-          "links": [],
-          "title": "ICO PnL Breakdown by Deal",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -200,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 200,
+                        "color": "green"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1586,49 +1618,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -200
-                      },
-                      {
-                        "color": "green",
-                        "value": 200
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-22": {
         "kind": "Panel",
         "spec": {
+          "id": 22,
+          "title": "ICO Risk Breakdown by Deal",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1636,38 +1640,66 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE ( \"level\" =~/^(3)$/ AND \"label\" =~ /^SLN--ICO--.*$/ AND \"label\" !~ /^SLN--ICO--UPTIME.*$/) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 22,
-          "links": [],
-          "title": "ICO Risk Breakdown by Deal",
           "vizConfig": {
-            "group": "timeseries",
             "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "10.4.2",
             "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
               "fieldConfig": {
                 "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
                     "mode": "palette-classic"
                   },
@@ -1702,49 +1734,21 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -10000
-                      },
-                      {
-                        "color": "red",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
+                  }
                 },
                 "overrides": []
-              },
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-23": {
         "kind": "Panel",
         "spec": {
+          "id": 23,
+          "title": "ICO Uptime Total Pnl ",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1752,59 +1756,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"pnl\") FROM \"default\".\"acct_lvl_daily_pnl\" WHERE (\"level\" =~ /^(2)$/ AND \"label\" =~ /^SLN--ICO--UPTIME.*$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 23,
-          "links": [],
-          "title": "ICO Uptime Total Pnl ",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "short"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -1820,15 +1798,41 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "short",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-24": {
         "kind": "Panel",
         "spec": {
+          "id": 24,
+          "title": "ICO Uptime Total Risk",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1836,60 +1840,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE ( \"level\" =~ /^(2)$/ AND \"label\" =~ /^SLN--ICO--UPTIME.*$/) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 24,
-          "links": [],
-          "title": "ICO Uptime Total Risk",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -10000
-                      },
-                      {
-                        "color": "red",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -1906,15 +1883,42 @@
                 "text": {},
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "red"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-25": {
         "kind": "Panel",
         "spec": {
+          "id": 25,
+          "title": "ICO Volume Total Pnl ",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1922,59 +1926,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"pnl\") FROM \"default\".\"acct_lvl_daily_pnl\" WHERE (\"level\" =~ /^(2)$/ AND \"label\" =~ /^SLN--ICO--VOLUME.*$/ ) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 25,
-          "links": [],
-          "title": "ICO Volume Total Pnl ",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 0
-                      }
-                    ]
-                  },
-                  "unit": "short"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -1990,15 +1968,41 @@
                 "showPercentChange": false,
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "short",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       },
       "panel-26": {
         "kind": "Panel",
         "spec": {
+          "id": 26,
+          "title": "ICO Volume Total Risk",
+          "description": "",
+          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -2006,60 +2010,33 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
-                    "hidden": false,
                     "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
                       "datasource": {
                         "name": "_NkF9laVk"
                       },
-                      "group": "influxdb",
-                      "kind": "DataQuery",
                       "spec": {
                         "query": "SELECT last(\"grp_risk\") FROM \"acct_lvl_grp_risk\" WHERE ( \"level\" =~ /^(2)$/ AND \"label\" =~ /^SLN--ICO--VOLUME.*$/) AND $timeFilter GROUP BY time($__interval), \"label\" fill(none)",
                         "rawQuery": true,
                         "resultFormat": "time_series"
-                      },
-                      "version": "v0"
+                      }
                     },
-                    "refId": "A"
+                    "refId": "A",
+                    "hidden": false
                   }
                 }
               ],
-              "queryOptions": {},
-              "transformations": []
+              "transformations": [],
+              "queryOptions": {}
             }
           },
-          "description": "",
-          "id": 26,
-          "links": [],
-          "title": "ICO Volume Total Risk",
           "vizConfig": {
-            "group": "stat",
             "kind": "VizConfig",
+            "group": "stat",
+            "version": "10.4.2",
             "spec": {
-              "fieldConfig": {
-                "defaults": {
-                  "displayName": "${__field.labels.label}",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "#EAB839",
-                        "value": -10000
-                      },
-                      {
-                        "color": "red",
-                        "value": 10000
-                      }
-                    ]
-                  },
-                  "unit": "currencyUSD"
-                },
-                "overrides": []
-              },
               "options": {
                 "colorMode": "background",
                 "graphMode": "none",
@@ -2076,9 +2053,32 @@
                 "text": {},
                 "textMode": "auto",
                 "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "displayName": "${__field.labels.label}",
+                  "unit": "currencyUSD",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "red"
+                      },
+                      {
+                        "value": -10000,
+                        "color": "#EAB839"
+                      },
+                      {
+                        "value": 10000,
+                        "color": "red"
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
               }
-            },
-            "version": "10.4.2"
+            }
           }
         }
       }
@@ -2090,209 +2090,209 @@
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-11"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 0,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 8,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-13"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 8,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 16,
+              "y": 0,
+              "width": 8,
+              "height": 4,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-16"
-              },
-              "height": 4,
-              "width": 8,
-              "x": 16,
-              "y": 0
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-12"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 0,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 8,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-14"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 8,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 16,
+              "y": 4,
+              "width": 8,
+              "height": 8,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-15"
-              },
-              "height": 8,
-              "width": 8,
-              "x": 16,
-              "y": 4
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 12,
+              "width": 7,
+              "height": 13,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-17"
-              },
-              "height": 13,
-              "width": 7,
-              "x": 0,
-              "y": 12
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 7,
+              "y": 12,
+              "width": 17,
+              "height": 16,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-21"
-              },
-              "height": 16,
-              "width": 17,
-              "x": 7,
-              "y": 12
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 25,
+              "width": 4,
+              "height": 3,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-23"
-              },
-              "height": 3,
-              "width": 4,
-              "x": 0,
-              "y": 25
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 4,
+              "y": 25,
+              "width": 3,
+              "height": 3,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-24"
-              },
-              "height": 3,
-              "width": 3,
-              "x": 4,
-              "y": 25
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 28,
+              "width": 4,
+              "height": 3,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-25"
-              },
-              "height": 3,
-              "width": 4,
-              "x": 0,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 4,
+              "y": 28,
+              "width": 3,
+              "height": 3,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-26"
-              },
-              "height": 3,
-              "width": 3,
-              "x": 4,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 7,
+              "y": 28,
+              "width": 17,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-22"
-              },
-              "height": 14,
-              "width": 17,
-              "x": 7,
-              "y": 28
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 31,
+              "width": 7,
+              "height": 14,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-20"
-              },
-              "height": 14,
-              "width": 7,
-              "x": 0,
-              "y": 31
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 45,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-18"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 45
+              }
             }
           },
           {
             "kind": "GridLayoutItem",
             "spec": {
+              "x": 0,
+              "y": 54,
+              "width": 24,
+              "height": 9,
               "element": {
                 "kind": "ElementReference",
                 "name": "panel-19"
-              },
-              "height": 9,
-              "width": 24,
-              "x": 0,
-              "y": 54
+              }
             }
           }
         ]
@@ -2303,6 +2303,9 @@
     "preload": false,
     "tags": [],
     "timeSettings": {
+      "timezone": "utc",
+      "from": "now/d",
+      "to": "now",
       "autoRefresh": "1m",
       "autoRefreshIntervals": [
         "5s",
@@ -2316,18 +2319,15 @@
         "2h",
         "1d"
       ],
-      "fiscalYearStartMonth": 0,
-      "from": "now/d",
       "hideTimepicker": false,
-      "timezone": "utc",
-      "to": "now"
+      "fiscalYearStartMonth": 0
     },
     "title": "ICO_Placement_Tracking",
     "variables": [
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "label",
           "current": {
             "text": [
               "SLN--ICO"
@@ -2336,59 +2336,59 @@
               "SLN--ICO"
             ]
           },
-          "definition": "SHOW TAG VALUES WITH KEY = \"label\"",
-          "hide": "dontHide",
-          "includeAll": false,
           "label": "Mimid Label",
-          "multi": true,
-          "name": "label",
-          "options": [],
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "_NkF9laVk"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = \"label\""
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "/SLN--ICO.*/",
-          "skipUrlSync": false,
-          "sort": "alphabeticalAsc"
+          "sort": "alphabeticalAsc",
+          "definition": "SHOW TAG VALUES WITH KEY = \"label\"",
+          "options": [],
+          "multi": true,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
         "kind": "QueryVariable",
         "spec": {
-          "allowCustomValue": true,
+          "name": "Strategy",
           "current": {
             "text": "ICO_AXL_GenMod_BINANCE",
             "value": "ICO_AXL_GenMod_BINANCE"
           },
-          "definition": "SHOW TAG VALUES WITH KEY = strategy",
           "hide": "dontHide",
-          "includeAll": false,
-          "multi": true,
-          "name": "Strategy",
-          "options": [],
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
           "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
             "datasource": {
               "name": "baaf210d-cf36-41ba-b20e-6b1ed067afc9"
             },
-            "group": "influxdb",
-            "kind": "DataQuery",
             "spec": {
               "__legacyStringValue": "SHOW TAG VALUES WITH KEY = strategy"
-            },
-            "version": "v0"
+            }
           },
-          "refresh": "onDashboardLoad",
           "regex": "^ICO.*",
-          "skipUrlSync": false,
-          "sort": "disabled"
+          "sort": "disabled",
+          "definition": "SHOW TAG VALUES WITH KEY = strategy",
+          "options": [],
+          "multi": true,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       }
     ]
