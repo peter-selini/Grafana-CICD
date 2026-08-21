@@ -1474,7 +1474,7 @@
                       "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_host $tag_instance Data Read",
-                        "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) FROM \"disk_read\" WHERE (\"host\"::tag =~ /^$host$/ AND \"type\"::tag = 'disk_octets') AND $timeFilter GROUP BY time($interval), \"host\"::tag, \"instance\"::tag fill(null)",
+                        "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) FROM \"disk_read\" WHERE (\"host\"::tag =~ /^$host$/ AND \"type\"::tag = 'disk_octets' AND \"instance\"::tag =~ /^nvme[0-9]+n[0-9]+$/) AND $timeFilter GROUP BY time($interval), \"host\"::tag, \"instance\"::tag fill(null)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
                       },
@@ -1495,7 +1495,7 @@
                       "kind": "DataQuery",
                       "spec": {
                         "alias": "$tag_host $tag_instance Data Write",
-                        "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) FROM \"disk_write\" WHERE (\"host\"::tag =~ /^$host$/ AND \"type\"::tag = 'disk_octets') AND $timeFilter GROUP BY time($interval), \"host\"::tag, \"instance\"::tag fill(null)",
+                        "query": "SELECT non_negative_derivative(mean(\"value\"), 1s) FROM \"disk_write\" WHERE (\"host\"::tag =~ /^$host$/ AND \"type\"::tag = 'disk_octets' AND \"instance\"::tag =~ /^nvme[0-9]+n[0-9]+$/) AND $timeFilter GROUP BY time($interval), \"host\"::tag, \"instance\"::tag fill(null)\n",
                         "rawQuery": true,
                         "resultFormat": "time_series"
                       },
