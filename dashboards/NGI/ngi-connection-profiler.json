@@ -3123,6 +3123,8 @@
                       "type": "special"
                     }
                   ],
+                  "max": 100,
+                  "min": 0,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -3321,7 +3323,7 @@
         "5m"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "2026-08-19T17:00:00.000Z",
+      "from": "now-12h",
       "hideTimepicker": false,
       "timezone": "utc",
       "to": "now"
@@ -3333,8 +3335,8 @@
         "spec": {
           "allowCustomValue": true,
           "current": {
-            "text": "TKY-DEV-08",
-            "value": "TKY-DEV-08"
+            "text": "TA-TKY-A-115",
+            "value": "TA-TKY-A-115"
           },
           "definition": "SELECT DISTINCT(host) as host FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host)",
           "hide": "dontHide",
@@ -3365,8 +3367,8 @@
         "spec": {
           "allowCustomValue": true,
           "current": {
-            "text": "fstream.binance.com:443",
-            "value": "fstream.binance.com:443"
+            "text": "fstream-mm.binance.com:443",
+            "value": "fstream-mm.binance.com:443"
           },
           "definition": "SELECT DISTINCT(endpoint) as endpoint FROM (SELECT count(\"ssl_e2e_ns_cnt\") as x FROM \"XdpConnStats\" WHERE ssl_decrypt_cyc_cnt \u003e 0 AND $timeFilter GROUP BY host, endpoint) WHERE host =~ /$Host/",
           "hide": "dontHide",
@@ -3429,8 +3431,14 @@
         "spec": {
           "allowCustomValue": true,
           "current": {
-            "text": "Crypto ETH/USDT-PERP@BINANCEDM MD",
-            "value": "Crypto ETH/USDT-PERP@BINANCEDM MD"
+            "text": [
+              "Crypto BTC/USDT-PERP@BINANCEDM MD",
+              "Crypto ETH/USDT-PERP@BINANCEDM MD"
+            ],
+            "value": [
+              "Crypto BTC/USDT-PERP@BINANCEDM MD",
+              "Crypto ETH/USDT-PERP@BINANCEDM MD"
+            ]
           },
           "definition": "SELECT channel\nFROM\n(\nSELECT sum(count)\nFROM \"FeedChanFeedMsg\"\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/\nGROUP BY channel\n)",
           "hide": "dontHide",
@@ -3462,14 +3470,26 @@
           "allowCustomValue": true,
           "current": {
             "text": [
-              "bbo-trade-combined",
-              "bbo-combined",
-              "bbo-separate-ETH/USDT-PERP"
+              "trade-BTC/USDT-PERP",
+              "trade-ETH/USDT-PERP",
+              "bbo-trade-all-usdt",
+              "bbo-trade-BTC/USDT-PERP",
+              "bbo-trade-ETH/USDT-PERP",
+              "bbo-ETH/USDT-PERP",
+              "trade-all",
+              "bbo-BTC/USDT-PERP",
+              "bbo-all"
             ],
             "value": [
-              "bbo-trade-combined",
-              "bbo-combined",
-              "bbo-separate-ETH/USDT-PERP"
+              "trade-BTC/USDT-PERP",
+              "trade-ETH/USDT-PERP",
+              "bbo-trade-all-usdt",
+              "bbo-trade-BTC/USDT-PERP",
+              "bbo-trade-ETH/USDT-PERP",
+              "bbo-ETH/USDT-PERP",
+              "trade-all",
+              "bbo-BTC/USDT-PERP",
+              "bbo-all"
             ]
           },
           "definition": "SELECT feed FROM \n(\nSELECT last(count)\nFROM FeedChanFeedMsg\nWHERE $timeFilter and endpoint =~ /$Endpoint/ and host =~ /$Host/ and role =~ /$FeedRole/ and channel =~ /${Channel:regex}/\nGROUP BY feed\n)",
